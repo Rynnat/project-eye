@@ -1,0 +1,153 @@
+{
+ "_about": "Project Eye v3 (POC) mekanik kinematik tablolari (cad/kinematics_export.py). Model degerleri; montaj sonrasi kalibre edin.",
+ "_servo_convention": "servo_deg = 90 + (servo kolunun, mil ucundan DISARI bakan eksen etrafinda sag-el donusu). SG90'da darbe genisligi artinca hangi yone dondugu ureticiye gore degisir: ters ise 'invert'.",
+ "_eye_convention": "yaw + = robot sagina (+X), pitch + = yukari. Pitch cercevesi X ekseni etrafinda doner, gozler cercevede dikey pimlerle yaw yapar: R_goz = Rx(-pitch) * Ry(yaw).",
+ "_lid_convention": "lid 0 = kapali (kenar -5 deg), 1 = tam acik (kenar +40 deg). delta = lid*45.0.",
+ "channels": {
+  "EYE_YAW": {
+   "channel": 0,
+   "mechanism": "paralelkenar: iki goz kolu + servo krank (r=20.0), duz lama; servo pitch cercevesinde",
+   "input": "eye_yaw_deg",
+   "table": [
+    {
+     "eye_yaw_deg": -25,
+     "servo_deg": 115.0
+    },
+    {
+     "eye_yaw_deg": -12.5,
+     "servo_deg": 102.5
+    },
+    {
+     "eye_yaw_deg": 0,
+     "servo_deg": 90.0
+    },
+    {
+     "eye_yaw_deg": 12.5,
+     "servo_deg": 77.5
+    },
+    {
+     "eye_yaw_deg": 25,
+     "servo_deg": 65.0
+    }
+   ],
+   "note": "birebir ve dogrusal: servo_deg = 90 - yaw (servo mili asagi bakar). pitch'ten bagimsiz."
+  },
+  "EYE_PITCH": {
+   "channel": 1,
+   "mechanism": "direkt: pitch cercevesinin sag yan plakasi servo koluna vidali (mil = pitch ekseni)",
+   "input": "eye_pitch_deg",
+   "table": [
+    {
+     "eye_pitch_deg": -20,
+     "servo_deg": 70.0
+    },
+    {
+     "eye_pitch_deg": -10,
+     "servo_deg": 80.0
+    },
+    {
+     "eye_pitch_deg": 0,
+     "servo_deg": 90.0
+    },
+    {
+     "eye_pitch_deg": 10,
+     "servo_deg": 100.0
+    },
+    {
+     "eye_pitch_deg": 20,
+     "servo_deg": 110.0
+    }
+   ],
+   "note": "birebir: servo_deg = 90 + pitch"
+  },
+  "LIDS": {
+   "channel": 2,
+   "mechanism": "direkt: kapak tasiyicisi (iki ust kapak) orta servonun koluna vidali (mil = kapak ekseni)",
+   "input": "lid (0 kapali .. 1 acik)",
+   "table": [
+    {
+     "lid": 0,
+     "edge_deg": -5.0,
+     "servo_deg": 112.5
+    },
+    {
+     "lid": 0.25,
+     "edge_deg": 6.25,
+     "servo_deg": 101.25
+    },
+    {
+     "lid": 0.5,
+     "edge_deg": 17.5,
+     "servo_deg": 90.0
+    },
+    {
+     "lid": 0.75,
+     "edge_deg": 28.75,
+     "servo_deg": 78.75
+    },
+    {
+     "lid": 1.0,
+     "edge_deg": 40.0,
+     "servo_deg": 67.5
+    }
+   ],
+   "note": "servo_deg = 90 - (delta - 22.5); 90 = yari acik. Kapali -> 112.5, acik -> 67.5"
+  }
+ },
+ "limits_checked": {
+  "EYE_YAW": [
+   65.0,
+   115.0
+  ],
+  "EYE_PITCH": [
+   70.0,
+   110.0
+  ],
+  "LIDS": [
+   67.5,
+   112.5
+  ],
+  "_note": "check.py bu araliklarin koselerinde ve ara pozlarda carpisma taradi. Firmware sabit limitleri bu araliklarin disina CIKMAMALI; disi DOGRULANMADI (ornegin kapak > acik degerinde tasiyici pitch cercevesine, yaw > 25'te lama cercevenin yan plakasina yaklasir)."
+ },
+ "cross_coupling": {
+  "EYE_YAW": "yok",
+  "EYE_PITCH": "yok",
+  "LIDS": "yok (kapaklar pitch'i takip etmez; sabit govdeye bagli)"
+ },
+ "transmission": {
+  "_note": "kol ile lama arasi aci; 90 ideal, olu nokta 0/180.",
+  "EYE_YAW": {
+   "neutral": 90.0,
+   "at_+-25": 65.0
+  },
+  "EYE_PITCH": "direkt (lama yok)",
+  "LIDS": "direkt (lama yok)"
+ },
+ "settings_suggestion": {
+  "channels": {
+   "EYE_YAW": {
+    "center": 90,
+    "min": 65,
+    "max": 115,
+    "invert": true,
+    "deg_per_unit": 25.0,
+    "_note": "invert=True: model servo_deg = 90 - yaw. Donanimda yonu dogrulayin."
+   },
+   "EYE_PITCH": {
+    "center": 90,
+    "min": 70,
+    "max": 110,
+    "invert": false,
+    "deg_per_unit": 20.0
+   },
+   "LIDS": {
+    "closed": 112.5,
+    "open": 67.5,
+    "min": 67.5,
+    "max": 112.5,
+    "invert": false
+   }
+  },
+  "_note": "Model tabanli baslangic. Servo kolunu takmadan once servoyu notr (90) aciya getirin; yonler donanimda dogrulanmali."
+ }
+}

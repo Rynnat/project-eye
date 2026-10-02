@@ -1,0 +1,494 @@
+{
+ "_about": "Project Eye v2 mekanik kinematik tablolari (cad/kinematics_export.py). Model degerleri; montaj sonrasi kalibre edin.",
+ "_servo_convention": "servo_deg = 90 + (servo kolunun, mil ucundan DISARI bakan eksen etrafinda sag-el donusu). Yani kol tarafindan bakinca saat yonunun tersi = aci artar. SG90'da darbe genisligi artinca hangi yone dondugu ureticiye gore degisebilir: ters ise settings.json 'invert' kullanin. 90 = notr (kol cubuga dik; SPEC §4 olu nokta kurali).",
+ "_eye_convention": "SPEC §1: yaw + = robot sagina (+X), pitch + = yukari; R_goz = Ry(yaw) * Rx(-pitch).",
+ "_lid_convention": "kenar acisi phi = atan2(y, z) goz merkezinden (+Z'den +Y'ye, derece). Ust kapak alt kenari; alt kapak ust kenari. openness: 0 = tam kapali (kenarlar LID_MEET=-5'te bulusur), 1 = SPEC §3 'acik' (ust kenar +22: irisi ~1.5 mm orter; alt kenar -28). >1 = bakis takibi payi.",
+ "channels": {
+  "EYE_YAW": {
+   "channel": 0,
+   "mechanism": "paralelkenar: iki goz gobek kolu + servo kolu (r=10), tek cubuk",
+   "input": "eye_yaw_deg",
+   "table": [
+    {
+     "eye_yaw_deg": -30,
+     "servo_deg": 60.0
+    },
+    {
+     "eye_yaw_deg": -20,
+     "servo_deg": 70.0
+    },
+    {
+     "eye_yaw_deg": -10,
+     "servo_deg": 80.0
+    },
+    {
+     "eye_yaw_deg": 0,
+     "servo_deg": 90.0
+    },
+    {
+     "eye_yaw_deg": 10,
+     "servo_deg": 100.0
+    },
+    {
+     "eye_yaw_deg": 20,
+     "servo_deg": 110.0
+    },
+    {
+     "eye_yaw_deg": 30,
+     "servo_deg": 120.0
+    }
+   ],
+   "note": "birebir: servo_deg = 90 + yaw; pitch'ten bagimsiz (gobek sadece yaw yapar)"
+  },
+  "EYE_PITCH": {
+   "channel": 1,
+   "mechanism": "sallanan mil (rocker, sol servo eksenel) + iki basili cubuk -> alt kutup toplari",
+   "input": "eye_pitch_deg (yaw=0)",
+   "table": [
+    {
+     "eye_pitch_deg": -25,
+     "servo_deg": 56.73
+    },
+    {
+     "eye_pitch_deg": -18.75,
+     "servo_deg": 65.23
+    },
+    {
+     "eye_pitch_deg": -12.5,
+     "servo_deg": 73.73
+    },
+    {
+     "eye_pitch_deg": -6.25,
+     "servo_deg": 81.99
+    },
+    {
+     "eye_pitch_deg": 0,
+     "servo_deg": 90.0
+    },
+    {
+     "eye_pitch_deg": 6.25,
+     "servo_deg": 97.88
+    },
+    {
+     "eye_pitch_deg": 12.5,
+     "servo_deg": 105.9
+    },
+    {
+     "eye_pitch_deg": 18.75,
+     "servo_deg": 114.62
+    },
+    {
+     "eye_pitch_deg": 25,
+     "servo_deg": 125.59
+    }
+   ],
+   "note": "dogrusal degil: servo acisi pitch'e gore egri; iki goz ayni geometri -> sag/sol pitch esit"
+  },
+  "LID_UL": {
+   "channel": 2,
+   "mechanism": "4-cubuk: kapak kolu r=12.0, servo kolu r=10.0, link 48.47 mm",
+   "input": "lid edge angle",
+   "table": [
+    {
+     "edge_deg": -4.25,
+     "openness": 0.0,
+     "servo_deg": 64.38
+    },
+    {
+     "edge_deg": 2.79,
+     "openness": 0.27,
+     "servo_deg": 73.02
+    },
+    {
+     "edge_deg": 9.83,
+     "openness": 0.54,
+     "servo_deg": 81.54
+    },
+    {
+     "edge_deg": 16.88,
+     "openness": 0.8,
+     "servo_deg": 90.0
+    },
+    {
+     "edge_deg": 22.0,
+     "openness": 1.0,
+     "servo_deg": 96.15
+    },
+    {
+     "edge_deg": 23.92,
+     "openness": 1.07,
+     "servo_deg": 98.46
+    },
+    {
+     "edge_deg": 30.96,
+     "openness": 1.34,
+     "servo_deg": 106.98
+    },
+    {
+     "edge_deg": 38.0,
+     "openness": 1.61,
+     "servo_deg": 115.63
+    }
+   ]
+  },
+  "LID_LL": {
+   "channel": 3,
+   "mechanism": "4-cubuk: kapak kolu r=12.0, servo kolu r=10.0, link 51.35 mm",
+   "input": "lid edge angle",
+   "table": [
+    {
+     "edge_deg": -5.75,
+     "openness": -0.0,
+     "servo_deg": 113.77
+    },
+    {
+     "edge_deg": -12.29,
+     "openness": 0.29,
+     "servo_deg": 105.76
+    },
+    {
+     "edge_deg": -18.83,
+     "openness": 0.59,
+     "servo_deg": 97.86
+    },
+    {
+     "edge_deg": -25.38,
+     "openness": 0.88,
+     "servo_deg": 90.0
+    },
+    {
+     "edge_deg": -28.0,
+     "openness": 1.0,
+     "servo_deg": 86.85
+    },
+    {
+     "edge_deg": -31.92,
+     "openness": 1.18,
+     "servo_deg": 82.14
+    },
+    {
+     "edge_deg": -38.46,
+     "openness": 1.47,
+     "servo_deg": 74.24
+    },
+    {
+     "edge_deg": -45.0,
+     "openness": 1.76,
+     "servo_deg": 66.23
+    }
+   ]
+  },
+  "LID_UR": {
+   "channel": 4,
+   "mechanism": "4-cubuk: kapak kolu r=12.0, servo kolu r=10.0, link 48.47 mm",
+   "input": "lid edge angle",
+   "table": [
+    {
+     "edge_deg": -4.25,
+     "openness": 0.0,
+     "servo_deg": 115.62
+    },
+    {
+     "edge_deg": 2.79,
+     "openness": 0.27,
+     "servo_deg": 106.98
+    },
+    {
+     "edge_deg": 9.83,
+     "openness": 0.54,
+     "servo_deg": 98.46
+    },
+    {
+     "edge_deg": 16.88,
+     "openness": 0.8,
+     "servo_deg": 90.0
+    },
+    {
+     "edge_deg": 22.0,
+     "openness": 1.0,
+     "servo_deg": 83.85
+    },
+    {
+     "edge_deg": 23.92,
+     "openness": 1.07,
+     "servo_deg": 81.54
+    },
+    {
+     "edge_deg": 30.96,
+     "openness": 1.34,
+     "servo_deg": 73.02
+    },
+    {
+     "edge_deg": 38.0,
+     "openness": 1.61,
+     "servo_deg": 64.37
+    }
+   ]
+  },
+  "LID_LR": {
+   "channel": 5,
+   "mechanism": "4-cubuk: kapak kolu r=12.0, servo kolu r=10.0, link 51.35 mm",
+   "input": "lid edge angle",
+   "table": [
+    {
+     "edge_deg": -5.75,
+     "openness": -0.0,
+     "servo_deg": 66.23
+    },
+    {
+     "edge_deg": -12.29,
+     "openness": 0.29,
+     "servo_deg": 74.24
+    },
+    {
+     "edge_deg": -18.83,
+     "openness": 0.59,
+     "servo_deg": 82.14
+    },
+    {
+     "edge_deg": -25.38,
+     "openness": 0.88,
+     "servo_deg": 90.0
+    },
+    {
+     "edge_deg": -28.0,
+     "openness": 1.0,
+     "servo_deg": 93.15
+    },
+    {
+     "edge_deg": -31.92,
+     "openness": 1.18,
+     "servo_deg": 97.86
+    },
+    {
+     "edge_deg": -38.46,
+     "openness": 1.47,
+     "servo_deg": 105.76
+    },
+    {
+     "edge_deg": -45.0,
+     "openness": 1.76,
+     "servo_deg": 113.77
+    }
+   ]
+  }
+ },
+ "limits_checked": {
+  "EYE_YAW": [
+   60.0,
+   120.0
+  ],
+  "EYE_PITCH": [
+   56.73,
+   125.59
+  ],
+  "LID_UL": [
+   64.38,
+   115.63
+  ],
+  "LID_LL": [
+   66.23,
+   113.77
+  ],
+  "LID_UR": [
+   64.37,
+   115.62
+  ],
+  "LID_LR": [
+   66.23,
+   113.77
+  ],
+  "_note": "check.py bu araliklarin koselerinde carpisma taradi. Firmware sabit limitleri (SPEC §5) bu araliklarin disina cikmamali; araligin disi DOGRULANMADI.",
+  "EYE_PITCH_firmware_safe": [
+   63.17,
+   121.62
+  ],
+  "EYE_PITCH_firmware_safe_note": "Capraz etki yuzunden SABIT servo siniri yaw'dan bagimsiz guvenli olmali: bu aralikta her yaw icin goz pitch'i +-25 icinde kalir. yaw=0'da ulasilan goz pitch'i -20.26 .. 23.0. Tam +-25 icin yazilim cross_coupling tablosuyla yaw'a bagli sinir uygulamali. Yaw=0 sinirlari (EYE_PITCH) yaw +-30'da goz pitch'ini -31.8/+27'ye goturur: o bolge DOGRULANMADI ve yarik/direk carpismasi var."
+ },
+ "cross_coupling": {
+  "EYE_PITCH_servo_deg_grid": {
+   "yaw_deg": [
+    -30,
+    -15,
+    0,
+    15,
+    30
+   ],
+   "pitch_deg": [
+    -25,
+    -18.75,
+    -12.5,
+    -6.25,
+    0,
+    6.25,
+    12.5,
+    18.75,
+    25
+   ],
+   "servo_deg": [
+    [
+     63.17,
+     58.41,
+     56.73,
+     58.41,
+     63.17
+    ],
+    [
+     69.64,
+     66.38,
+     65.23,
+     66.38,
+     69.64
+    ],
+    [
+     76.37,
+     74.41,
+     73.73,
+     74.41,
+     76.37
+    ],
+    [
+     83.17,
+     82.29,
+     81.99,
+     82.29,
+     83.17
+    ],
+    [
+     90.0,
+     90.0,
+     90.0,
+     90.0,
+     90.0
+    ],
+    [
+     96.91,
+     97.63,
+     97.88,
+     97.63,
+     96.91
+    ],
+    [
+     104.1,
+     105.44,
+     105.9,
+     105.44,
+     104.1
+    ],
+    [
+     111.98,
+     113.95,
+     114.62,
+     113.95,
+     111.98
+    ],
+    [
+     121.62,
+     124.56,
+     125.59,
+     124.56,
+     121.62
+    ]
+   ],
+   "note": "pitch servosu icin gereken aci yaw'a da biraz bagli (top alt kutupta; pitch=0'da yaw etkisi SIFIR, koselerde birkac derece). Telafi icin bu 2B tablo kullanilabilir."
+  },
+  "EYE_PITCH_uncompensated_error": [
+   {
+    "yaw": -30,
+    "pitch_cmd": -25,
+    "pitch_real": -31.83,
+    "error_deg": -6.83
+   },
+   {
+    "yaw": -30,
+    "pitch_cmd": 25,
+    "pitch_real": 27.0,
+    "error_deg": 2.0
+   },
+   {
+    "yaw": 30,
+    "pitch_cmd": -25,
+    "pitch_real": -31.83,
+    "error_deg": -6.83
+   },
+   {
+    "yaw": 30,
+    "pitch_cmd": 25,
+    "pitch_real": 27.0,
+    "error_deg": 2.0
+   }
+  ],
+  "EYE_YAW": "yok (paralelkenar gobege bagli; pitch yaw'i etkilemez)"
+ },
+ "transmission": {
+  "_note": "kol ile cubuk arasi aci; 90 ideal, 0/180 olu nokta. >= ~40 deg rahat kabul edilir.",
+  "EYE_YAW": {
+   "neutral": 90.0,
+   "at_+-30": 60.0
+  },
+  "EYE_PITCH": {
+   "neutral": 90.0,
+   "min_over_range": 34.83
+  },
+  "EYE_PITCH_ball_joint_tilt_deg": {
+   "max_eye_end": 20.76,
+   "allowed_by_socket_mouth": 31.0
+  },
+  "LID_UPPER": {
+   "neutral(mid)": [
+    90.0,
+    90.0
+   ],
+   "min_arm_link": 68.67,
+   "min_horn_link": 64.16
+  },
+  "LID_LOWER": {
+   "neutral(mid)": [
+    90.0,
+    90.0
+   ],
+   "min_arm_link": 70.21,
+   "min_horn_link": 66.06
+  }
+ },
+ "settings_suggestion": {
+  "channels": {
+   "EYE_YAW": {
+    "center": 90,
+    "min": 60,
+    "max": 120,
+    "invert": false,
+    "deg_per_unit": 30
+   },
+   "EYE_PITCH": {
+    "center": 90,
+    "min": 64,
+    "max": 121,
+    "invert": false,
+    "deg_per_unit": 34.43,
+    "_note": "SPEC'in dogrusal modeli yaklasik: +25 -> 125.59, -25 -> 56.73 (asimetrik; tablo daha dogru). min/max = firmware_safe (yaw'dan bagimsiz guvenli)."
+   },
+   "LID_UL": {
+    "closed": 64.38,
+    "open": 96.15,
+    "invert": false
+   },
+   "LID_LL": {
+    "closed": 113.77,
+    "open": 86.85,
+    "invert": false
+   },
+   "LID_UR": {
+    "closed": 115.62,
+    "open": 83.85,
+    "invert": false
+   },
+   "LID_LR": {
+    "closed": 66.23,
+    "open": 93.15,
+    "invert": false
+   }
+  },
+  "_note": "Model tabanli baslangic. invert yonu donanimda dogrulanmali."
+ }
+}

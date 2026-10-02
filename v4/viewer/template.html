@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Project Eye v4</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+  /* Üretildi: viewer/build_viewer.py (template.html). Elle düzenlemeyin; şablonu düzenleyip betiği çalıştırın. */
+  :root{color-scheme:dark;--bg:#1A0A2E;--surf:#24123D;--line:#3a2560;--n1:#00F0FF;--n2:#FF00FF;--warn:#F8E602;--ok:#46F0A0;--ink:#F4D5FD;--ink2:#a58bc0;
+    --disp:"Rajdhani","Segoe UI",sans-serif;--mono:"JetBrains Mono",Consolas,monospace}
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0}
+  body{background:var(--bg);color:var(--ink);font:15px/1.45 var(--disp);overflow:hidden}
+  .kap{display:grid;grid-template-columns:minmax(0,1fr) 340px;height:100%}
+  #sahne{position:relative;min-height:320px}
+  #sahne canvas{display:block;width:100%;height:100%;cursor:grab}
+  .yukle{position:absolute;inset:0;display:grid;place-items:center;font:500 13px var(--mono);color:var(--ink2)}
+  .ust{position:absolute;left:18px;top:14px;pointer-events:none}
+  .ust .kucuk{font:500 11px var(--mono);letter-spacing:.14em;color:var(--ink2);text-transform:uppercase}
+  .ust h1{margin:2px 0 0;font:700 30px/1 var(--disp);letter-spacing:.08em;text-transform:uppercase}
+  .ust h1 span{color:var(--n1)}
+  .ust .rozet{display:inline-block;margin-top:8px;font:500 11px var(--mono);padding:3px 8px;background:rgba(70,240,160,.12);border:1px solid rgba(70,240,160,.5);color:var(--ok)}
+  .gorunum{position:absolute;left:18px;bottom:14px;display:flex;gap:6px;flex-wrap:wrap}
+  .gorunum button{all:unset;cursor:pointer;padding:6px 12px;font:600 13px var(--disp);letter-spacing:.08em;text-transform:uppercase;background:rgba(36,18,61,.85);border:1px solid var(--line)}
+  .gorunum button:hover,.gorunum button:focus-visible{border-color:var(--n1);color:var(--n1)}
+  aside{background:var(--surf);border-left:1px solid var(--line);padding:18px;overflow:auto;display:flex;flex-direction:column;gap:18px}
+  h2{margin:0 0 10px;font:500 11px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ink2);display:flex;gap:8px;align-items:center}
+  h2::after{content:"";flex:1;height:1px;background:var(--line)}
+  label.k{display:grid;grid-template-columns:1fr auto;gap:2px 10px;font-size:15px;margin-bottom:8px}
+  label.k output{font:500 12px var(--mono);color:var(--n1);font-variant-numeric:tabular-nums}
+  input[type=range]{grid-column:1/-1;width:100%;accent-color:var(--n2)}
+  .dugmeler{display:flex;gap:6px;flex-wrap:wrap}
+  .btn{all:unset;cursor:pointer;padding:7px 12px;font:600 13px var(--disp);letter-spacing:.08em;text-transform:uppercase;background:var(--line)}
+  .btn:hover,.btn:focus-visible{background:var(--n1);color:var(--bg)}
+  .btn[aria-pressed="true"]{background:var(--n2);color:var(--bg)}
+  .onay{display:flex;gap:9px;align-items:center;margin:6px 0}
+  .onay input{accent-color:var(--n2)}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  td{padding:5px 0;border-bottom:1px solid var(--line)}
+  td:nth-child(2){font:12px var(--mono);color:var(--ink2)}
+  td:last-child{text-align:right;font:500 13px var(--mono);color:var(--n1);font-variant-numeric:tabular-nums}
+  .not{font-size:13px;color:var(--ink2);margin:0;line-height:1.45}
+  .not b{color:var(--ink);font-weight:600}
+  input:focus-visible{outline:1px solid var(--n1)}
+  @media (max-width:760px){body{overflow:auto}.kap{grid-template-columns:1fr;grid-template-rows:60vh auto;height:auto}aside{border-left:none;border-top:1px solid var(--line)}}
+</style>
+</head>
+<body>
+<div class="kap">
+  <div id="sahne">
+    <div class="yukle" id="yukle">model yükleniyor…</div>
+    <div class="ust"><div class="kucuk">Epic Project // project-eye</div><h1>Project Eye <span>v4</span></h1><div class="rozet" id="rozet"></div></div>
+    <div class="gorunum">
+      <button data-g="on">Ön</button><button data-g="mekanizma">Mekanizma</button><button data-g="arka">Arka</button><button data-g="yan">Yan</button>
+    </div>
+  </div>
+  <aside>
+    <section>
+      <h2>Bakış</h2>
+      <label class="k" for="yaw">Sağ–sol <output id="yawO">0°</output><input id="yaw" type="range" min="-25" max="25" step="0.5" value="0"></label>
+      <label class="k" for="pitch">Yukarı–aşağı <output id="pitchO">0°</output><input id="pitch" type="range" min="-20" max="20" step="0.5" value="0"></label>
+    </section>
+    <section>
+      <h2>Kapaklar</h2>
+      <label class="k" for="kap">Kapaklar (üst + alt) <output id="kapO">%</output><input id="kap" type="range" min="0" max="100" value="80"></label>
+      <div class="dugmeler"><button class="btn" id="kirp">Kırp</button></div>
+    </section>
+    <section>
+      <h2>Mod</h2>
+      <div class="dugmeler"><button class="btn" id="canli" aria-pressed="false">Canlı</button><button class="btn" id="notr">Nötr</button></div>
+      <div class="onay"><input type="checkbox" id="maske" checked><label for="maske">Ön maskeyi göster</label></div>
+      <div class="onay"><input type="checkbox" id="xray"><label for="xray">Maskeyi saydam yap</label></div>
+    </section>
+    <section>
+      <h2>Servo açıları</h2>
+      <table id="servolar"></table>
+    </section>
+    <p class="not">Eldeki M4/M3 vidalarla, basılı rotil olmadan; 3 servo: tek kapak servosu dört kapağı birlikte sürer, kapalıyken iris tamamen örtülür. Ön maske ve yuvarlatılmış kenarlar. Hareket, çakışma taramasındaki modelin kendisinden (<b>cad/eye_v4.py</b>) 5°'lik ızgarada hesaplanıp enterpole edilir. Servo açıları o modelin kinematiğinden gelir; <b>gerçek donanımda kalibre edilmedi.</b></p>
+  </aside>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+<script>
+const POZ = /*__POSE_DATA__*/null;
+const GLB_B64 = "__GLB_BASE64__";
+(function(){
+  const $ = s => document.querySelector(s);
+  const azHareket = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const bos = (POZ.sonuc.match(/bosluk ([\d.]+) mm/)||[])[1];
+  $('#rozet').textContent = (POZ.sonuc.match(/cakisma \d+/)||['kontrol'])[0].replace('cakisma','çakışma') + (bos ? ' · min boşluk ' + bos + ' mm' : '');
+
+  /* ---------- sahne ---------- */
+  const kutu = $('#sahne');
+  const renderer = new THREE.WebGLRenderer({antialias:true});
+  renderer.setPixelRatio(Math.min(devicePixelRatio,2)); renderer.setClearColor(0x140824);
+  renderer.outputEncoding = THREE.sRGBEncoding;
+  kutu.prepend(renderer.domElement);
+  const scene = new THREE.Scene();
+  const cam = new THREE.PerspectiveCamera(30,1,1,4000);
+  const ctl = new THREE.OrbitControls(cam, renderer.domElement); ctl.enableDamping = true;
+  scene.add(new THREE.HemisphereLight(0xeef2ff,0x2a1440,0.9));
+  const d1 = new THREE.DirectionalLight(0xffffff,0.8); d1.position.set(80,120,160); scene.add(d1);
+  const d2 = new THREE.DirectionalLight(0x88ccff,0.35); d2.position.set(-120,-30,-120); scene.add(d2);
+
+  const GORUNUM = {                        // v3 modeli v2'den ~1.6x buyuk: kamera daha uzakta
+    on:        {p:[0,30,430],     t:[0,-5,0],    maske:false},
+    mekanizma: {p:[260,160,230],  t:[0,-15,-40], maske:false},
+    arka:      {p:[-170,130,-340],t:[0,-15,-40], maske:false},
+    yan:       {p:[400,30,-40],   t:[0,-15,-40], maske:false},
+  };
+  function gorunum(ad){
+    const g = GORUNUM[ad]; cam.position.set(...g.p); ctl.target.set(...g.t);
+    gorunurluk();
+  }
+
+  /* ---------- GLB (sayfaya gömülü: dosya olarak açılınca da çalışsın) ---------- */
+  const bin = Uint8Array.from(atob(GLB_B64), c => c.charCodeAt(0)).buffer;
+  const gruplar = {};            // grup adı → {node, M0}
+  const kabuklar = [], maskeler = [];
+  new THREE.GLTFLoader().parse(bin, '', gltf => {
+    const kok = gltf.scene; scene.add(kok);
+    kok.traverse(o => {
+      if (o.name && o.name.startsWith('G_')){
+        o.updateMatrix(); o.matrixAutoUpdate = false;
+        gruplar[o.name.slice(2)] = {node:o, M0:o.matrix.clone()};
+      }
+      if (o.isMesh){
+        o.material = o.material.clone(); o.material.side = THREE.DoubleSide;
+        let p = o; while (p && !/^mask/.test(p.name)) p = p.parent;
+        if (p) kabuklar.push(o);   // v4: saydamlik ve gizleme MASKEYE uygulanir
+      }
+    });
+    $('#yukle').remove();
+    gorunum('on');
+    uygula();
+  }, err => { $('#yukle').textContent = 'model yüklenemedi: ' + err; });
+
+  function gorunurluk(){
+    kabuklar.forEach(m => { const s = $('#xray').checked; m.visible = $('#maske').checked; m.material.transparent = s; m.material.opacity = s ? .25 : 1; m.material.depthWrite = !s; });
+  }
+  $('#xray').onchange = gorunurluk; $('#maske').onchange = gorunurluk;
+  document.querySelectorAll('.gorunum button').forEach(b => b.onclick = () => gorunum(b.dataset.g));
+
+  /* ---------- poz → grup dönüşümleri (ızgaradan enterpolasyon) ---------- */
+  const lerp16 = (a,b,t) => a.map((x,i) => x + (b[i]-x)*t);
+  function izgara(dizi, deger){          // eşit aralıklı ızgarada alt indeks + kesir
+    const n = dizi.length, u = (deger - dizi[0]) / (dizi[n-1] - dizi[0]) * (n-1);
+    const i = Math.max(0, Math.min(n-2, Math.floor(u)));
+    return [i, Math.max(0, Math.min(1, u - i))];
+  }
+  function poz(yaw, pitch, lid){          // uc dogrusal enterpolasyon (yaw x pitch x kapak)
+    const [i,a] = izgara(POZ.yaws, yaw), [j,b] = izgara(POZ.pitches, pitch), [k,c] = izgara(POZ.lids, lid);
+    const G = POZ.grid, S = POZ.servo, out = {}, sv = [0,0,0];
+    const w = [[i,j,k,(1-a)*(1-b)*(1-c)],[i+1,j,k,a*(1-b)*(1-c)],[i,j+1,k,(1-a)*b*(1-c)],[i+1,j+1,k,a*b*(1-c)],
+               [i,j,k+1,(1-a)*(1-b)*c],[i+1,j,k+1,a*(1-b)*c],[i,j+1,k+1,(1-a)*b*c],[i+1,j+1,k+1,a*b*c]];
+    for (const g in G[0][0][0]){
+      const m = new Array(16).fill(0);
+      w.forEach(([x,y,z,q]) => { if (q) G[x][y][z][g].forEach((v,n) => m[n] += v*q); });
+      out[g] = m;
+    }
+    w.forEach(([x,y,z,q]) => { if (q) S[x][y][z].forEach((v,n) => sv[n] += v*q); });
+    return {M:out, servo:sv};
+  }
+  const m4 = new THREE.Matrix4();
+  function ata(M){
+    for (const ad in M){ const g = gruplar[ad]; if (!g) continue;
+      m4.set(...M[ad]);                       // numpy satır-öncelikli → Matrix4.set satır-öncelikli
+      g.node.matrix.multiplyMatrices(m4, g.M0); g.node.matrixWorldNeedsUpdate = true; }
+  }
+
+  /* ---------- durum ---------- */
+  const durum = {yaw:0, pitch:0, kap:.8};
+  const hedef = {yaw:0, pitch:0};
+  const kirpmalar = [];     // {t0, taraf}
+  const KANAL = [['EYE_YAW','D3'],['EYE_PITCH','D5'],['LIDS','D6']];
+  $('#servolar').innerHTML = KANAL.map(([k,p]) => `<tr><td>${k}</td><td>${p}</td><td id="s_${k}">—</td></tr>`).join('');
+
+  function uygula(t = performance.now()){
+    let carp = 1;                                           // kirpma (150 ms kapan + 150 ms ac)
+    for (let i = kirpmalar.length-1; i >= 0; i--){
+      const p = (t - kirpmalar[i].t0) / 300;
+      if (p >= 1){ kirpmalar.splice(i,1); continue; }
+      carp = Math.min(carp, Math.abs(1-2*p));
+    }
+    const r = poz(durum.yaw, durum.pitch, durum.kap * carp); ata(r.M);
+    ['EYE_YAW','EYE_PITCH','LIDS'].forEach((k,n) => { const el = document.getElementById('s_'+k); if (el) el.textContent = r.servo[n].toFixed(1)+'°'; });
+  }
+
+  /* ---------- kontroller ---------- */
+  const yawEl = $('#yaw'), pitchEl = $('#pitch'), kapEl = $('#kap');
+  function etiketler(){
+    $('#yawO').textContent = durum.yaw.toFixed(1)+'°'; $('#pitchO').textContent = durum.pitch.toFixed(1)+'°';
+    $('#kapO').textContent = Math.round(durum.kap*100)+'%';
+  }
+  function canliKapat(){ canli = false; $('#canli').setAttribute('aria-pressed','false'); }
+  yawEl.oninput = () => { canliKapat(); durum.yaw = hedef.yaw = +yawEl.value; };
+  pitchEl.oninput = () => { canliKapat(); durum.pitch = hedef.pitch = +pitchEl.value; };
+  kapEl.oninput = () => durum.kap = kapEl.value/100;
+  const kirp = () => kirpmalar.push({t0:performance.now()});
+  $('#kirp').onclick = kirp;
+  let canli = false, sonrakiSakkad = 0, sonrakiKirpma = 0;
+  $('#canli').onclick = () => { canli = !canli; $('#canli').setAttribute('aria-pressed', canli); };
+  $('#notr').onclick = () => { canliKapat(); durum.yaw = durum.pitch = hedef.yaw = hedef.pitch = 0; yawEl.value = pitchEl.value = 0; };
+
+  function boyut(){ const w = kutu.clientWidth, h = kutu.clientHeight; renderer.setSize(w,h,false); cam.aspect = w/h; cam.updateProjectionMatrix(); }
+  addEventListener('resize', boyut); boyut();
+  let once = performance.now();
+  (function kare(t){
+    const dt = Math.min(.05, (t - once)/1000 || 0); once = t;
+    if (canli && !azHareket){
+      if (t > sonrakiSakkad){ hedef.yaw = (Math.random()*2-1)*23; hedef.pitch = (Math.random()*2-1)*17; sonrakiSakkad = t + 700 + Math.random()*1600; }
+      if (t > sonrakiKirpma){ kirp(); sonrakiKirpma = t + 3000 + Math.random()*3000; }
+      const k = 1 - Math.exp(-dt/0.06);
+      durum.yaw += (hedef.yaw - durum.yaw)*k; durum.pitch += (hedef.pitch - durum.pitch)*k;
+      yawEl.value = durum.yaw; pitchEl.value = durum.pitch;
+    }
+    etiketler();
+    if (Object.keys(gruplar).length) uygula(t);
+    ctl.update(); renderer.render(scene, cam); requestAnimationFrame(kare);
+  })(performance.now());
+})();
+</script>
+</body>
+</html>

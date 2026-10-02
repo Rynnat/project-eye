@@ -1,0 +1,1275 @@
+{
+ "_units": "mm, derece",
+ "_file": "assembly.glb: her anahtar (grup) 'G_<grup>' adli bir dugum, parcalar onun cocuklari (dugum adi = parca adi); mesh'ler dunya koordinatinda, NOTR pozda (yaw=pitch=0, kapaklar kapali)",
+ "_coords": "SPEC §1: +X robotun sagi, +Y yukari, +Z ileri. Orijin iki goz merkezinin ortasi.",
+ "_rotation": "Donen gruplar: M = T(pivot) * R(eksen, aci) * T(-pivot), sag-el kurali. three.js: grup dugumunun pivot etrafinda donmesi icin once -pivot oteleyin.",
+ "_convention_eye": "Goz: M = T(E) * Ry(yaw) * Rx(-pitch) * T(-E)  (three.js: rotation.order='YXZ', rotation.y=yaw, rotation.x=-pitch)",
+ "eye_L": {
+  "nodes": [
+   "eye_shell_L",
+   "eye_iris_L",
+   "eye_fork_L",
+   "scr_eyefork_Lm",
+   "scr_eyefork_Lp",
+   "scr_pupil_L",
+   "stud_pitch_L"
+  ],
+  "pivot": [
+   -31.5,
+   0.0,
+   0.0
+  ],
+  "axes": {
+   "yaw": [
+    0,
+    1,
+    0
+   ],
+   "pitch": [
+    -1,
+    0,
+    0
+   ]
+  },
+  "range": {
+   "yaw": [
+    -30.0,
+    30.0
+   ],
+   "pitch": [
+    -25.0,
+    25.0
+   ]
+  },
+  "order": "once pitch (goz yerel X), sonra yaw (dunya Y)",
+  "glb_node": "G_eye_L"
+ },
+ "gobek_L": {
+  "nodes": [
+   "gobek_L",
+   "yaw_lever_L",
+   "scr_yawclamp_L",
+   "scr_yawlink_L"
+  ],
+  "pivot": [
+   -31.5,
+   0.0,
+   0.0
+  ],
+  "axes": {
+   "yaw": [
+    0,
+    1,
+    0
+   ]
+  },
+  "note": "gobek + yaw tupu/kolu: sadece yaw",
+  "glb_node": "G_gobek_L"
+ },
+ "lid_UL": {
+  "nodes": [
+   "lid_UL",
+   "scr_lidA_UL"
+  ],
+  "pivot": [
+   -31.5,
+   0.0,
+   0.0
+  ],
+  "axes": {
+   "delta": [
+    -1,
+    0,
+    0
+   ]
+  },
+  "range_delta": [
+   0.0,
+   42.25
+  ],
+  "closed_edge_deg": -4.25,
+  "note": "delta: kapali=0; ust kapak + ile, alt kapak - ile acilir. Kenar acisi = closed_edge + delta",
+  "table": [
+   {
+    "delta": 0.0,
+    "horn_deg_about_-X": 0.0,
+    "arm_tip_yz": [
+     -11.102,
+     -4.555
+    ],
+    "horn_tip_yz": [
+     -9.925,
+     -53.01
+    ]
+   },
+   {
+    "delta": 3.521,
+    "horn_deg_about_-X": 4.344,
+    "arm_tip_yz": [
+     -11.361,
+     -3.864
+    ],
+    "horn_tip_yz": [
+     -10.241,
+     -52.321
+    ]
+   },
+   {
+    "delta": 7.042,
+    "horn_deg_about_-X": 8.646,
+    "arm_tip_yz": [
+     -11.577,
+     -3.159
+    ],
+    "horn_tip_yz": [
+     -10.502,
+     -51.617
+    ]
+   },
+   {
+    "delta": 10.562,
+    "horn_deg_about_-X": 12.916,
+    "arm_tip_yz": [
+     -11.749,
+     -2.443
+    ],
+    "horn_tip_yz": [
+     -10.708,
+     -50.9
+    ]
+   },
+   {
+    "delta": 14.083,
+    "horn_deg_about_-X": 17.164,
+    "arm_tip_yz": [
+     -11.877,
+     -1.716
+    ],
+    "horn_tip_yz": [
+     -10.859,
+     -50.175
+    ]
+   },
+   {
+    "delta": 17.604,
+    "horn_deg_about_-X": 21.397,
+    "arm_tip_yz": [
+     -11.96,
+     -0.984
+    ],
+    "horn_tip_yz": [
+     -10.955,
+     -49.442
+    ]
+   },
+   {
+    "delta": 21.125,
+    "horn_deg_about_-X": 25.623,
+    "arm_tip_yz": [
+     -11.997,
+     -0.247
+    ],
+    "horn_tip_yz": [
+     -10.998,
+     -48.706
+    ]
+   },
+   {
+    "delta": 24.646,
+    "horn_deg_about_-X": 29.849,
+    "arm_tip_yz": [
+     -11.99,
+     0.49
+    ],
+    "horn_tip_yz": [
+     -10.986,
+     -47.969
+    ]
+   },
+   {
+    "delta": 28.167,
+    "horn_deg_about_-X": 34.083,
+    "arm_tip_yz": [
+     -11.937,
+     1.225
+    ],
+    "horn_tip_yz": [
+     -10.919,
+     -47.233
+    ]
+   },
+   {
+    "delta": 31.688,
+    "horn_deg_about_-X": 38.331,
+    "arm_tip_yz": [
+     -11.84,
+     1.956
+    ],
+    "horn_tip_yz": [
+     -10.798,
+     -46.502
+    ]
+   },
+   {
+    "delta": 35.208,
+    "horn_deg_about_-X": 42.601,
+    "arm_tip_yz": [
+     -11.697,
+     2.679
+    ],
+    "horn_tip_yz": [
+     -10.622,
+     -45.778
+    ]
+   },
+   {
+    "delta": 38.729,
+    "horn_deg_about_-X": 46.904,
+    "arm_tip_yz": [
+     -11.51,
+     3.393
+    ],
+    "horn_tip_yz": [
+     -10.391,
+     -45.064
+    ]
+   },
+   {
+    "delta": 42.25,
+    "horn_deg_about_-X": 51.251,
+    "arm_tip_yz": [
+     -11.28,
+     4.093
+    ],
+    "horn_tip_yz": [
+     -10.104,
+     -44.362
+    ]
+   }
+  ],
+  "glb_node": "G_lid_UL"
+ },
+ "lidhorn_UL": {
+  "nodes": [
+   "horn_lid_UL",
+   "scr_lidB_UL"
+  ],
+  "pivot": [
+   -31.5,
+   -1.0,
+   -48.5
+  ],
+  "axes": {
+   "psi": [
+    -1,
+    0,
+    0
+   ]
+  },
+  "table_from_lid": "lid_UL.table -> horn_deg_about_-X",
+  "glb_node": "G_lidhorn_UL"
+ },
+ "link_UL": {
+  "nodes": [
+   "link_UL"
+  ],
+  "type": "planar_link_yz",
+  "neutral_ends_yz": {
+   "arm_tip": [
+    -11.102,
+    -4.555
+   ]
+  },
+  "note": "YZ duzleminde rijit: notrdeki (kapali) arm_tip->horn_tip dogru parcasini tablodaki arm_tip->horn_tip'e tasiyan donus(-X etrafinda)+oteleme",
+  "glb_node": "G_link_UL"
+ },
+ "lid_LL": {
+  "nodes": [
+   "lid_LL"
+  ],
+  "pivot": [
+   -31.5,
+   0.0,
+   0.0
+  ],
+  "axes": {
+   "delta": [
+    -1,
+    0,
+    0
+   ]
+  },
+  "range_delta": [
+   -39.25,
+   0.0
+  ],
+  "closed_edge_deg": -5.75,
+  "note": "delta: kapali=0; ust kapak + ile, alt kapak - ile acilir. Kenar acisi = closed_edge + delta",
+  "table": [
+   {
+    "delta": -39.25,
+    "horn_deg_about_-X": -47.536,
+    "arm_tip_yz": [
+     -11.988,
+     -0.532
+    ],
+    "horn_tip_yz": [
+     -26.932,
+     -49.663
+    ]
+   },
+   {
+    "delta": -35.979,
+    "horn_deg_about_-X": -43.517,
+    "arm_tip_yz": [
+     -11.999,
+     0.153
+    ],
+    "horn_tip_yz": [
+     -26.989,
+     -48.964
+    ]
+   },
+   {
+    "delta": -32.708,
+    "horn_deg_about_-X": -39.531,
+    "arm_tip_yz": [
+     -11.971,
+     0.838
+    ],
+    "horn_tip_yz": [
+     -26.997,
+     -48.269
+    ]
+   },
+   {
+    "delta": -29.438,
+    "horn_deg_about_-X": -35.57,
+    "arm_tip_yz": [
+     -11.903,
+     1.519
+    ],
+    "horn_tip_yz": [
+     -26.957,
+     -47.579
+    ]
+   },
+   {
+    "delta": -26.167,
+    "horn_deg_about_-X": -31.627,
+    "arm_tip_yz": [
+     -11.797,
+     2.196
+    ],
+    "horn_tip_yz": [
+     -26.871,
+     -46.896
+    ]
+   },
+   {
+    "delta": -22.896,
+    "horn_deg_about_-X": -27.695,
+    "arm_tip_yz": [
+     -11.653,
+     2.866
+    ],
+    "horn_tip_yz": [
+     -26.737,
+     -46.223
+    ]
+   },
+   {
+    "delta": -19.625,
+    "horn_deg_about_-X": -23.769,
+    "arm_tip_yz": [
+     -11.47,
+     3.526
+    ],
+    "horn_tip_yz": [
+     -26.559,
+     -45.562
+    ]
+   },
+   {
+    "delta": -16.354,
+    "horn_deg_about_-X": -19.844,
+    "arm_tip_yz": [
+     -11.251,
+     4.174
+    ],
+    "horn_tip_yz": [
+     -26.335,
+     -44.914
+    ]
+   },
+   {
+    "delta": -13.083,
+    "horn_deg_about_-X": -15.912,
+    "arm_tip_yz": [
+     -10.994,
+     4.81
+    ],
+    "horn_tip_yz": [
+     -26.067,
+     -44.283
+    ]
+   },
+   {
+    "delta": -9.812,
+    "horn_deg_about_-X": -11.969,
+    "arm_tip_yz": [
+     -10.702,
+     5.429
+    ],
+    "horn_tip_yz": [
+     -25.756,
+     -43.669
+    ]
+   },
+   {
+    "delta": -6.542,
+    "horn_deg_about_-X": -8.007,
+    "arm_tip_yz": [
+     -10.375,
+     6.031
+    ],
+    "horn_tip_yz": [
+     -25.401,
+     -43.076
+    ]
+   },
+   {
+    "delta": -3.271,
+    "horn_deg_about_-X": -4.021,
+    "arm_tip_yz": [
+     -10.014,
+     6.613
+    ],
+    "horn_tip_yz": [
+     -25.004,
+     -42.505
+    ]
+   },
+   {
+    "delta": 0.0,
+    "horn_deg_about_-X": 0.0,
+    "arm_tip_yz": [
+     -9.62,
+     7.173
+    ],
+    "horn_tip_yz": [
+     -24.564,
+     -41.958
+    ]
+   }
+  ],
+  "glb_node": "G_lid_LL"
+ },
+ "lidhorn_LL": {
+  "nodes": [
+   "horn_lid_LL",
+   "scr_lidB_LL"
+  ],
+  "pivot": [
+   -31.5,
+   -17.0,
+   -48.5
+  ],
+  "axes": {
+   "psi": [
+    -1,
+    0,
+    0
+   ]
+  },
+  "table_from_lid": "lid_LL.table -> horn_deg_about_-X",
+  "glb_node": "G_lidhorn_LL"
+ },
+ "link_LL": {
+  "nodes": [
+   "link_LL",
+   "scr_lidA_LL"
+  ],
+  "type": "planar_link_yz",
+  "neutral_ends_yz": {
+   "arm_tip": null
+  },
+  "note": "YZ duzleminde rijit: notrdeki (kapali) arm_tip->horn_tip dogru parcasini tablodaki arm_tip->horn_tip'e tasiyan donus(-X etrafinda)+oteleme",
+  "glb_node": "G_link_LL"
+ },
+ "rod_pitch_L": {
+  "nodes": [
+   "rod_pitch_L"
+  ],
+  "type": "rod",
+  "ends": {
+   "a": {
+    "group": "eye_L",
+    "point": [
+     -31.5,
+     -20.7,
+     0.0
+    ],
+    "stud_dir": [
+     0,
+     1,
+     0
+    ]
+   },
+   "b": {
+    "group": "rocker",
+    "point": [
+     -31.5,
+     -16.542,
+     -19.563
+    ],
+    "stud_dir": [
+     1.0,
+     0.0,
+     0.0
+    ]
+   }
+  },
+  "neutral_frame": [
+   [
+    0.0,
+    1.0,
+    0.0,
+    -31.5
+   ],
+   [
+    0.978148,
+    -0.0,
+    0.207912,
+    -20.7
+   ],
+   [
+    0.207912,
+    0.0,
+    -0.978148,
+    0.0
+   ],
+   [
+    0.0,
+    0.0,
+    0.0,
+    1.0
+   ]
+  ],
+  "note": "mesh notr pozda. Yeni poz: a,b noktalarini gruplariyla tasiyin; F = [x z*x y... ] cerceve: z=(b-a)/|b-a|, x=stud_a'nin z'ye dik birimi, y=z cross x, orijin a. M = F * inverse(neutral_frame)",
+  "glb_node": "G_rod_pitch_L"
+ },
+ "eye_R": {
+  "nodes": [
+   "eye_shell_R",
+   "eye_iris_R",
+   "eye_fork_R",
+   "scr_eyefork_Rm",
+   "scr_eyefork_Rp",
+   "scr_pupil_R",
+   "stud_pitch_R"
+  ],
+  "pivot": [
+   31.5,
+   0.0,
+   0.0
+  ],
+  "axes": {
+   "yaw": [
+    0,
+    1,
+    0
+   ],
+   "pitch": [
+    -1,
+    0,
+    0
+   ]
+  },
+  "range": {
+   "yaw": [
+    -30.0,
+    30.0
+   ],
+   "pitch": [
+    -25.0,
+    25.0
+   ]
+  },
+  "order": "once pitch (goz yerel X), sonra yaw (dunya Y)",
+  "glb_node": "G_eye_R"
+ },
+ "gobek_R": {
+  "nodes": [
+   "gobek_R",
+   "yaw_lever_R",
+   "scr_yawclamp_R",
+   "scr_yawlink_R"
+  ],
+  "pivot": [
+   31.5,
+   0.0,
+   0.0
+  ],
+  "axes": {
+   "yaw": [
+    0,
+    1,
+    0
+   ]
+  },
+  "note": "gobek + yaw tupu/kolu: sadece yaw",
+  "glb_node": "G_gobek_R"
+ },
+ "lid_UR": {
+  "nodes": [
+   "lid_UR",
+   "scr_lidA_UR"
+  ],
+  "pivot": [
+   31.5,
+   0.0,
+   0.0
+  ],
+  "axes": {
+   "delta": [
+    -1,
+    0,
+    0
+   ]
+  },
+  "range_delta": [
+   0.0,
+   42.25
+  ],
+  "closed_edge_deg": -4.25,
+  "note": "delta: kapali=0; ust kapak + ile, alt kapak - ile acilir. Kenar acisi = closed_edge + delta",
+  "table": [
+   {
+    "delta": 0.0,
+    "horn_deg_about_-X": 0.0,
+    "arm_tip_yz": [
+     -11.102,
+     -4.555
+    ],
+    "horn_tip_yz": [
+     -9.925,
+     -53.01
+    ]
+   },
+   {
+    "delta": 3.521,
+    "horn_deg_about_-X": 4.344,
+    "arm_tip_yz": [
+     -11.361,
+     -3.864
+    ],
+    "horn_tip_yz": [
+     -10.241,
+     -52.321
+    ]
+   },
+   {
+    "delta": 7.042,
+    "horn_deg_about_-X": 8.646,
+    "arm_tip_yz": [
+     -11.577,
+     -3.159
+    ],
+    "horn_tip_yz": [
+     -10.502,
+     -51.617
+    ]
+   },
+   {
+    "delta": 10.562,
+    "horn_deg_about_-X": 12.916,
+    "arm_tip_yz": [
+     -11.749,
+     -2.443
+    ],
+    "horn_tip_yz": [
+     -10.708,
+     -50.9
+    ]
+   },
+   {
+    "delta": 14.083,
+    "horn_deg_about_-X": 17.164,
+    "arm_tip_yz": [
+     -11.877,
+     -1.716
+    ],
+    "horn_tip_yz": [
+     -10.859,
+     -50.175
+    ]
+   },
+   {
+    "delta": 17.604,
+    "horn_deg_about_-X": 21.397,
+    "arm_tip_yz": [
+     -11.96,
+     -0.984
+    ],
+    "horn_tip_yz": [
+     -10.955,
+     -49.442
+    ]
+   },
+   {
+    "delta": 21.125,
+    "horn_deg_about_-X": 25.623,
+    "arm_tip_yz": [
+     -11.997,
+     -0.247
+    ],
+    "horn_tip_yz": [
+     -10.998,
+     -48.706
+    ]
+   },
+   {
+    "delta": 24.646,
+    "horn_deg_about_-X": 29.849,
+    "arm_tip_yz": [
+     -11.99,
+     0.49
+    ],
+    "horn_tip_yz": [
+     -10.986,
+     -47.969
+    ]
+   },
+   {
+    "delta": 28.167,
+    "horn_deg_about_-X": 34.083,
+    "arm_tip_yz": [
+     -11.937,
+     1.225
+    ],
+    "horn_tip_yz": [
+     -10.919,
+     -47.233
+    ]
+   },
+   {
+    "delta": 31.688,
+    "horn_deg_about_-X": 38.331,
+    "arm_tip_yz": [
+     -11.84,
+     1.956
+    ],
+    "horn_tip_yz": [
+     -10.798,
+     -46.502
+    ]
+   },
+   {
+    "delta": 35.208,
+    "horn_deg_about_-X": 42.601,
+    "arm_tip_yz": [
+     -11.697,
+     2.679
+    ],
+    "horn_tip_yz": [
+     -10.622,
+     -45.778
+    ]
+   },
+   {
+    "delta": 38.729,
+    "horn_deg_about_-X": 46.904,
+    "arm_tip_yz": [
+     -11.51,
+     3.393
+    ],
+    "horn_tip_yz": [
+     -10.391,
+     -45.064
+    ]
+   },
+   {
+    "delta": 42.25,
+    "horn_deg_about_-X": 51.251,
+    "arm_tip_yz": [
+     -11.28,
+     4.093
+    ],
+    "horn_tip_yz": [
+     -10.104,
+     -44.362
+    ]
+   }
+  ],
+  "glb_node": "G_lid_UR"
+ },
+ "lidhorn_UR": {
+  "nodes": [
+   "horn_lid_UR",
+   "scr_lidB_UR"
+  ],
+  "pivot": [
+   31.5,
+   -1.0,
+   -48.5
+  ],
+  "axes": {
+   "psi": [
+    -1,
+    0,
+    0
+   ]
+  },
+  "table_from_lid": "lid_UR.table -> horn_deg_about_-X",
+  "glb_node": "G_lidhorn_UR"
+ },
+ "link_UR": {
+  "nodes": [
+   "link_UR"
+  ],
+  "type": "planar_link_yz",
+  "neutral_ends_yz": {
+   "arm_tip": [
+    -11.102,
+    -4.555
+   ]
+  },
+  "note": "YZ duzleminde rijit: notrdeki (kapali) arm_tip->horn_tip dogru parcasini tablodaki arm_tip->horn_tip'e tasiyan donus(-X etrafinda)+oteleme",
+  "glb_node": "G_link_UR"
+ },
+ "lid_LR": {
+  "nodes": [
+   "lid_LR"
+  ],
+  "pivot": [
+   31.5,
+   0.0,
+   0.0
+  ],
+  "axes": {
+   "delta": [
+    -1,
+    0,
+    0
+   ]
+  },
+  "range_delta": [
+   -39.25,
+   0.0
+  ],
+  "closed_edge_deg": -5.75,
+  "note": "delta: kapali=0; ust kapak + ile, alt kapak - ile acilir. Kenar acisi = closed_edge + delta",
+  "table": [
+   {
+    "delta": -39.25,
+    "horn_deg_about_-X": -47.536,
+    "arm_tip_yz": [
+     -11.988,
+     -0.532
+    ],
+    "horn_tip_yz": [
+     -26.932,
+     -49.663
+    ]
+   },
+   {
+    "delta": -35.979,
+    "horn_deg_about_-X": -43.517,
+    "arm_tip_yz": [
+     -11.999,
+     0.153
+    ],
+    "horn_tip_yz": [
+     -26.989,
+     -48.964
+    ]
+   },
+   {
+    "delta": -32.708,
+    "horn_deg_about_-X": -39.531,
+    "arm_tip_yz": [
+     -11.971,
+     0.838
+    ],
+    "horn_tip_yz": [
+     -26.997,
+     -48.269
+    ]
+   },
+   {
+    "delta": -29.438,
+    "horn_deg_about_-X": -35.57,
+    "arm_tip_yz": [
+     -11.903,
+     1.519
+    ],
+    "horn_tip_yz": [
+     -26.957,
+     -47.579
+    ]
+   },
+   {
+    "delta": -26.167,
+    "horn_deg_about_-X": -31.627,
+    "arm_tip_yz": [
+     -11.797,
+     2.196
+    ],
+    "horn_tip_yz": [
+     -26.871,
+     -46.896
+    ]
+   },
+   {
+    "delta": -22.896,
+    "horn_deg_about_-X": -27.695,
+    "arm_tip_yz": [
+     -11.653,
+     2.866
+    ],
+    "horn_tip_yz": [
+     -26.737,
+     -46.223
+    ]
+   },
+   {
+    "delta": -19.625,
+    "horn_deg_about_-X": -23.769,
+    "arm_tip_yz": [
+     -11.47,
+     3.526
+    ],
+    "horn_tip_yz": [
+     -26.559,
+     -45.562
+    ]
+   },
+   {
+    "delta": -16.354,
+    "horn_deg_about_-X": -19.844,
+    "arm_tip_yz": [
+     -11.251,
+     4.174
+    ],
+    "horn_tip_yz": [
+     -26.335,
+     -44.914
+    ]
+   },
+   {
+    "delta": -13.083,
+    "horn_deg_about_-X": -15.912,
+    "arm_tip_yz": [
+     -10.994,
+     4.81
+    ],
+    "horn_tip_yz": [
+     -26.067,
+     -44.283
+    ]
+   },
+   {
+    "delta": -9.812,
+    "horn_deg_about_-X": -11.969,
+    "arm_tip_yz": [
+     -10.702,
+     5.429
+    ],
+    "horn_tip_yz": [
+     -25.756,
+     -43.669
+    ]
+   },
+   {
+    "delta": -6.542,
+    "horn_deg_about_-X": -8.007,
+    "arm_tip_yz": [
+     -10.375,
+     6.031
+    ],
+    "horn_tip_yz": [
+     -25.401,
+     -43.076
+    ]
+   },
+   {
+    "delta": -3.271,
+    "horn_deg_about_-X": -4.021,
+    "arm_tip_yz": [
+     -10.014,
+     6.613
+    ],
+    "horn_tip_yz": [
+     -25.004,
+     -42.505
+    ]
+   },
+   {
+    "delta": 0.0,
+    "horn_deg_about_-X": 0.0,
+    "arm_tip_yz": [
+     -9.62,
+     7.173
+    ],
+    "horn_tip_yz": [
+     -24.564,
+     -41.958
+    ]
+   }
+  ],
+  "glb_node": "G_lid_LR"
+ },
+ "lidhorn_LR": {
+  "nodes": [
+   "horn_lid_LR",
+   "scr_lidB_LR"
+  ],
+  "pivot": [
+   31.5,
+   -17.0,
+   -48.5
+  ],
+  "axes": {
+   "psi": [
+    -1,
+    0,
+    0
+   ]
+  },
+  "table_from_lid": "lid_LR.table -> horn_deg_about_-X",
+  "glb_node": "G_lidhorn_LR"
+ },
+ "link_LR": {
+  "nodes": [
+   "link_LR",
+   "scr_lidA_LR"
+  ],
+  "type": "planar_link_yz",
+  "neutral_ends_yz": {
+   "arm_tip": null
+  },
+  "note": "YZ duzleminde rijit: notrdeki (kapali) arm_tip->horn_tip dogru parcasini tablodaki arm_tip->horn_tip'e tasiyan donus(-X etrafinda)+oteleme",
+  "glb_node": "G_link_LR"
+ },
+ "rod_pitch_R": {
+  "nodes": [
+   "rod_pitch_R"
+  ],
+  "type": "rod",
+  "ends": {
+   "a": {
+    "group": "eye_R",
+    "point": [
+     31.5,
+     -20.7,
+     0.0
+    ],
+    "stud_dir": [
+     0,
+     1,
+     0
+    ]
+   },
+   "b": {
+    "group": "rocker",
+    "point": [
+     31.5,
+     -16.542,
+     -19.563
+    ],
+    "stud_dir": [
+     -1.0,
+     -0.0,
+     -0.0
+    ]
+   }
+  },
+  "neutral_frame": [
+   [
+    0.0,
+    1.0,
+    0.0,
+    31.5
+   ],
+   [
+    0.978148,
+    -0.0,
+    0.207912,
+    -20.7
+   ],
+   [
+    0.207912,
+    0.0,
+    -0.978148,
+    0.0
+   ],
+   [
+    0.0,
+    0.0,
+    0.0,
+    1.0
+   ]
+  ],
+  "note": "mesh notr pozda. Yeni poz: a,b noktalarini gruplariyla tasiyin; F = [x z*x y... ] cerceve: z=(b-a)/|b-a|, x=stud_a'nin z'ye dik birimi, y=z cross x, orijin a. M = F * inverse(neutral_frame)",
+  "glb_node": "G_rod_pitch_R"
+ },
+ "rocker": {
+  "nodes": [
+   "rocker",
+   "stud_rocker_L",
+   "stud_rocker_R",
+   "scr_rocker_bearing",
+   "horn_pitch"
+  ],
+  "pivot": [
+   0.0,
+   -32.192,
+   -22.89
+  ],
+  "axes": {
+   "theta": [
+    1,
+    0,
+    0
+   ]
+  },
+  "table": {
+   "yaw": [
+    -30,
+    -15,
+    0,
+    15,
+    30
+   ],
+   "pitch": [
+    -25,
+    -12.5,
+    0,
+    12.5,
+    25
+   ],
+   "theta": [
+    [
+     -26.833,
+     -31.588,
+     -33.269,
+     -31.588,
+     -26.833
+    ],
+    [
+     -13.632,
+     -15.593,
+     -16.273,
+     -15.593,
+     -13.632
+    ],
+    [
+     -0.0,
+     -0.0,
+     -0.0,
+     -0.0,
+     -0.0
+    ],
+    [
+     14.1,
+     15.445,
+     15.899,
+     15.445,
+     14.1
+    ],
+    [
+     31.618,
+     34.559,
+     35.586,
+     34.559,
+     31.618
+    ]
+   ]
+  },
+  "note": "theta = EYE_PITCH servo_deg - 90; tablo satir=pitch, sutun=yaw",
+  "glb_node": "G_rocker"
+ },
+ "yawhorn": {
+  "nodes": [
+   "horn_yaw",
+   "scr_yawlink_S"
+  ],
+  "pivot": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "axes": {
+   "yaw": [
+    0,
+    1,
+    0
+   ]
+  },
+  "note": "paralelkenar: aci = goz yaw",
+  "glb_node": "G_yawhorn"
+ },
+ "yawcoupler": {
+  "nodes": [
+   "yaw_coupler"
+  ],
+  "type": "translate",
+  "note": "oteleme = (-10.0*sin(yaw), 0, 10.0*(1-cos(yaw)))",
+  "glb_node": "G_yawcoupler"
+ },
+ "static": {
+  "nodes": [
+   "fixed_fork_L",
+   "scr_fixfork_L",
+   "scr_flange_Lm",
+   "scr_flange_Lp",
+   "fixed_fork_R",
+   "scr_fixfork_R",
+   "scr_flange_Rm",
+   "scr_flange_Rp",
+   "pin_Lm",
+   "pin_Lp",
+   "pin_Rm",
+   "pin_Rp",
+   "servo_lid_UL",
+   "servo_lid_LL",
+   "servo_lid_UR",
+   "servo_lid_LR",
+   "servo_yaw",
+   "servo_pitch",
+   "back_frame",
+   "scr_yawservo_0",
+   "scr_yawservo_1",
+   "scr_pitchservo_0",
+   "scr_pitchservo_1",
+   "mount_pitch_servo",
+   "rocker_bearing",
+   "scr_lidservo_UL0",
+   "scr_lidservo_UL1",
+   "scr_lidservo_LL0",
+   "scr_lidservo_LL1",
+   "mount_lid_servos_L",
+   "scr_lidservo_UR0",
+   "scr_lidservo_UR1",
+   "scr_lidservo_LR0",
+   "scr_lidservo_LR1",
+   "mount_lid_servos_R",
+   "mask",
+   "base",
+   "scr_base_0",
+   "scr_base_1",
+   "scr_base_2",
+   "scr_base_3",
+   "scr_base_4",
+   "scr_base_5",
+   "scr_base_6",
+   "scr_base_7",
+   "scr_base_8",
+   "scr_base_9",
+   "scr_base_10",
+   "scr_base_11"
+  ],
+  "glb_node": "G_static"
+ }
+}

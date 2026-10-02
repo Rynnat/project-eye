@@ -1,0 +1,183 @@
+PROJECT EYE v4 (v3 revizyonu: alt/ust kapak, maske) - MEKANIK KONTROL RAPORU
+uretim: check.py | ucgenleme 0.01 mm | kesisim esigi 0.01 mm3 | eklem disi bosluk hedefi 0.4 mm
+
+1) KATI GECERLILIGI
+   parca sayisi 63 (basilan 19, farkli basilan STL 16: ['base', 'coupler', 'eye', 'eye_lever', 'frame_L', 'frame_R', 'lid_lo_L', 'lid_lo_R', 'lid_up_L', 'lid_up_R', 'link_lo', 'link_up', 'mask', 'pivot_bracket', 'yaw_crank', 'yaw_mount'])
+   gecersiz kati: yok | tek-kati olmayan basilan: yok | su gecirmez olmayan ag: yok
+
+2) GRUP ICI (birbirine sabit parcalar, notr poz) - kesisim >= esik:
+   ! frame_L x scr_ptop_L: 0.016 mm3
+   ! frame_L x scr_pbot_L: 0.017 mm3
+   ! frame_L x scr_ym_L68: 0.014 mm3
+   ! frame_L x scr_ym_L59: 0.014 mm3
+   ! frame_R x scr_ptop_R: 0.016 mm3
+   ! frame_R x scr_pbot_R: 0.017 mm3
+   ! frame_R x scr_ym_R68: 0.014 mm3
+   ! frame_R x scr_ym_R59: 0.014 mm3
+   ! servo_pitch x scr_m3_pitch0: 0.434 mm3
+   ! servo_yaw x scr_m3_yaw0: 0.434 mm3
+   ! servo_lid x scr_m3_lid0: 0.434 mm3
+   ! scr_U x lid_up_L: 0.076 mm3
+   ! lid_lo_L x lid_lo_R: 2.141 mm3
+   ! scr_brk_-4 x base: 0.014 mm3
+   ! scr_brk_24 x base: 0.014 mm3
+   ! scr_mask_40 x base: 0.014 mm3
+   ! scr_mask_160 x base: 0.014 mm3
+   not: ~0.01-0.02 mm3 = havsa kafa konisi ile yuvasi ayni yuzey (ucgenleme). scr_m3_* x servo_* GERCEK:
+        SG90 kulak deligi govdeden ~2.5 mm; M3 kafa (O5.6) govde duvarina biniyor (DECISIONS.md, risk; v3'ten).
+
+3) HAREKET TARAMASI: zorunlu 18 poz (yaw (-25.0, 0.0, 25.0) x pitch (-20.0, 0.0, 20.0) x kapak acik/kapali) + ara tarama 57 poz (yaw 12.5, pitch 10 deg adim, kapak 0/0.5/1)
+   ust kapak kenari -4.0 (dudak -10.0) -> +23.0 deg; alt kapak -5.4 -> -34.6 deg
+   zorunlu pozlar:  yaw   pitch  kapak  | cakisma | eklem disi min bosluk | en yakin cift
+                   -25.0 -20.0  open   |       0 |      0.398 | frame_L x lid_up_L
+                   -25.0   0.0  open   |       0 |      0.398 | frame_L x lid_up_L
+                   -25.0  20.0  open   |       0 |      0.398 | frame_L x lid_up_L
+                     0.0 -20.0  open   |       0 |      0.398 | frame_L x lid_up_L
+                     0.0   0.0  open   |       0 |      0.398 | frame_L x lid_up_L
+                     0.0  20.0  open   |       0 |      0.398 | frame_L x lid_up_L
+                    25.0 -20.0  open   |       0 |      0.398 | frame_L x lid_up_L
+                    25.0   0.0  open   |       0 |      0.398 | frame_L x lid_up_L
+                    25.0  20.0  open   |       0 |      0.398 | frame_L x lid_up_L
+                   -25.0 -20.0  closed |       0 |      0.398 | frame_L x lid_up_L
+                   -25.0   0.0  closed |       0 |      0.398 | frame_L x lid_up_L
+                   -25.0  20.0  closed |       0 |      0.398 | frame_L x lid_up_L
+                     0.0 -20.0  closed |       0 |      0.398 | frame_L x lid_up_L
+                     0.0   0.0  closed |       0 |      0.398 | frame_L x lid_up_L
+                     0.0  20.0  closed |       0 |      0.398 | frame_L x lid_up_L
+                    25.0 -20.0  closed |       0 |      0.398 | frame_L x lid_up_L
+                    25.0   0.0  closed |       0 |      0.398 | frame_L x lid_up_L
+                    25.0  20.0  closed |       0 |      0.398 | frame_L x lid_up_L
+   ara tarama: cakisma 0; eklem disi en kucuk bosluk 0.398 mm
+
+   TOPLAM CAKISMA (>= 0.01 mm3): 0
+4a) EKLEM DISI CIFTLERDE EN DAR 20 BOSLUK (asil carpisma payi):
+     0.398  frame_L x lid_up_L   @ yaw -25 pitch -10 kapak 0.0
+     0.400  coupler x scr_horn_yaw0   @ yaw 25.0 pitch 20.0 kapak open
+     0.400  coupler x scr_horn_yaw1   @ yaw -25.0 pitch 20.0 kapak open
+     0.400  horn_lid x lid_up_L   @ yaw -25.0 pitch -20.0 kapak open
+     0.479  eye_lever_R x lid_lo_R   @ yaw 0 pitch -10 kapak 1.0
+     0.479  eye_lever_L x lid_lo_L   @ yaw 0 pitch -10 kapak 1.0
+     0.500  scr_ltip_L x frame_L   @ yaw -25 pitch -10 kapak 0.0
+     0.500  scr_ltip_R x frame_R   @ yaw -25 pitch -10 kapak 0.0
+     0.561  frame_R x scr_lap_up1   @ yaw -25 pitch -20 kapak 0.5
+     0.579  eye_R x lid_up_R   @ yaw 0.0 pitch -20.0 kapak closed
+     0.579  eye_L x lid_up_L   @ yaw 0.0 pitch -20.0 kapak closed
+     0.580  eye_L x lid_lo_L   @ yaw -25 pitch -10 kapak 0.5
+     0.582  eye_R x lid_lo_R   @ yaw 25 pitch 0 kapak 0.5
+     0.678  lid_crank x lid_up_L   @ yaw -25 pitch 20 kapak 0.5
+     0.876  frame_R x scr_ctip   @ yaw -25 pitch 10 kapak 0.0
+     0.876  frame_L x scr_ctip   @ yaw 25 pitch 10 kapak 0.0
+     0.945  scr_lock_R x frame_R   @ yaw 25.0 pitch 0.0 kapak open
+     0.945  scr_lock_L x frame_L   @ yaw -25.0 pitch 0.0 kapak open
+     1.042  frame_R x lid_lo_L   @ yaw -25.0 pitch -20.0 kapak open
+     1.200  eye_L x scr_lpin_Li   @ yaw 0.0 pitch -20.0 kapak open
+4b) EKLEM CIFTLERI (tasarim geregi temas / AXIAL_GAP; en dar 12):
+     0.000  scr_ltip_L x coupler
+     0.000  scr_ltip_R x coupler
+     0.000  scr_lpin_Lo x lid_up_L
+     0.000  scr_lpin_Li x lid_up_L
+     0.000  scr_lpin_Ro x lid_up_R
+     0.000  scr_lpin_Ri x lid_up_R
+     0.000  scr_fpivot x pivot_bracket
+     0.000  servo_pitch x horn_pitch
+     0.000  servo_yaw x horn_yaw
+     0.000  scr_ctip x coupler
+     0.000  servo_lid x horn_lid
+     0.000  link_up x scr_U
+
+5) ET KALINLIGI (isin yontemi; min / %1 / %5, mm) - hedef >= 1.6:
+   eye            min  6.70  %1  8.11  %5 14.00  (en ince ~ [-47.5  -9.5  -2.1])
+   eye_lever      min  2.75  %1  2.75  %5  2.75  (en ince ~ [-49.2 -14.7 -20.5])
+   frame_L        min  1.65  %1  1.75  %5  4.50  (en ince ~ [-80.6  -0.    1.8])
+   frame_R        min  1.05  %1  1.75  %5  4.10  (en ince ~ [ 19.    2.5 -28.9])
+   yaw_mount      min  1.10  %1  2.01  %5  2.28  (en ince ~ [ -0.1   3.9 -52.9])
+   yaw_crank      min  2.70  %1  2.75  %5  2.75  (en ince ~ [  6.2 -13.7 -60. ])
+   coupler        min  2.35  %1  2.35  %5  2.36  (en ince ~ [ -2.  -18.1 -80.7])
+   link_up        min  1.85  %1  1.85  %5  1.85  (en ince ~ [ -3.9 -10.5 -20.9])
+   link_lo        min  2.35  %1  2.35  %5  2.35  (en ince ~ [ -7.6  -8.4 -24.6])
+   lid_up_L       min  0.11  %1  1.60  %5  1.60  (en ince ~ [-64.9  -1.6  11.7])
+   lid_lo_L       min  1.75  %1  1.99  %5  1.99  (en ince ~ [12.  -6.1 12.5])
+   lid_up_R       min  0.60  %1  1.60  %5  1.60  (en ince ~ [30.6 -1.1 12.4])
+   lid_lo_R       min  0.60  %1  1.92  %5  1.99  (en ince ~ [14.8 -9.4 10.5])
+   pivot_bracket  min  3.49  %1  3.69  %5  4.60  (en ince ~ [-83.3 -53.3  14. ])
+   base           min  3.02  %1  4.00  %5  4.00  (en ince ~ [ 96.3 -16.7  -9.4])
+   mask           min  1.70  %1  3.00  %5  3.00  (en ince ~ [ 60.1 -43.7  10. ])
+
+6) BASKIDA YATAY DELIKLER (+0.2 mm pay verildi; DECISIONS.md):
+   frame_L        ust/alt goz pimi pilotu (Y), 4x kapak mentese pilotu (X), pitch pimi pilotu (X)
+   frame_R        ust/alt goz pimi pilotu (Y), 4x kapak mentese pilotu (X), 2x pitch kol vidasi (X), 2x LIDS servo kulagi M3 (X)
+   lid_up_L       2x bindirme civatasi (radyal)
+   lid_lo_L       2x bindirme civatasi (radyal)
+   lid_up_R       2x bindirme civatasi (radyal)
+   lid_lo_R       2x bindirme civatasi (radyal)
+   pivot_bracket  sol pitch yatagi M4_RUN (X)
+   base           2x pitch servo kulagi M3 (X)
+
+7) STL / BASKI YONU KONTROLU (out/stl/*.stl oldugu gibi okunur)
+   (1) tek bagli govde  (2) min z = 0, 0.2 mm katmanlarda havada baslayan ada yok  (3) >45 deg sarkma alani
+   base.stl               govde 1  zmin  0.000  havada ada  0   sarkma  565.6 mm2  tabla 17813.7 mm2  boyut [212.   89.   73.5]  OK
+   coupler.stl            govde 1  zmin  0.000  havada ada  0   sarkma    0.0 mm2  tabla  1424.6 mm2  boyut [104.   69.    3.5]  OK
+   eye.stl                govde 1  zmin  0.000  havada ada  0   sarkma   17.0 mm2  tabla   446.9 mm2  boyut [36. 28. 29.]  OK
+   eye_lever.stl          govde 1  zmin  0.000  havada ada  0   sarkma    0.0 mm2  tabla   246.7 mm2  boyut [13.  31.   3.5]  OK
+   frame_L.stl            govde 1  zmin  0.000  havada ada  0   sarkma  122.1 mm2  tabla  1453.0 mm2  boyut [85.7 54.7 77.5]  OK
+   frame_R.stl            govde 1  zmin  0.000  havada ada  0   sarkma  321.1 mm2  tabla  1394.5 mm2  boyut [80.3 55.  77.5]  OK
+   lid_lo_L.stl           govde 1  zmin  0.000  havada ada  0   sarkma  361.2 mm2  tabla   112.8 mm2  boyut [26.4 25.9 88.2]  OK
+   lid_lo_R.stl           govde 1  zmin  0.000  havada ada  0   sarkma  287.9 mm2  tabla   112.8 mm2  boyut [26.4 20.3 76.4]  OK
+   lid_up_L.stl           govde 1  zmin  0.000  havada ada  0   sarkma  458.5 mm2  tabla    98.5 mm2  boyut [39.5 21.1 90.3]  OK
+   lid_up_R.stl           govde 1  zmin  0.000  havada ada  0   sarkma  433.6 mm2  tabla    98.5 mm2  boyut [41.  21.1 67.6]  OK
+   link_lo.stl            govde 1  zmin  0.000  havada ada  0   sarkma    9.0 mm2  tabla   242.2 mm2  boyut [36.7 15.5  4.5]  OK
+   link_up.stl            govde 1  zmin  0.000  havada ada  0   sarkma    0.0 mm2  tabla   182.1 mm2  boyut [19.1 26.1  3.5]  OK
+   mask.stl               govde 1  zmin  0.000  havada ada  0   sarkma  340.7 mm2  tabla 17865.7 mm2  boyut [212.   92.   30.4]  OK
+   pivot_bracket.stl      govde 1  zmin  0.000  havada ada  0   sarkma   16.0 mm2  tabla   375.2 mm2  boyut [10.6 40.  62. ]  OK
+   yaw_crank.stl          govde 1  zmin  0.000  havada ada  0   sarkma    0.0 mm2  tabla   342.2 mm2  boyut [26.  32.5  3.5]  OK
+   yaw_mount.stl          govde 1  zmin  0.000  havada ada  0   sarkma    0.0 mm2  tabla  1846.7 mm2  boyut [63.  35.4 30.4]  OK
+   STL SONUC: hepsi OK
+
+8) VIDA SAYILARI (montaj kaydindan):
+     6  M3x10 yuvarlak
+    13  M4x10 yuvarlak
+    13  M4x16 havsa
+     3  SG90
+     6  SG90 kol vidasi (servo ile gelir)
+     3  SG90 kolu (cift)
+   M3 toplam 6 (sinir 14) -> OK
+
+9) SERVO ACILARI (derece) + kapak acilari:
+   kapak 0.00: ust + 0.00 deg, alt - 0.00 deg, krank   0.00 deg, LIDS 102.29; lama iletim sapmasi (0 ideal) ust  6.1 alt 31.0 krank-ust 38.9 krank-alt 32.7
+   kapak 0.25: ust + 6.75 deg, alt - 7.59 deg, krank  -6.40 deg, LIDS  95.89; lama iletim sapmasi (0 ideal) ust  4.5 alt 23.2 krank-ust 41.4 krank-alt 26.1
+   kapak 0.50: ust +13.50 deg, alt -15.29 deg, krank -12.90 deg, LIDS  89.39; lama iletim sapmasi (0 ideal) ust 16.2 alt 15.3 krank-ust 43.0 krank-alt 19.3
+   kapak 0.75: ust +20.25 deg, alt -22.66 deg, krank -19.10 deg, LIDS  83.18; lama iletim sapmasi (0 ideal) ust 28.7 alt  7.5 krank-ust 43.4 krank-alt 12.8
+   kapak 1.00: ust +27.00 deg, alt -29.22 deg, krank -24.58 deg, LIDS  77.71; lama iletim sapmasi (0 ideal) ust 41.7 alt  0.6 krank-ust 42.7 krank-alt  6.9
+   yaw    0 pitch    0 kapak closed: EYE_YAW   90.0  EYE_PITCH   90.0  LIDS  102.3
+   yaw  -25 pitch    0 kapak closed: EYE_YAW  115.0  EYE_PITCH   90.0  LIDS  102.3
+   yaw   25 pitch    0 kapak closed: EYE_YAW   65.0  EYE_PITCH   90.0  LIDS  102.3
+   yaw    0 pitch  -20 kapak closed: EYE_YAW   90.0  EYE_PITCH   70.0  LIDS  102.3
+   yaw    0 pitch   20 kapak closed: EYE_YAW   90.0  EYE_PITCH  110.0  LIDS  102.3
+   yaw    0 pitch    0 kapak open  : EYE_YAW   90.0  EYE_PITCH   90.0  LIDS   77.7
+   yaw    0 pitch    0 kapak 0.25  : EYE_YAW   90.0  EYE_PITCH   90.0  LIDS   95.9
+   yaw    0 pitch    0 kapak 0.5   : EYE_YAW   90.0  EYE_PITCH   90.0  LIDS   89.4
+   yaw    0 pitch    0 kapak 0.75  : EYE_YAW   90.0  EYE_PITCH   90.0  LIDS   83.2
+
+9b) KAPAK - GOZ BOSLUGU (kapak ic yuzu - goz, butun pozlar): en kucuk 0.579 mm (eye_R x lid_up_R), hedef <= 1.0 ve >= 0.4  (tasarim: LID_R_IN - EYE_R = 0.60)
+    0.579  eye_R x lid_up_R
+    0.579  eye_L x lid_up_L
+    0.580  eye_L x lid_lo_L
+    0.582  eye_R x lid_lo_R
+
+10) KAPALI POZDA IRIS + BEBEK GORUNUR ALANI (onden z-tamponu, 0.1 mm piksel; hedef 0)
+   maske ile                    bakis (yaw  +0, pitch  +0): 9 goz pozunda en cok 0.00 mm2
+   maske ile                    bakis (yaw +15, pitch  +0): 9 goz pozunda en cok 0.00 mm2
+   maske ile                    bakis (yaw -15, pitch  +0): 9 goz pozunda en cok 0.00 mm2
+   maske ile                    bakis (yaw  +0, pitch +12): 9 goz pozunda en cok 0.00 mm2
+   maske ile                    bakis (yaw  +0, pitch -12): 9 goz pozunda en cok 0.00 mm2
+   maske YOK (yalniz kapaklar)  bakis (yaw  +0, pitch  +0): 9 goz pozunda en cok 0.00 mm2
+   maske YOK (yalniz kapaklar)  bakis (yaw +15, pitch  +0): 9 goz pozunda en cok 0.00 mm2
+   maske YOK (yalniz kapaklar)  bakis (yaw -15, pitch  +0): 9 goz pozunda en cok 0.00 mm2
+   maske YOK (yalniz kapaklar)  bakis (yaw  +0, pitch +12): 9 goz pozunda en cok 0.00 mm2
+   maske YOK (yalniz kapaklar)  bakis (yaw  +0, pitch -12): 9 goz pozunda en cok 0.00 mm2
+   (karsilastirma: kapak ACIK, maskesiz, notr: 194 + 194 mm2 gorunur)
+   kapak ACIK, notr, onden: gorunen iris ust siniri y = 6.40 (iris tepesi +8) -> ust kapak irisin 1.60 mm'sini orter; alt sinir y = -8.00 (iris dibi -8; alt kapak irisin altinda)
+   IRIS SONUC: kapali pozda en cok 0.00 mm2 gorunur
+
+SONUC: cakisma 0, eklem disi en kucuk bosluk 0.398 mm (frame_L x lid_up_L @ (-25, -10, 0.0)), gecersiz kati 0, 1.6 alti et (%1) yok, STL hatasi yok, M3 6/14, farkli STL 16/16, kapak-goz 0.58 mm, kapali iris 0.00 mm2
+sure 232 s

@@ -1,0 +1,7 @@
+{
+  "name": "Project Eye",
+  "icon": "👁",
+  "section": "construction",
+  "entry": "model.html",
+  "settings": "settings.json"
+}

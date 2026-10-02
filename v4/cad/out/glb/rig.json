@@ -1,0 +1,247 @@
+{
+ "_units": "mm, derece",
+ "_file": "assembly.glb: her anahtar (grup) 'G_<grup>' adli dugum, parcalar onun cocuklari (dugum adi = parca adi); mesh'ler dunya koordinatinda, NOTR pozda (yaw=pitch=0, kapaklar kapali).",
+ "_coords": "+X robotun sagi, +Y yukari, +Z ileri. Orijin iki goz merkezinin ortasi (goz merkezleri X ekseninde).",
+ "_rotation": "Donen grup: M = T(pivot) * R(eksen, aci) * T(-pivot), sag-el. Zincirli gruplarda 'parent' donusumu ONCE uygulanir: M = M_parent * M_yerel.",
+ "_api": "eye_v4.pose_transforms(yaw, pitch, lid) butun gruplarin matrislerini verir (lid 0..1 ya da 'open'/'closed'). Kapak gruplari dort-cubuk cozumu gerektirir: acilar kinematics.json -> channels.LIDS.table.",
+ "static": {
+  "nodes": [
+   "servo_pitch",
+   "scr_brk_-4",
+   "scr_brk_24",
+   "pivot_bracket",
+   "scr_mask_40",
+   "scr_mask_160",
+   "base",
+   "scr_m3_pitch0",
+   "mask"
+  ],
+  "glb_node": "G_static"
+ },
+ "frame": {
+  "nodes": [
+   "frame_L",
+   "scr_ptop_L",
+   "scr_pbot_L",
+   "scr_lpin_Lo",
+   "scr_lpin_Li",
+   "scr_ym_L68",
+   "scr_ym_L59",
+   "frame_R",
+   "scr_ptop_R",
+   "scr_pbot_R",
+   "scr_lpin_Ro",
+   "scr_lpin_Ri",
+   "scr_ym_R68",
+   "scr_ym_R59",
+   "scr_fpivot",
+   "horn_pitch",
+   "servo_yaw",
+   "yaw_mount",
+   "scr_m3_yaw0",
+   "servo_lid",
+   "scr_m3_lid0",
+   "scr_horn_pitch0",
+   "scr_horn_pitch1"
+  ],
+  "pivot": [
+   0,
+   0,
+   0
+  ],
+  "axis": [
+   -1,
+   0,
+   0
+  ],
+  "angle": "pitch",
+  "range": [
+   -20.0,
+   20.0
+  ],
+  "note": "pitch cercevesi: M_frame = Rx(-pitch) (pitch + = yukari)",
+  "glb_node": "G_frame"
+ },
+ "coupler": {
+  "nodes": [
+   "coupler"
+  ],
+  "parent": "frame",
+  "type": "translate",
+  "note": "M = M_frame * T(-20.0*sin(yaw), 0, 20.0*(1-cos(yaw)))",
+  "glb_node": "G_coupler"
+ },
+ "yawcrank": {
+  "nodes": [
+   "horn_yaw",
+   "yaw_crank",
+   "scr_ctip",
+   "scr_horn_yaw0",
+   "scr_horn_yaw1"
+  ],
+  "parent": "frame",
+  "pivot": [
+   0.0,
+   -13.4,
+   -60.0
+  ],
+  "axis": [
+   0,
+   1,
+   0
+  ],
+  "angle": "yaw",
+  "glb_node": "G_yawcrank"
+ },
+ "lids": {
+  "nodes": [
+   "scr_U",
+   "lid_up_L",
+   "lid_up_R",
+   "scr_lap_up0",
+   "scr_lap_up1"
+  ],
+  "parent": "frame",
+  "pivot": [
+   0,
+   0,
+   0
+  ],
+  "axis": [
+   -1,
+   0,
+   0
+  ],
+  "angle": "du",
+  "range": [
+   0,
+   27.0
+  ],
+  "note": "ust kapaklar: du = lid * 27.0; M = M_frame * Rx(-du)",
+  "glb_node": "G_lids"
+ },
+ "lids_lo": {
+  "nodes": [
+   "scr_L",
+   "lid_lo_L",
+   "lid_lo_R",
+   "scr_lap_lo0",
+   "scr_lap_lo1"
+  ],
+  "parent": "frame",
+  "pivot": [
+   0,
+   0,
+   0
+  ],
+  "axis": [
+   1,
+   0,
+   0
+  ],
+  "angle": "dl",
+  "range": [
+   0,
+   29.22
+  ],
+  "note": "alt kapaklar: dl dort-cubuktan (kinematics.json); M = M_frame * Rx(+dl)",
+  "glb_node": "G_lids_lo"
+ },
+ "lidcrank": {
+  "nodes": [
+   "lid_crank",
+   "horn_lid",
+   "scr_A",
+   "scr_horn_lid0",
+   "scr_horn_lid1"
+  ],
+  "parent": "frame",
+  "pivot": [
+   0.0,
+   9.6,
+   -29.3
+  ],
+  "axis": [
+   -1,
+   0,
+   0
+  ],
+  "angle": "b",
+  "note": "LIDS krank: b (<0 acarken); M = M_frame * about(S, X, -b)",
+  "glb_node": "G_lidcrank"
+ },
+ "link_up": {
+  "nodes": [
+   "link_up"
+  ],
+  "parent": "frame",
+  "type": "planar",
+  "note": "iki pim (krank ucu A, ust kapak pimi U) ile belirlenen duzlemsel hareket; pose_transforms kullanin",
+  "glb_node": "G_link_up"
+ },
+ "link_lo": {
+  "nodes": [
+   "link_lo"
+  ],
+  "parent": "frame",
+  "type": "planar",
+  "note": "iki pim (A, alt kapak pimi L); pose_transforms kullanin",
+  "glb_node": "G_link_lo"
+ },
+ "eye_L": {
+  "nodes": [
+   "eye_L",
+   "iris_L",
+   "pupil_L",
+   "eye_lever_L",
+   "scr_lock_L",
+   "scr_ltip_L"
+  ],
+  "parent": "frame",
+  "pivot": [
+   -47.5,
+   0.0,
+   0.0
+  ],
+  "axis": [
+   0,
+   1,
+   0
+  ],
+  "angle": "yaw",
+  "range": [
+   -25.0,
+   25.0
+  ],
+  "note": "M = M_frame * T(E) Ry(yaw) T(-E). three.js: rotation.order='XYZ', rotation.x=-pitch, rotation.y=yaw (pivot E)",
+  "glb_node": "G_eye_L"
+ },
+ "eye_R": {
+  "nodes": [
+   "eye_R",
+   "iris_R",
+   "pupil_R",
+   "eye_lever_R",
+   "scr_lock_R",
+   "scr_ltip_R"
+  ],
+  "parent": "frame",
+  "pivot": [
+   47.5,
+   0.0,
+   0.0
+  ],
+  "axis": [
+   0,
+   1,
+   0
+  ],
+  "angle": "yaw",
+  "range": [
+   -25.0,
+   25.0
+  ],
+  "note": "M = M_frame * T(E) Ry(yaw) T(-E). three.js: rotation.order='XYZ', rotation.x=-pitch, rotation.y=yaw (pivot E)",
+  "glb_node": "G_eye_R"
+ }
+}

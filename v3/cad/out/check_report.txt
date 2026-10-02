@@ -1,0 +1,145 @@
+PROJECT EYE v3 (POC) - MEKANIK KONTROL RAPORU
+uretim: check.py | ucgenleme 0.01 mm | kesisim esigi 0.01 mm3 | eklem disi bosluk hedefi 0.4 mm
+
+1) KATI GECERLILIGI
+   parca sayisi 52 (basilan 14, farkli basilan STL 12: ['base', 'coupler', 'eye', 'eye_lever', 'frame_L', 'frame_R', 'lid_L', 'lid_R', 'lid_carrier', 'pivot_bracket', 'yaw_crank', 'yaw_mount'])
+   gecersiz kati: yok | tek-kati olmayan basilan: yok | su gecirmez olmayan ag: yok
+
+2) GRUP ICI (birbirine sabit parcalar, notr poz) - kesisim >= esik:
+   ! eye_lever_L x scr_lock_L: 0.014 mm3
+   ! eye_lever_R x scr_lock_R: 0.014 mm3
+   ! frame_L x scr_ptop_L: 0.014 mm3
+   ! frame_L x scr_pbot_L: 0.018 mm3
+   ! frame_R x scr_ptop_R: 0.014 mm3
+   ! frame_R x scr_pbot_R: 0.018 mm3
+   ! servo_pitch x scr_m3_pitch0: 1.220 mm3
+   ! servo_pitch x scr_m3_pitch1: 1.220 mm3
+   ! servo_yaw x scr_m3_yaw0: 1.220 mm3
+   ! servo_yaw x scr_m3_yaw1: 1.220 mm3
+   ! scr_ym_L27 x yaw_mount: 0.014 mm3
+   ! scr_ym_L40 x yaw_mount: 0.014 mm3
+   ! scr_ym_R27 x yaw_mount: 0.014 mm3
+   ! scr_ym_R40 x yaw_mount: 0.014 mm3
+   ! servo_lid x scr_m3_lid0: 1.220 mm3
+   ! servo_lid x scr_m3_lid1: 1.220 mm3
+   ! scr_brk_81 x base: 0.014 mm3
+   ! scr_brk_67 x base: 0.014 mm3
+   not: ~0.01-0.02 mm3 = havsa kafa konisi ile yuvasi ayni yuzey (ucgenleme). scr_m3_* x servo_* ~1.2 mm3 GERCEK:
+        SG90 kulak deligi govdeden ~2.5 mm; M3 kafa (O5.6) govde duvarina ~0.3 mm biniyor (DECISIONS.md, risk).
+
+3) HAREKET TARAMASI: zorunlu 18 poz (yaw (-25.0, 0.0, 25.0) x pitch (-20.0, 0.0, 20.0) x kapak acik/kapali) + ara tarama 57 poz (yaw 12.5, pitch 10 deg adim, kapak 0/0.5/1)
+   kapak: kapali = kenar -5 deg, acik = kenar +40 deg
+   zorunlu pozlar:  yaw   pitch  kapak  | cakisma | eklem disi min bosluk | en yakin cift
+                   -25.0 -20.0  open   |       0 |      0.400 | frame_L x lid_L
+                   -25.0   0.0  open   |       0 |      0.400 | frame_L x lid_L
+                   -25.0  20.0  open   |       0 |      0.400 | coupler x scr_horn_yaw1
+                     0.0 -20.0  open   |       0 |      0.400 | frame_L x lid_L
+                     0.0   0.0  open   |       0 |      0.400 | frame_L x lid_L
+                     0.0  20.0  open   |       0 |      0.400 | frame_L x lid_L
+                    25.0 -20.0  open   |       0 |      0.400 | frame_L x lid_L
+                    25.0   0.0  open   |       0 |      0.400 | frame_L x lid_L
+                    25.0  20.0  open   |       0 |      0.400 | coupler x scr_horn_yaw0
+                   -25.0 -20.0  closed |       0 |      0.400 | frame_L x lid_L
+                   -25.0   0.0  closed |       0 |      0.400 | frame_L x lid_L
+                   -25.0  20.0  closed |       0 |      0.400 | coupler x scr_horn_yaw1
+                     0.0 -20.0  closed |       0 |      0.400 | frame_L x lid_L
+                     0.0   0.0  closed |       0 |      0.400 | frame_L x lid_L
+                     0.0  20.0  closed |       0 |      0.400 | frame_L x lid_L
+                    25.0 -20.0  closed |       0 |      0.400 | frame_L x lid_L
+                    25.0   0.0  closed |       0 |      0.400 | frame_L x lid_L
+                    25.0  20.0  closed |       0 |      0.400 | coupler x scr_horn_yaw0
+   ara tarama: cakisma 0; eklem disi en kucuk bosluk 0.400 mm
+
+   TOPLAM CAKISMA (>= 0.01 mm3): 0
+4a) EKLEM DISI CIFTLERDE EN DAR 20 BOSLUK (asil carpisma payi):
+     0.400  coupler x scr_horn_yaw0   @ yaw 25.0 pitch 20.0 kapak open
+     0.400  coupler x scr_horn_yaw1   @ yaw -25.0 pitch 20.0 kapak open
+     0.400  frame_L x lid_L   @ yaw -25.0 pitch -20.0 kapak open
+     0.400  frame_R x lid_R   @ yaw -25.0 pitch -20.0 kapak open
+     0.402  eye_L x scr_fpivot   @ yaw 25.0 pitch 0.0 kapak open
+     0.688  scr_ptop_R x lid_R   @ yaw -25 pitch -10 kapak 0.0
+     0.688  scr_ptop_L x lid_L   @ yaw -25 pitch -10 kapak 0.0
+     0.700  scr_lock_L x frame_L   @ yaw -25 pitch -10 kapak 0.0
+     0.700  scr_lock_R x frame_R   @ yaw -25 pitch -10 kapak 0.0
+     0.900  frame_L x horn_yaw   @ yaw -25 pitch -10 kapak 0.0
+     0.900  frame_R x horn_yaw   @ yaw -25 pitch -10 kapak 0.0
+     1.000  eye_L x servo_lid   @ yaw 0.0 pitch -20.0 kapak open
+     1.000  frame_L x scr_horn_yaw0   @ yaw 0.0 pitch -20.0 kapak open
+     1.000  frame_R x scr_horn_yaw1   @ yaw 0.0 pitch -20.0 kapak open
+     1.300  scr_ltip_L x frame_L   @ yaw 0 pitch -10 kapak 0.0
+     1.300  scr_ltip_R x frame_R   @ yaw 0 pitch -10 kapak 0.0
+     1.600  scr_ym_L40 x horn_yaw   @ yaw 0 pitch -10 kapak 0.0
+     1.600  scr_ym_R40 x horn_yaw   @ yaw -12.5 pitch -10 kapak 0.0
+     1.785  yaw_mount x lid_carrier   @ yaw -25.0 pitch -20.0 kapak open
+     1.859  servo_yaw x yaw_crank   @ yaw 0 pitch -10 kapak 0.0
+4b) EKLEM CIFTLERI (tasarim geregi temas / AXIAL_GAP; en dar 12):
+     0.000  scr_ltip_L x coupler
+     0.000  scr_ltip_R x coupler
+     0.000  scr_fpivot x pivot_bracket
+     0.000  servo_pitch x horn_pitch
+     0.000  servo_yaw x horn_yaw
+     0.000  scr_ctip x coupler
+     0.000  servo_lid x horn_lid
+     0.200  eye_L x scr_ptop_L
+     0.200  eye_R x scr_ptop_R
+     0.384  eye_R x frame_R
+     0.384  eye_L x frame_L
+     0.400  eye_lever_L x coupler
+
+5) ET KALINLIGI (isin yontemi; min / %1 / %5, mm) - hedef >= 1.6:
+   eye            min  4.61  %1  7.00  %5  8.88  (en ince ~ [-47.6  -6.2   2.1])
+   eye_lever      min  2.75  %1  2.75  %5  2.75  (en ince ~ [-47.9 -16.2 -21.7])
+   frame_L        min  2.15  %1  2.39  %5  5.00  (en ince ~ [-14.5 -10.1 -25.2])
+   frame_R        min  2.15  %1  2.40  %5  5.00  (en ince ~ [ 14.4 -11.  -44. ])
+   yaw_mount      min  1.00  %1  1.90  %5  2.86  (en ince ~ [ -0.1   2.6 -35. ])
+   yaw_crank      min  2.70  %1  2.75  %5  2.75  (en ince ~ [  6.2 -14.2 -42. ])
+   coupler        min  2.35  %1  2.35  %5  2.35  (en ince ~ [ -1.9 -18.4 -63.1])
+   lid_carrier    min  1.75  %1  1.93  %5  3.50  (en ince ~ [32.2 22.7 -8.5])
+   lid_L          min  1.74  %1  1.99  %5  2.00  (en ince ~ [-38.9  21.    3.8])
+   lid_R          min  1.79  %1  1.99  %5  2.00  (en ince ~ [38.6 20.9 -4.4])
+   pivot_bracket  min  2.25  %1  2.52  %5  4.60  (en ince ~ [-85.  -48.7  -0. ])
+   base           min  0.94  %1  3.15  %5  4.00  (en ince ~ [-14.1   6.1  -3.2])
+
+6) BASKIDA YATAY DELIKLER (+0.2 mm pay verildi; DECISIONS.md):
+   frame_L        ust pim pilotu (Y), alt pim pilotu (Y), 2x yaw_mount pilotu (Y)
+   frame_R        ust pim pilotu (Y), alt pim pilotu (Y), 2x yaw_mount pilotu (Y)
+   lid_carrier    4x kapak vidasi RUN (X), 2x kol vidasi + orta delik (X)
+   pivot_bracket  sol pitch yatagi M4_RUN (X)
+   base           4x servo kulagi M3 pilot (X)
+
+7) STL / BASKI YONU KONTROLU (out/stl/*.stl oldugu gibi okunur)
+   (1) tek bagli govde  (2) min z = 0, 0.2 mm katmanlarda havada baslayan ada yok  (3) >45 deg sarkma alani
+   base.stl               govde 1  zmin  0.000  havada ada  0   sarkma  144.4 mm2  tabla  9295.9 mm2  boyut [181.  52.  70.]  OK
+   coupler.stl            govde 1  zmin  0.000  havada ada  0   sarkma    0.0 mm2  tabla  1231.0 mm2  boyut [104.   51.    3.5]  OK
+   eye.stl                govde 1  zmin  0.000  havada ada  0   sarkma   24.1 mm2  tabla   437.0 mm2  boyut [36. 28. 26.]  OK
+   eye_lever.stl          govde 1  zmin  0.000  havada ada  0   sarkma    0.0 mm2  tabla   333.1 mm2  boyut [13.  39.2  3.5]  OK
+   frame_L.stl            govde 1  zmin  0.000  havada ada  0   sarkma   87.0 mm2  tabla  1434.6 mm2  boyut [62.4 48.  70.8]  OK
+   frame_R.stl            govde 1  zmin  0.000  havada ada  0   sarkma   87.2 mm2  tabla  1404.4 mm2  boyut [62.4 48.  70.8]  OK
+   lid_L.stl              govde 1  zmin  0.000  havada ada  0   sarkma   19.2 mm2  tabla   238.1 mm2  boyut [34.3 29.  30. ]  OK
+   lid_R.stl              govde 1  zmin  0.000  havada ada  0   sarkma   19.3 mm2  tabla   238.1 mm2  boyut [34.3 29.  30. ]  OK
+   lid_carrier.stl        govde 1  zmin  0.000  havada ada  0   sarkma   82.1 mm2  tabla   587.0 mm2  boyut [65. 18. 44.]  OK
+   pivot_bracket.stl      govde 1  zmin  0.000  havada ada  0   sarkma   16.0 mm2  tabla   413.4 mm2  boyut [22. 20. 58.]  OK
+   yaw_crank.stl          govde 1  zmin  0.000  havada ada  0   sarkma    0.0 mm2  tabla   391.2 mm2  boyut [33.  32.5  3.5]  OK
+   yaw_mount.stl          govde 1  zmin  0.000  havada ada  0   sarkma   34.9 mm2  tabla  1050.4 mm2  boyut [39. 44.  9.]  OK
+   STL SONUC: hepsi OK
+
+8) VIDA SAYILARI (montaj kaydindan):
+     6  M3x10 yuvarlak
+     8  M4x10 yuvarlak
+    12  M4x16 havsa
+     3  SG90
+     6  SG90 kol vidasi (servo ile gelir)
+     3  SG90 kolu (cift)
+   M3 toplam 6 (sinir 14) -> OK
+
+9) SERVO ACILARI (derece):
+   yaw    0 pitch    0 kapak closed: EYE_YAW   90.0  EYE_PITCH   90.0  LIDS  112.5
+   yaw  -25 pitch    0 kapak closed: EYE_YAW  115.0  EYE_PITCH   90.0  LIDS  112.5
+   yaw   25 pitch    0 kapak closed: EYE_YAW   65.0  EYE_PITCH   90.0  LIDS  112.5
+   yaw    0 pitch  -20 kapak closed: EYE_YAW   90.0  EYE_PITCH   70.0  LIDS  112.5
+   yaw    0 pitch   20 kapak closed: EYE_YAW   90.0  EYE_PITCH  110.0  LIDS  112.5
+   yaw    0 pitch    0 kapak open  : EYE_YAW   90.0  EYE_PITCH   90.0  LIDS   67.5
+   yaw    0 pitch    0 kapak 0.5   : EYE_YAW   90.0  EYE_PITCH   90.0  LIDS   90.0
+
+SONUC: cakisma 0, eklem disi en kucuk bosluk 0.400 mm (coupler x scr_horn_yaw0 @ (25.0, 20.0, 'open')), gecersiz kati 0, 1.6 alti et (%1) yok, STL hatasi yok, M3 6/14
+sure 83 s

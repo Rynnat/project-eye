@@ -1,0 +1,160 @@
+PROJECT EYE v2 - MEKANIK KONTROL RAPORU
+uretim: check.py  |  ucgenleme toleransi 0.01 mm  |  kesisim esigi 0.01 mm3
+
+1) KATI GECERLILIGI (OCC BRepCheck) + ucgen agi su gecirmezligi
+   parca sayisi: 99 (basilan 29)
+   gecersiz kati: yok
+   basilan parcalarda tek-kati olmayan: yok
+   su gecirmez olmayan ag: ['stud_pitch_L', 'stud_pitch_R', 'lid_UL', 'lid_UR', 'stud_rocker_L', 'stud_rocker_R', 'rod_pitch_L', 'rod_pitch_R']
+
+2) GRUP ICI (birbirine sabit parcalar, notr poz) - kesisim >= esik:
+   yok (temaslar: vida kafasi/yuzey, kulak/plaka vb. tasarim geregi 0 mesafe)
+
+3) HAREKET TARAMASI: zorunlu 18 poz (yaw (-30.0, 0.0, 30.0) x pitch (-25.0, 0.0, 25.0) x kapak acik/kapali) + firmware-sinir pozlari 12 (pitch servosu guvenli sinirda 63.2/121.6, yaw -30..30) + yogun tarama 87 poz (yaw 10 deg, pitch 12.5 deg adim, kapak kapali/nominal/acik)
+   kapak 'acik' = mekanik tam acik (ust kenar +38, alt kenar -45 deg), 'kapali' = kenarlar -5 deg'de bulusur (arada 1.5 deg)
+
+   zorunlu pozlar:
+   yaw    pitch  kapak    | cakisma | min bosluk (mm) | en yakin cift
+   -30.0  -25.0  open     |       0 |           0.000 | lid_LL x scr_lidA_LL
+   -30.0    0.0  open     |       0 |           0.000 | lid_LL x scr_lidA_LL
+   -30.0   25.0  open     |       0 |           0.000 | lid_LL x scr_lidA_LL
+     0.0  -25.0  open     |       0 |           0.000 | lid_LL x scr_lidA_LL
+     0.0    0.0  open     |       0 |           0.000 | lid_LL x scr_lidA_LL
+     0.0   25.0  open     |       0 |           0.000 | lid_LL x scr_lidA_LL
+    30.0  -25.0  open     |       0 |           0.000 | lid_LL x scr_lidA_LL
+    30.0    0.0  open     |       0 |           0.000 | lid_LL x scr_lidA_LL
+    30.0   25.0  open     |       0 |           0.000 | lid_LL x scr_lidA_LL
+   -30.0  -25.0  closed   |       0 |           0.000 | lid_LL x scr_lidA_LL
+   -30.0    0.0  closed   |       0 |           0.000 | lid_LL x scr_lidA_LL
+   -30.0   25.0  closed   |       0 |           0.000 | lid_LL x scr_lidA_LL
+     0.0  -25.0  closed   |       0 |           0.000 | lid_LL x scr_lidA_LL
+     0.0    0.0  closed   |       0 |           0.000 | lid_LL x scr_lidA_LL
+     0.0   25.0  closed   |       0 |           0.000 | lid_LL x scr_lidA_LL
+    30.0  -25.0  closed   |       0 |           0.000 | lid_LL x scr_lidA_LL
+    30.0    0.0  closed   |       0 |           0.000 | lid_LL x scr_lidA_LL
+    30.0   25.0  closed   |       0 |           0.000 | lid_LL x scr_lidA_LL
+   -15.0  -21.2  open     |       0 |           0.000 | lid_LL x scr_lidA_LL
+   -15.0   23.5  open     |       0 |           0.000 | lid_LL x scr_lidA_LL
+     0.0  -20.3  open     |       0 |           0.000 | lid_LL x scr_lidA_LL
+     0.0   23.0  open     |       0 |           0.000 | lid_LL x scr_lidA_LL
+    15.0  -21.2  open     |       0 |           0.000 | lid_LL x scr_lidA_LL
+    15.0   23.5  open     |       0 |           0.000 | lid_LL x scr_lidA_LL
+   -15.0  -21.2  closed   |       0 |           0.000 | lid_LL x scr_lidA_LL
+   -15.0   23.5  closed   |       0 |           0.000 | lid_LL x scr_lidA_LL
+     0.0  -20.3  closed   |       0 |           0.000 | lid_LL x scr_lidA_LL
+     0.0   23.0  closed   |       0 |           0.000 | lid_LL x scr_lidA_LL
+    15.0  -21.2  closed   |       0 |           0.000 | lid_LL x scr_lidA_LL
+    15.0   23.5  closed   |       0 |           0.000 | lid_LL x scr_lidA_LL
+   yogun tarama: toplam cakisma 0; en kucuk bosluk 0.000 mm (lid_LL x scr_lidA_LL)
+
+   TOPLAM CAKISMA (>= 0.01 mm3): 0
+   EN KUCUK BOSLUK (tum pozlar, farkli gruplar): 0.000 mm  ('lid_LL', 'scr_lidA_LL', -30.0, -25.0, 'open')
+
+4a) EKLEM DISI (birbirine degmemesi gereken) CIFTLERDE EN DAR 25 BOSLUK - asil carpisma payi:
+     0.173  eye_fork_L x fixed_fork_L   @ yaw 30.0 pitch -25.0 open
+     0.173  eye_fork_R x fixed_fork_R   @ yaw -30.0 pitch -25.0 open
+     0.182  lid_UL x lid_LL   @ yaw -30.0 pitch -25.0 closed
+     0.182  lid_UR x lid_LR   @ yaw -30.0 pitch -25.0 closed
+     0.290  eye_shell_R x fixed_fork_R   @ yaw 30.0 pitch 25.0 open
+     0.290  eye_shell_L x fixed_fork_L   @ yaw -30.0 pitch 25.0 open
+     0.400  lid_UL x back_frame   @ yaw -30.0 pitch -25.0 open
+     0.400  lid_UR x back_frame   @ yaw -30.0 pitch -25.0 open
+     0.490  scr_pupil_L x lid_LL   @ yaw 30.0 pitch -25.0 closed
+     0.490  scr_pupil_R x lid_LR   @ yaw -30.0 pitch -25.0 closed
+     0.490  scr_pupil_L x lid_UL   @ yaw -30.0 pitch 25.0 closed
+     0.490  scr_pupil_R x lid_UR   @ yaw 30.0 pitch 25.0 closed
+     0.580  eye_shell_L x rod_pitch_L   @ yaw 30.0 pitch -25.0 open
+     0.580  eye_shell_R x rod_pitch_R   @ yaw -30.0 pitch -25.0 open
+     0.586  eye_shell_L x lid_UL   @ yaw -10 pitch 12.5 nominal
+     0.586  eye_shell_R x lid_UR   @ yaw 10 pitch 12.5 nominal
+     0.588  eye_shell_L x lid_LL   @ yaw -10 pitch -12.5 closed
+     0.588  eye_shell_R x lid_LR   @ yaw 10 pitch -12.5 closed
+     0.590  eye_shell_L x yaw_lever_L   @ yaw -15 pitch -21.25 open
+     0.590  eye_shell_R x yaw_lever_R   @ yaw -15 pitch -21.25 open
+     0.683  eye_shell_L x rocker   @ yaw 30.0 pitch -25.0 open
+     0.683  eye_shell_R x rocker   @ yaw -30.0 pitch -25.0 open
+     0.697  eye_shell_R x mask   @ yaw 20 pitch 25 closed
+     0.697  eye_shell_L x mask   @ yaw -20 pitch 25 closed
+     0.700  scr_lidB_UR x horn_lid_LR   @ yaw -30 pitch -25 nominal
+4b) EKLEM CIFTLERI (tasarim geregi temas/yatak boslugu; bilgi icin, en dar 15):
+     0.000  lid_LL x scr_lidA_LL
+     0.000  lid_LR x scr_lidA_LR
+     0.000  servo_lid_UL x horn_lid_UL
+     0.000  link_UL x scr_lidA_UL
+     0.000  link_UL x scr_lidB_UL
+     0.000  servo_lid_LL x horn_lid_LL
+     0.000  link_LL x scr_lidB_LL
+     0.000  servo_lid_UR x horn_lid_UR
+     0.000  link_UR x scr_lidA_UR
+     0.000  link_UR x scr_lidB_UR
+     0.000  servo_lid_LR x horn_lid_LR
+     0.000  link_LR x scr_lidB_LR
+     0.000  servo_yaw x horn_yaw
+     0.000  servo_pitch x horn_pitch
+     0.044  stud_pitch_R x rod_pitch_R
+
+5) ET KALINLIGI (isin yontemi, basilan parcalar; min / %1 / %5 yuzdelik, mm):
+   not: kenar ve kose yakinindaki egik isabetler ayiklanir; %1 degeri gercek ince bolgeyi daha iyi temsil eder.
+   eye_shell_L              min  0.71  %1  1.59  %5  1.59   (en ince ~ [-30.5  -0.4  10.3])
+   eye_fork                 min  0.50  %1  1.27  %5  1.35   (en ince ~ [-31.8   1.3   7.9])
+   gobek                    min  2.00  %1  2.00  %5  2.90   (en ince ~ [-32.5   0.4  -1. ])
+   yaw_lever                min  1.20  %1  1.20  %5  1.20   (en ince ~ [-29.5  18.    0.6])
+   fixed_fork               min  1.07  %1  1.20  %5  1.84   (en ince ~ [-31.5   4.6   2.4])
+   eye_shell_R              min  0.71  %1  1.59  %5  1.59   (en ince ~ [30.4 -0.4 10.3])
+   lid_upper_L              min  1.19  %1  1.20  %5  1.20   (en ince ~ [-41.1   0.2   8.1])
+   lid_lower_L              min  1.20  %1  1.20  %5  1.20   (en ince ~ [-34.8  -1.7  13.3])
+   lid_upper_R              min  1.19  %1  1.20  %5  1.20   (en ince ~ [42.1  0.2  8.9])
+   lid_lower_R              min  1.20  %1  1.20  %5  1.20   (en ince ~ [41.6 -4.2  6.2])
+   lid_link_upper           min  1.40  %1  1.40  %5  1.40   (en ince ~ [-52.3  -9.6 -54.1])
+   lid_link_lower           min  1.40  %1  1.40  %5  1.65   (en ince ~ [-48.7 -25.7 -42.1])
+   yaw_coupler              min  1.85  %1  1.85  %5  1.86   (en ince ~ [-32.5  18.8  -9.4])
+   rocker                   min  2.10  %1  2.70  %5  3.00   (en ince ~ [ 38.6 -16.9 -16.6])
+   pitch_link_L             min  1.55  %1  1.55  %5  1.55   (en ince ~ [ 2.4 -0.2 20.2])
+   pitch_link_R             min  1.55  %1  1.55  %5  1.55   (en ince ~ [ 0.3 -2.4 19.8])
+   back_frame               min  1.50  %1  2.92  %5  3.00   (en ince ~ [0.  1.1 7.5])
+   mount_pitch_servo        min  1.50  %1  2.65  %5  3.00   (en ince ~ [-62.3 -32.1  -4.2])
+   rocker_bearing           min  1.60  %1  2.57  %5  3.00   (en ince ~ [ 48.1 -38.6 -22.1])
+   mount_lid_servos_L       min  1.50  %1  1.62  %5  2.65   (en ince ~ [-32.4  -1.  -67.2])
+   mount_lid_servos_R       min  1.50  %1  1.92  %5  2.65   (en ince ~ [ 36.2  -0.8 -42.6])
+   mask                     min  1.60  %1  3.00  %5  3.00   (en ince ~ [ 19.4 -38.6  12.2])
+   base                     min  1.80  %1  4.00  %5  4.00   (en ince ~ [ 67.  -43.  -34.6])
+
+6) BASKI YONU ve DESTEK (eye_v2 print_R yonunde; tablaya degmeyen, yatayla 45 deg'den yatik asagi yuzey alani):
+   eye_shell_L              sarkma   227.4 mm2  tabla temas   271.5 mm2  boyut [23.8 43.3 18.2]  -> buyuk sarkma (BOM.md aciklamasi)
+   eye_fork                 sarkma    45.9 mm2  tabla temas    24.0 mm2  boyut [13.   6.  12.4]  -> incele: kopru veya kucuk agac destek (BOM.md)
+   gobek                    sarkma    19.7 mm2  tabla temas    64.0 mm2  boyut [8. 8. 8.]  -> ihmal edilebilir (<30 mm2: delik tavani/kisa kopru)
+   yaw_lever                sarkma    10.0 mm2  tabla temas    84.1 mm2  boyut [ 6.6 16.6 14. ]  -> ihmal edilebilir (<30 mm2: delik tavani/kisa kopru)
+   fixed_fork               sarkma    76.4 mm2  tabla temas   125.5 mm2  boyut [13. 13. 35.]  -> incele: kopru veya kucuk agac destek (BOM.md)
+   eye_shell_R              sarkma   227.4 mm2  tabla temas   271.5 mm2  boyut [23.8 43.3 18.2]  -> buyuk sarkma (BOM.md aciklamasi)
+   lid_upper_L              sarkma    68.6 mm2  tabla temas   100.2 mm2  boyut [20.9 21.3 40.8]  -> incele: kopru veya kucuk agac destek (BOM.md)
+   lid_lower_L              sarkma    62.2 mm2  tabla temas    96.5 mm2  boyut [17.3 15.7 30. ]  -> incele: kopru veya kucuk agac destek (BOM.md)
+   lid_upper_R              sarkma    68.6 mm2  tabla temas   100.2 mm2  boyut [20.9 21.3 40.8]  -> incele: kopru veya kucuk agac destek (BOM.md)
+   lid_lower_R              sarkma    62.2 mm2  tabla temas    96.5 mm2  boyut [17.3 15.7 30. ]  -> incele: kopru veya kucuk agac destek (BOM.md)
+   lid_link_upper           sarkma     0.0 mm2  tabla temas   254.4 mm2  boyut [53.5  6.2  2. ]  -> ihmal edilebilir (<30 mm2: delik tavani/kisa kopru)
+   lid_link_lower           sarkma     0.0 mm2  tabla temas   270.3 mm2  boyut [54.1 19.9  2. ]  -> ihmal edilebilir (<30 mm2: delik tavani/kisa kopru)
+   yaw_coupler              sarkma     0.0 mm2  tabla temas   393.8 mm2  boyut [69.  6.  2.]  -> ihmal edilebilir (<30 mm2: delik tavani/kisa kopru)
+   rocker                   sarkma    24.7 mm2  tabla temas   753.2 mm2  boyut [85.  28.2 10.3]  -> ihmal edilebilir (<30 mm2: delik tavani/kisa kopru)
+   pitch_link_L             sarkma   106.8 mm2  tabla temas     7.6 mm2  boyut [28.  8.  8.]  -> incele: kopru veya kucuk agac destek (BOM.md)
+   pitch_link_R             sarkma   106.8 mm2  tabla temas     7.6 mm2  boyut [28.  8.  8.]  -> incele: kopru veya kucuk agac destek (BOM.md)
+   back_frame               sarkma   131.3 mm2  tabla temas  2008.6 mm2  boyut [138.   48.   48.5]  -> incele: kopru veya kucuk agac destek (BOM.md)
+   mount_pitch_servo        sarkma    11.6 mm2  tabla temas   774.1 mm2  boyut [47.  22.8 11. ]  -> ihmal edilebilir (<30 mm2: delik tavani/kisa kopru)
+   rocker_bearing           sarkma     5.8 mm2  tabla temas   167.9 mm2  boyut [12.  14.3 10. ]  -> ihmal edilebilir (<30 mm2: delik tavani/kisa kopru)
+   mount_lid_servos_L       sarkma    11.6 mm2  tabla temas  1189.2 mm2  boyut [35.  51.  11.1]  -> ihmal edilebilir (<30 mm2: delik tavani/kisa kopru)
+   mount_lid_servos_R       sarkma    11.6 mm2  tabla temas  1189.2 mm2  boyut [35.  51.  11.1]  -> ihmal edilebilir (<30 mm2: delik tavani/kisa kopru)
+   mask                     sarkma    11.9 mm2  tabla temas  7982.5 mm2  boyut [128.  67.  11.]  -> ihmal edilebilir (<30 mm2: delik tavani/kisa kopru)
+   base                     sarkma   120.6 mm2  tabla temas 14527.8 mm2  boyut [158.  93.   4.]  -> incele: kopru veya kucuk agac destek (BOM.md)
+
+7) SERVO ACILARI (kontrol pozlarinda, derece):
+   yaw    0 pitch    0: EYE_YAW   90.0  EYE_PITCH   90.0
+   yaw  -30 pitch    0: EYE_YAW   60.0  EYE_PITCH   90.0
+   yaw   30 pitch    0: EYE_YAW  120.0  EYE_PITCH   90.0
+   yaw    0 pitch  -25: EYE_YAW   90.0  EYE_PITCH   56.7
+   yaw    0 pitch   25: EYE_YAW   90.0  EYE_PITCH  125.6
+   yaw  -30 pitch  -25: EYE_YAW   60.0  EYE_PITCH   63.2
+   yaw   30 pitch   25: EYE_YAW  120.0  EYE_PITCH  121.6
+   kapak closed  : LID_UL   64.4  LID_LL  113.8  LID_UR  115.6  LID_LR   66.2
+   kapak nominal : LID_UL   96.2  LID_LL   86.8  LID_UR   83.8  LID_LR   93.2
+   kapak open    : LID_UL  115.6  LID_LL   66.2  LID_UR   64.4  LID_LR  113.8
+
+SONUC: cakisma 0, eklem disi en kucuk bosluk 0.173 mm (eye_fork_L x fixed_fork_L @ (30.0, -25.0, 'open')), gecersiz kati 0, 1.2 alti et (yuzdelik %1) 0 parca []
+sure 395 s

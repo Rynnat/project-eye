@@ -1,0 +1,267 @@
+<title>Project Eye</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+  :root{
+    color-scheme:dark;
+    --bg:#0d1012; --panel:#14191c; --line:#243036;
+    --ink:#e4e8e6; --muted:#8c9a98;
+    --rod:#e3a455; --servo:#3a64c8; --post:#9aa5a8; --joint:#2ed9e0;
+    --mono:"JetBrains Mono",Consolas,monospace;
+  }
+  html,body{height:100%}
+  body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 "Barlow",system-ui,sans-serif}
+  .kap{display:grid;grid-template-columns:minmax(0,1fr) 340px;height:100%}
+  #sahne{position:relative;min-height:340px}
+  #sahne canvas{display:block;width:100%;height:100%;cursor:grab}
+  .ipucu{position:absolute;left:16px;bottom:12px;font:12px var(--mono);color:var(--muted);pointer-events:none}
+  aside{background:var(--panel);border-left:1px solid var(--line);padding:22px 20px;overflow:auto;display:flex;flex-direction:column;gap:20px}
+  h1{font-size:20px;margin:0;font-weight:600;text-wrap:balance}
+  .alt{color:var(--muted);font-size:13.5px;margin:4px 0 0}
+  h2{font:500 11px var(--mono);letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
+  .lejant{display:grid;gap:9px;margin:0;padding:0;list-style:none}
+  .lejant li{display:grid;grid-template-columns:14px 1fr;gap:10px;align-items:start;font-size:14px}
+  .lejant i{width:14px;height:14px;margin-top:3px;border-radius:2px}
+  .lejant small{display:block;color:var(--muted);font-size:12.5px}
+  table{width:100%;border-collapse:collapse;font-size:12.5px}
+  td{padding:5px 0;border-bottom:1px solid var(--line);vertical-align:top}
+  td:nth-child(2){font-family:var(--mono);text-align:right;white-space:nowrap;padding-left:8px;font-variant-numeric:tabular-nums}
+  td:nth-child(3){text-align:right;padding-left:8px;white-space:nowrap}
+  .k,.s{font:10px var(--mono);letter-spacing:.5px;padding:1px 5px;border-radius:2px}
+  .k{color:#0d1012;background:var(--joint)} .s{color:var(--muted);border:1px solid var(--line)}
+  .kontrol{display:grid;gap:12px}
+  label{display:grid;grid-template-columns:1fr auto;gap:4px 10px;font-size:14px}
+  label output{font:12.5px var(--mono);color:var(--joint);font-variant-numeric:tabular-nums}
+  input[type=range]{grid-column:1/-1;width:100%;accent-color:var(--rod)}
+  .onay{display:flex;gap:9px;align-items:center;font-size:14px}
+  .onay input{accent-color:var(--rod)}
+  .not{font-size:13px;color:var(--muted);border-top:1px solid var(--line);padding-top:14px;margin:0}
+  .not b{color:var(--ink);font-weight:600}
+  input:focus-visible{outline:2px solid var(--joint);outline-offset:2px}
+  @media (max-width:760px){
+    .kap{grid-template-columns:1fr;grid-template-rows:55vh auto;height:auto}
+    aside{border-left:none;border-top:1px solid var(--line)}
+  }
+</style>
+
+<div class="kap">
+  <div id="sahne"><div class="ipucu">sürükle: döndür · tekerlek: yakınlaş</div></div>
+  <aside>
+    <div>
+      <h1>Kardan mafsallı göz</h1>
+      <p class="alt">Bütün parçalar gerçek ölçüde (mm). Göz, merkezindeki kardan mafsalı etrafında döner; iki SG90 arkadan çubuklarla iter.</p>
+    </div>
+    <div class="kontrol">
+      <h2>Hareket</h2>
+      <label for="yaw">Sağ–sol <output id="yawDeg">0°</output><input id="yaw" type="range" min="-30" max="30" value="0"></label>
+      <label for="pitch">Yukarı–aşağı <output id="pitchDeg">0°</output><input id="pitch" type="range" min="-25" max="25" value="0"></label>
+      <div class="onay"><input id="gez" type="checkbox" checked><label for="gez" style="display:block">Kendi kendine baksın</label></div>
+      <div class="onay"><input id="seffaf" type="checkbox" checked><label for="seffaf" style="display:block">Kabuk yarı saydam</label></div>
+    </div>
+    <div>
+      <h2>Parçalar</h2>
+      <ul class="lejant">
+        <li><i style="background:#e8e6df"></i><span>Göz kabuğu<small>Yarım küre, 1.6 mm duvar, arkası açık.</small></span></li>
+        <li><i style="background:var(--joint)"></i><span>Göbek<small>Küre merkezinde. Sadece sağa-sola döner.</small></span></li>
+        <li><i style="background:#6d747a"></i><span>4 × M2×5 vida<small>Göbeğe 2.5 mm girer, uçları birbirine değmez.</small></span></li>
+        <li><i style="background:#d8d4c8"></i><span>Göz çatalı + kulakçıklar<small>Göze yapışık. Yatay vidalar etrafında yukarı-aşağı döner.</small></span></li>
+        <li><i style="background:var(--post)"></i><span>Sabit çatal + direk<small>Dikey vidaları tutar, hareket etmez.</small></span></li>
+        <li><i style="background:var(--rod)"></i><span>İtme çubukları<small>Ø1.5 çelik tel.</small></span></li>
+        <li><i style="background:var(--servo)"></i><span>SG90 × 2<small>Alttaki sağ-sol, soldaki yukarı-aşağı.</small></span></li>
+      </ul>
+    </div>
+    <div>
+      <h2>Ölçüler</h2>
+      <table>
+        <tr><td>Göz çapı</td><td>24</td><td><span class="k">kaynak</span></td></tr>
+        <tr><td>İris / bebek</td><td>12 / 4</td><td><span class="k">kaynak</span></td></tr>
+        <tr><td>SG90 gövde</td><td>22.8×12.4</td><td><span class="k">datasheet</span></td></tr>
+        <tr><td>SG90 kulaklarla boy</td><td>32.0</td><td><span class="k">datasheet</span></td></tr>
+        <tr><td>SG90 kulak altı / gövde üstü</td><td>15.6 / 26.7</td><td><span class="k">datasheet</span></td></tr>
+        <tr><td>Mil, gövde ucundan</td><td>≈5.8</td><td><span class="s">çizimden</span></td></tr>
+        <tr><td>M2 vida / kafa</td><td>Ø2 / Ø3.8×2</td><td><span class="k">ISO 4762</span></td></tr>
+        <tr><td>Kol delik aralığı</td><td>2</td><td><span class="k">kaynak</span></td></tr>
+        <tr><td>Kolda kullanılan delik</td><td>r = 10</td><td><span class="s">seçim</span></td></tr>
+        <tr><td>Göbek</td><td>8×8×8</td><td><span class="s">seçim</span></td></tr>
+        <tr><td>Çatal kolu kalınlığı / boşluk</td><td>2 / 0.5</td><td><span class="s">seçim</span></td></tr>
+        <tr><td>Kabuk duvarı</td><td>1.6</td><td><span class="s">seçim</span></td></tr>
+        <tr><td>Direk</td><td>Ø5</td><td><span class="s">seçim</span></td></tr>
+        <tr><td>İtme çubuğu</td><td>Ø1.5</td><td><span class="s">seçim</span></td></tr>
+      </table>
+    </div>
+    <p class="not"><b>Vida neden M2×5?</b> 2 mm kol + 0.5 mm boşluk + 2.5 mm göbek. M2×6 olsaydı dört vidanın uçları göbeğin ortasında çakışırdı.</p>
+    <p class="not"><b>Modelde olmayanlar:</b> servoları tabana tutan braketler ve çubuk uçlarındaki bağlantı parçaları (Z-büküm veya M2 rotil).</p>
+  </aside>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+(function(){
+  const V=(x,y,z)=>new THREE.Vector3(x,y,z);
+  const kutu=document.getElementById('sahne');
+  const renderer=new THREE.WebGLRenderer({antialias:true});
+  renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+  renderer.setClearColor(0x0d1012);
+  kutu.prepend(renderer.domElement);
+  const scene=new THREE.Scene();
+  const cam=new THREE.PerspectiveCamera(35,1,0.1,1000);
+  cam.position.set(62,30,58);
+  const ctl=new THREE.OrbitControls(cam,renderer.domElement);
+  ctl.target.set(-2,-6,-14); ctl.enableDamping=true;
+
+  scene.add(new THREE.HemisphereLight(0xdfe8ea,0x1a2226,0.9));
+  const dl=new THREE.DirectionalLight(0xffffff,0.8); dl.position.set(40,60,50); scene.add(dl);
+  const grid=new THREE.GridHelper(160,32,0x2a3940,0x1a2428); grid.position.y=-42; scene.add(grid);
+
+  const M=(c,o={})=>new THREE.MeshStandardMaterial(Object.assign({color:c,roughness:.55,metalness:.1},o));
+  const mPost=M(0x9aa5a8,{metalness:.5,roughness:.4}), mJoint=M(0x2ed9e0,{emissive:0x0b3a3c}),
+        mRod=M(0xe3a455,{metalness:.5,roughness:.3}), mServo=M(0x3a64c8), mHorn=M(0xf2f2f2),
+        mVida=M(0x6d747a,{metalness:.8,roughness:.3}), mGozParca=M(0xd8d4c8);
+
+  function silindir(a,b,r,mat,seg=20){
+    const v=new THREE.Vector3().subVectors(b,a), L=v.length();
+    const m=new THREE.Mesh(new THREE.CylinderGeometry(r,r,L,seg),mat);
+    yerlestir(m,a,b); return m;
+  }
+  function yerlestir(m,a,b){
+    const v=new THREE.Vector3().subVectors(b,a), L=v.length();
+    m.position.copy(a).addScaledVector(v,.5);
+    m.quaternion.setFromUnitVectors(V(0,1,0),v.clone().normalize());
+    m.scale.set(1,L/m.geometry.parameters.height,1);
+  }
+  const blok=(sx,sy,sz,x,y,z,mat)=>{const m=new THREE.Mesh(new THREE.BoxGeometry(sx,sy,sz),mat);m.position.set(x,y,z);return m;};
+
+  /* ===== GÖZ (hareketli; pivot = orijin = küre merkezi; ön = +Z) ===== */
+  const R_GOZ=12, DUVAR=1.6;
+  const goz=new THREE.Group(); scene.add(goz);
+  const mKabuk=M(0xe8e6df,{side:THREE.DoubleSide,transparent:true,opacity:.4,roughness:.3,depthWrite:false});
+  const yarim=(r,mat)=>new THREE.Mesh(new THREE.SphereGeometry(r,48,24,0,Math.PI*2,0,Math.PI/2),mat).rotateX(Math.PI/2);
+  goz.add(yarim(R_GOZ,mKabuk), yarim(R_GOZ-DUVAR,mKabuk));
+  const halka=new THREE.Mesh(new THREE.RingGeometry(R_GOZ-DUVAR,R_GOZ,48),mKabuk); goz.add(halka);   // kesik yüz
+  const kapak=(r,cap,renk)=>new THREE.Mesh(new THREE.SphereGeometry(r,40,8,0,Math.PI*2,0,Math.asin(cap/2/R_GOZ)),M(renk,{roughness:.4})).rotateX(Math.PI/2);
+  goz.add(kapak(12.06,12,0x2a8fa0), kapak(12.12,4,0x050607));
+
+  /* ===== KARDAN MAFSALI =====
+     Göbek 8 mm. Çatal kolları 2 mm kalın, göbekten 0.5 mm boşluklu → kol merkezi 4+0.5+1 = 5.5.
+     M2×5: kafa kolun dış yüzünde (6.5), uç göbeğin içinde 1.5'te → karşı vidalarla çakışmaz. */
+  const G=8, KOL_T=2, BOS=.5, KOL_C=G/2+BOS+KOL_T/2, DIS=G/2+BOS+KOL_T;   // 5.5 , 6.5
+  function vida(eksen,isaret){                     // eksen: 'x' | 'y'
+    const g=new THREE.Group(), e=eksen==='x'?V(1,0,0):V(0,1,0);
+    const uc=e.clone().multiplyScalar(isaret*(DIS-5)), dis=e.clone().multiplyScalar(isaret*DIS);
+    g.add(silindir(uc,dis,1,mVida,14));
+    g.add(silindir(dis,e.clone().multiplyScalar(isaret*(DIS+2)),1.9,mVida,6));   // altıgen yuvalı kafa Ø3.8×2
+    return g;
+  }
+  const gobek=new THREE.Group(); scene.add(gobek);          // sadece sağa-sola döner
+  gobek.add(blok(G,G,G,0,0,0,mJoint));
+  gobek.add(vida('x',1), vida('x',-1));                     // yatay vidalar göbekle birlikte döner
+
+  // sabit çatal: y=±5.5'te kollar (x genişliği 6, göz kollarına çarpmasın diye dar), arkada köprü, direk
+  [1,-1].forEach(k=>{
+    scene.add(blok(6,KOL_T,11,0,KOL_C*k,-1.5,mPost));
+    scene.add(vida('y',k));
+  });
+  scene.add(blok(6,2*DIS,2,0,0,-8,mPost));
+  scene.add(silindir(V(0,0,-9),V(0,0,-44),2.5,mPost));
+
+  // göz çatalı: x=±5.5'te kollar, önde köprü, köprüden kabuğun iç önüne sap
+  [1,-1].forEach(k=>goz.add(blok(KOL_T,6,8,KOL_C*k,0,.5,mGozParca)));
+  goz.add(blok(2*DIS,4,2,0,0,5.5,mGozParca));
+  goz.add(silindir(V(0,0,6.5),V(0,0,R_GOZ-DUVAR+.3),1.8,mGozParca));
+
+  // kulakçıklar: kabuğun kesik kenarından arkaya 2 mm kalın tırnak, ucunda Ø1.6 delik noktası
+  const A_yaw=V(11,0,-4), A_pitch=V(0,11,-4);
+  goz.add(blok(2,4,4.5,11,0,-2.2,mGozParca));
+  goz.add(blok(4,2,4.5,0,11,-2.2,mGozParca));
+
+  /* ===== SG90 (Luxorparts datasheet) =====
+     gövde 22.8 × 12.4, kulaklarla 32.0; kulak altı 15.6 (kulak ≈2.5 kalın), gövde üstü 26.7.
+     mil gövde ucundan ≈5.8; mil üstü ≈29.5; kol ~1.5 kalın. Yerel eksenler: +Y = mil yönü, +X = gövde boyu. */
+  function sg90(){
+    const g=new THREE.Group();
+    g.add(blok(22.8,22.7,12.4,22.8/2-5.8,22.7/2,0,mServo));          // ana gövde
+    g.add(blok(32,2.5,12.4,22.8/2-5.8,15.6+1.25,0,mServo));          // montaj kulakları
+    const tepe=new THREE.Mesh(new THREE.CylinderGeometry(5.9,5.9,4,28),mServo);
+    tepe.position.set(0,22.7+2,0); g.add(tepe);                       // mil etrafındaki yuvarlak tepe → 26.7
+    g.add(silindir(V(0,26.7,0),V(0,29.5,0),2.4,M(0xf2f2f2)));       // dişli mil
+    return g;
+  }
+  const R_KOL=10, KOL_Y=30.25;          // kol mil üstünde, kullanılan delik milden 10 mm
+  function kol(){ const g=new THREE.Group();
+    g.add(silindir(V(0,29.5,0),V(0,31,0),3.5,mHorn));
+    const kolGovde=blok(R_KOL+2.5,1.5,5,(R_KOL+2.5)/2,KOL_Y,0,mHorn); g.add(kolGovde); return g; }
+
+  // Sağ-sol servosu: mil +Y yönünde, gözün altında. Kol ucu A_yaw'un altında olsun.
+  const S1=new THREE.Group(); scene.add(S1);
+  S1.add(sg90()); const kol1=kol(); S1.add(kol1);
+  S1.position.set(A_yaw.x-R_KOL,-8-KOL_Y,-34);             // kol düzlemi y = -8
+  // Yukarı-aşağı servosu: mil +X yönünde (yerel +Y → dünya +X), gözün solunda.
+  const S2=new THREE.Group(); scene.add(S2);
+  S2.add(sg90()); const kol2=kol(); S2.add(kol2);
+  S2.rotation.set(0,0,-Math.PI/2);                           // yerel +Y (mil) → dünya +X
+  S2.position.set(-8-KOL_Y,0,-34);
+  scene.updateMatrixWorld(true);
+  // pitch kolunun dönme merkezi ve yönü dünyada
+  const C1=V(A_yaw.x-R_KOL,-8,-34);
+  const C2=new THREE.Vector3(0,KOL_Y,0).applyMatrix4(S2.matrixWorld);
+  const kolYonu2=new THREE.Vector3(1,0,0).transformDirection(S2.matrixWorld);   // kol sıfır yönü
+  // kol ucu: servo mil ekseni etrafında t kadar döndürülmüş delik noktası
+  const uc1=t=>V(C1.x+R_KOL*Math.cos(t),C1.y,C1.z-R_KOL*Math.sin(t));
+  const eksen2=new THREE.Vector3(0,1,0).transformDirection(S2.matrixWorld);
+  const uc2=t=>C2.clone().add(kolYonu2.clone().applyAxisAngle(eksen2,t).multiplyScalar(R_KOL));
+  // pitch kolu sıfırda +Y'yi göstersin → çubuğa dik (alttaki servodaki gibi).
+  // Kol çubukla aynı doğrultuda olursa ölü noktaya girer, küçük göz hareketi için kol sıçrar.
+  const hedefUc=C2.clone().add(V(0,R_KOL,0));
+  let t0_2=0,best=1e9; for(let i=-180;i<180;i+=.5){const t=i*Math.PI/180,d=uc2(t).distanceTo(hedefUc);if(d<best){best=d;t0_2=t;}}
+  const L1=uc1(0).distanceTo(A_yaw), L2=uc2(t0_2).distanceTo(A_pitch);
+
+  const cubuk1=silindir(uc1(0),A_yaw,.75,mRod), cubuk2=silindir(uc2(t0_2),A_pitch,.75,mRod);
+  scene.add(cubuk1,cubuk2);
+  const pim=()=>{const m=new THREE.Mesh(new THREE.SphereGeometry(1.1,12,10),mRod);scene.add(m);return m;};
+  const p1a=pim(),p1b=pim(),p2a=pim(),p2b=pim();
+
+  function coz(uc,hedef,L,merkez){            // bir önceki açının ±40° çevresinde ara → çözüm dala atlamaz
+    let en=merkez,hata=1e9;
+    for(let i=-40;i<=40;i+=.25){ const t=merkez+i*Math.PI/180, e=Math.abs(uc(t).distanceTo(hedef)-L); if(e<hata){hata=e;en=t;} }
+    return en;
+  }
+
+  const taban=new THREE.Mesh(new THREE.BoxGeometry(70,70,3),M(0x2b3439,{metalness:.4}));
+  taban.position.set(-6,-6,-45.5); scene.add(taban);
+
+  /* ===== kontrol ===== */
+  const yawEl=document.getElementById('yaw'), pitchEl=document.getElementById('pitch'),
+        gezEl=document.getElementById('gez'), seffafEl=document.getElementById('seffaf');
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches) gezEl.checked=false;
+  let yaw=0,pitch=0,hedefY=0,hedefP=0,sonraki=0;
+  seffafEl.onchange=()=>{mKabuk.opacity=seffafEl.checked?.4:1; mKabuk.transparent=seffafEl.checked; mKabuk.depthWrite=!seffafEl.checked; mKabuk.needsUpdate=true;};
+  [yawEl,pitchEl].forEach(el=>el.addEventListener('input',()=>{gezEl.checked=false;}));
+
+  function boyut(){ const w=kutu.clientWidth,h=kutu.clientHeight; renderer.setSize(w,h,false); cam.aspect=w/h; cam.updateProjectionMatrix(); }
+  addEventListener('resize',boyut); boyut();
+
+  let t1=0,t2=t0_2;
+  function kare(zaman){
+    if(gezEl.checked){
+      if(zaman>sonraki){ hedefY=(Math.random()*2-1)*28; hedefP=(Math.random()*2-1)*20; sonraki=zaman+700+Math.random()*1400; }
+      yaw+=(hedefY-yaw)*.18; pitch+=(hedefP-pitch)*.18;
+      yawEl.value=Math.round(yaw); pitchEl.value=Math.round(pitch);
+    } else { yaw=+yawEl.value; pitch=+pitchEl.value; }
+    document.getElementById('yawDeg').textContent=Math.round(yaw)+'°';
+    document.getElementById('pitchDeg').textContent=Math.round(pitch)+'°';
+
+    const y=yaw*Math.PI/180, p=-pitch*Math.PI/180;
+    gobek.rotation.set(0,y,0);
+    goz.rotation.set(p,y,0,'YXZ'); goz.updateMatrixWorld();
+    const a1=A_yaw.clone().applyMatrix4(goz.matrixWorld), a2=A_pitch.clone().applyMatrix4(goz.matrixWorld);
+    t1=coz(uc1,a1,L1,t1); t2=coz(uc2,a2,L2,t2);
+    kol1.rotation.y=t1; kol2.rotation.y=t2;
+    const u1=uc1(t1),u2=uc2(t2);
+    yerlestir(cubuk1,u1,a1); yerlestir(cubuk2,u2,a2);
+    p1a.position.copy(u1); p1b.position.copy(a1); p2a.position.copy(u2); p2b.position.copy(a2);
+    ctl.update(); renderer.render(scene,cam); requestAnimationFrame(kare);
+  }
+  requestAnimationFrame(kare);
+})();
+</script>

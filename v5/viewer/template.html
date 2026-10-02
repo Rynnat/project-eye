@@ -1,0 +1,678 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Project Eye v5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+  /* Üretildi: viewer/build_viewer.py (template.html). Elle düzenlemeyin; şablonu düzenleyip betiği çalıştırın. */
+  :root{color-scheme:dark;--bg:#1A0A2E;--surf:#24123D;--line:#3a2560;--n1:#00F0FF;--n2:#FF00FF;--warn:#F8E602;--ok:#46F0A0;--ink:#F4D5FD;--ink2:#a58bc0;
+    --disp:"Rajdhani","Segoe UI",sans-serif;--mono:"JetBrains Mono",Consolas,monospace}
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0}
+  body{background:var(--bg);color:var(--ink);font:15px/1.45 var(--disp);overflow:hidden}
+  .kap{display:grid;grid-template-columns:minmax(0,1fr) auto;height:100%}
+  #sahne{position:relative;min-height:320px}
+  #sahne canvas{display:block;width:100%;height:100%;cursor:grab}
+  .yukle{position:absolute;inset:0;display:grid;place-items:center;font:500 13px var(--mono);color:var(--ink2)}
+  .ust{position:absolute;left:18px;top:14px;pointer-events:none}
+  .ust .kucuk{font:500 11px var(--mono);letter-spacing:.14em;color:var(--ink2);text-transform:uppercase}
+  .ust h1{margin:2px 0 0;font:700 30px/1 var(--disp);letter-spacing:.08em;text-transform:uppercase}
+  .ust h1 span{color:var(--n1)}
+  .ust .ilerle{margin-top:8px;width:240px;font:500 11px var(--mono);color:var(--ink2)}
+  .ust .ilerle b{font:700 18px var(--disp);color:var(--ok);margin-right:6px;letter-spacing:.04em}
+  .ust .ilerle .cubuk{height:6px;margin-top:4px;background:var(--line);position:relative;overflow:hidden}
+  .ust .ilerle .cubuk i{position:absolute;top:0;bottom:0;left:0;transition:width .4s,left .4s}
+  #ilerleDolu{background:var(--ok)} #ilerleSur{background:#3d8bff}
+  .ust .rozet{display:inline-block;margin-top:8px;font:500 11px var(--mono);padding:3px 8px;background:rgba(70,240,160,.12);border:1px solid rgba(70,240,160,.5);color:var(--ok)}
+  .gorunum{position:absolute;left:18px;bottom:14px;display:flex;gap:6px;flex-wrap:wrap}
+  .gorunum button{all:unset;cursor:pointer;padding:6px 12px;font:600 13px var(--disp);letter-spacing:.08em;text-transform:uppercase;background:rgba(36,18,61,.85);border:1px solid var(--line)}
+  .gorunum button:hover,.gorunum button:focus-visible{border-color:var(--n1);color:var(--n1)}
+  aside{background:var(--surf);border-left:1px solid var(--line);width:340px;overflow:hidden;transition:width .38s cubic-bezier(.22,.8,.24,1),border-color .38s}
+  aside .ic{width:340px;height:100%;padding:18px;overflow:auto;display:flex;flex-direction:column;gap:18px}
+  .kap.kapali aside{width:0;border-left-color:transparent}
+  /* menü tutamacı: panelin tam solunda, dikey ortada; panel kayınca onunla birlikte kayar */
+  #sahne{overflow:hidden}
+  /* menü tutamacı kabı (panelin sol kenarında, dikey ortada) */
+  .tutamaclar{position:absolute;right:0;top:50%;transform:translateY(-50%);z-index:4;display:flex;flex-direction:column;gap:8px;
+    transition:transform .38s cubic-bezier(.22,.8,.24,1)}
+  #panelDugme{all:unset;box-sizing:border-box;cursor:pointer;
+    width:26px;height:64px;display:grid;place-items:center;background:var(--surf);border:1px solid var(--line);border-right:none;
+    clip-path:polygon(0 8px,8px 0,100% 0,100% 100%,8px 100%,0 calc(100% - 8px));color:var(--ink2)}
+  #panelDugme:hover,#panelDugme:focus-visible{color:var(--n1);background:#2d1850}
+  #panelDugme:focus-visible{outline:1px solid var(--n1);outline-offset:-3px}
+  /* Sıralı listede baskı takibi: dosya adının yanında adet kadar küçük kutu */
+  .renk.sirali{grid-template-columns:14px auto 1fr auto auto auto}
+  .kutular{display:flex;gap:3px}
+  .tkb{all:unset;box-sizing:border-box;width:15px;height:15px;border:1.5px solid var(--ink2);display:grid;place-items:center;cursor:pointer}
+  .tkb svg{width:11px;height:11px;display:none}
+  .tkb:hover,.tkb:focus-visible{border-color:var(--n1)}
+  .tkb:focus-visible{outline:1px solid var(--n1);outline-offset:1px}
+  .tkb[data-s="1"]{background:#3d8bff;border-color:#3d8bff}
+  .tkb[data-s="1"] .s1,.tkb[data-s="2"] .s2{display:block}
+  .tkb[data-s="2"]{background:var(--ok);border-color:var(--ok)}
+  .renk.suruyor .ad{color:#7fb0ff}
+  .renk.bitti .ad{color:var(--ok)}
+  #panelDugme svg{width:14px;height:14px;transition:transform .38s cubic-bezier(.22,.8,.24,1)}
+  .kap.kapali #panelDugme svg{transform:rotate(180deg)}
+  @media (prefers-reduced-motion:reduce){aside,#panelDugme svg{transition:none}}
+  h2{margin:0 0 10px;font:500 11px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ink2);display:flex;gap:8px;align-items:center}
+  h2::after{content:"";flex:1;height:1px;background:var(--line)}
+  label.k{display:grid;grid-template-columns:1fr auto;gap:2px 10px;font-size:15px;margin-bottom:8px}
+  label.k output{font:500 12px var(--mono);color:var(--n1);font-variant-numeric:tabular-nums}
+  input[type=range]{grid-column:1/-1;width:100%;accent-color:var(--n2)}
+  .dugmeler{display:flex;gap:6px;flex-wrap:wrap}
+  .btn{all:unset;cursor:pointer;padding:7px 12px;font:600 13px var(--disp);letter-spacing:.08em;text-transform:uppercase;background:var(--line)}
+  .btn:hover,.btn:focus-visible{background:var(--n1);color:var(--bg)}
+  .btn[aria-pressed="true"]{background:var(--n2);color:var(--bg)}
+  .onay{display:flex;gap:9px;align-items:center;margin:6px 0}
+  .onay input{accent-color:var(--n2)}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  td{padding:5px 0;border-bottom:1px solid var(--line)}
+  td:nth-child(2){font:12px var(--mono);color:var(--ink2)}
+  td:last-child{text-align:right;font:500 13px var(--mono);color:var(--n1);font-variant-numeric:tabular-nums}
+  .not{font-size:13px;color:var(--ink2);margin:0;line-height:1.45}
+  .not b{color:var(--ink);font-weight:600}
+  input:focus-visible{outline:1px solid var(--n1)}
+  /* filament renkleri */
+  .renkler{display:flex;flex-direction:column;gap:4px}
+  .renk{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:6px;font-size:14px}
+  .goz{all:unset;cursor:pointer;width:22px;height:22px;display:grid;place-items:center;color:var(--ink2)}
+  .goz svg{width:16px;height:16px}
+  .goz:hover,.goz:focus-visible{color:var(--n1)}
+  .goz:focus-visible{outline:1px solid var(--n1)}
+  .goz .kapali{display:none}
+  .goz[aria-pressed="false"] .acik{display:none}
+  .goz[aria-pressed="false"] .kapali{display:block}
+  .renk:has(.goz[aria-pressed="false"]) .ad{opacity:.45}
+  .renk .ad small{color:var(--ink2);font:12px var(--mono);margin-left:4px}
+  .sw{display:flex;gap:4px;align-items:center}
+  .sw button{all:unset;cursor:pointer;width:20px;height:20px;border:1px solid var(--line);box-sizing:border-box}
+  .sw button[aria-pressed="true"]{outline:2px solid var(--n1);outline-offset:1px}
+  .sw button:focus-visible{outline:2px solid var(--n2)}
+  .sw input[type=color]{width:22px;height:22px;padding:0;border:1px solid var(--line);background:none;cursor:pointer}
+  .renk .ad{all:unset;cursor:pointer;padding:2px 4px;margin-left:-4px;border-left:2px solid transparent}
+  .renk .ad:hover,.renk .ad:focus-visible{color:var(--n1)}
+  .renk .ad[aria-pressed="true"]{color:var(--n1);border-left-color:var(--n1);background:rgba(0,240,255,.08)}
+  .renk.tum .ad{cursor:default}
+  .renk{grid-template-columns:14px auto 1fr auto auto}
+  .indir{all:unset;cursor:pointer;width:22px;height:22px;display:grid;place-items:center;color:var(--ink2)}
+  .indir svg{width:15px;height:15px}
+  .indir:hover,.indir:focus-visible{color:var(--n1)}
+  .indir:focus-visible{outline:1px solid var(--n1)}
+  .indir[aria-busy="true"]{color:var(--warn);cursor:progress}
+  body.indirme-yok .indir{visibility:hidden}
+  #indirDurum{font:500 12px var(--mono);color:var(--ink2);min-height:1em;margin:6px 0 0}
+  .renk .ok,.renk .ok-bos{all:unset;width:14px;height:14px;display:grid;place-items:center;cursor:pointer;color:var(--ink2)}
+  .renk .ok svg{width:10px;height:10px;transition:transform .2s}
+  .renk .ok[aria-expanded="true"] svg{transform:rotate(90deg)}
+  .renk .ok:focus-visible{outline:1px solid var(--n1)}
+  .renk.grup .ad{font-weight:600;letter-spacing:.03em}
+  .goz[aria-pressed="mixed"]{opacity:.55}
+  .cocuklar[hidden]{display:none}
+  .renk.tum{padding-bottom:6px;margin-bottom:4px;border-bottom:1px solid var(--line);font-weight:600}
+  @media (max-width:760px){body{overflow:auto}.kap{grid-template-columns:1fr;grid-template-rows:60vh auto;height:auto}aside,.kap.kapali aside{width:auto;border-left:none;border-top:1px solid var(--line)}aside .ic{width:auto}#panelDugme{display:none}}
+</style>
+</head>
+<body>
+<div class="kap">
+  <div id="sahne">
+    <div class="yukle" id="yukle">model yükleniyor…</div>
+    <div class="ust"><div class="kucuk">Epic Project // project-eye</div><h1>Project Eye <span>v5</span></h1><div class="rozet" id="rozet"></div>
+      <div class="ilerle" id="ilerle"><b id="ilerleYuzde">%0</b><span id="ilerleYazi">basıldı</span>
+        <div class="cubuk" aria-hidden="true"><i id="ilerleDolu" style="width:0"></i><i id="ilerleSur" style="width:0"></i></div></div></div>
+    <div class="tutamaclar">
+    <button id="panelDugme" aria-controls="panel" aria-expanded="true" aria-label="Menüyü kapat" title="Menüyü aç / kapat">
+      <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M5 2l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square"/></svg>
+    </button>
+    </div>
+    <div class="gorunum">
+      <button data-g="on">Ön</button><button data-g="mekanizma">Mekanizma</button><button data-g="arka">Arka</button><button data-g="yan">Yan</button>
+    </div>
+  </div>
+  <aside id="panel"><div class="ic">
+    <section>
+      <h2>Bakış</h2>
+      <label class="k" for="yaw">Sağ–sol <output id="yawO">0°</output><input id="yaw" type="range" min="-25" max="25" step="0.5" value="0"></label>
+      <label class="k" for="pitch">Yukarı–aşağı <output id="pitchO">0°</output><input id="pitch" type="range" min="-20" max="20" step="0.5" value="0"></label>
+    </section>
+    <section>
+      <h2>Kapaklar</h2>
+      <label class="k" for="kap">Kapaklar (üst + alt) <output id="kapO">%</output><input id="kap" type="range" min="0" max="100" value="80"></label>
+      <div class="dugmeler"><button class="btn" id="kirp">Kırp</button></div>
+    </section>
+    <section>
+      <h2>Mod</h2>
+      <div class="dugmeler"><button class="btn" id="izle" aria-pressed="true" title="Gözler kameraya (sana) bakar, sınırlarda durur; yaklaşınca kapaklar açılır, uzaklaşınca göz kısılır">İzle</button><button class="btn" id="canli" aria-pressed="false">Canlı</button><button class="btn" id="notr">Nötr</button></div>
+      <div class="dugmeler" style="margin-top:8px"><button class="btn" id="maske" aria-pressed="false" title="Ön maskeyi göster / gizle (ağaçtaki diğer düğmelerden bağımsız)">Ön maske</button></div>
+      <div class="onay"><input type="checkbox" id="xray"><label for="xray">Maskeyi saydam yap</label></div>
+    </section>
+    <section>
+      <h2>Parçalar</h2>
+      <div class="dugmeler" role="group" aria-label="Liste görünümü" style="margin-bottom:10px">
+        <button class="btn" id="gModuler" aria-pressed="true" title="Montaj gruplarına göre">Modüler</button>
+        <button class="btn" id="gSirali" aria-pressed="false" title="Dosya / baskı sırasına göre (01–18)">Sıralı</button>
+      </div>
+      <div class="renkler" id="renkler"></div>
+      <p id="indirDurum" role="status" aria-live="polite"></p>
+      <div class="dugmeler" style="margin-top:8px"><button class="btn" id="renkSifirla">Varsayılan</button></div>
+    </section>
+    <section>
+      <h2>Servo açıları</h2>
+      <table id="servolar"></table>
+    </section>
+    <p class="not">Eldeki M4/M3 vidalar ve somunlarla (29 somunlu bağlantı, basılı dişe güvenilmez), basılı rotil olmadan; 3 servo: tek kapak servosu dört kapağı birlikte sürer, kapalıyken iris tamamen örtülür. Ön maske ve yuvarlatılmış kenarlar. Hareket, çakışma taramasındaki modelin kendisinden (<b>cad/eye_v5.py</b>) 5°'lik ızgarada hesaplanıp enterpole edilir. Servo açıları o modelin kinematiğinden gelir; <b>gerçek donanımda kalibre edilmedi.</b></p>
+  </div></aside>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+<script>
+const POZ = /*__POSE_DATA__*/null;
+const GLB_B64 = "__GLB_BASE64__";
+(function(){
+  const $ = s => document.querySelector(s);
+  const azHareket = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const bos = (POZ.sonuc.match(/bosluk ([\d.]+) mm/)||[])[1];
+  $('#rozet').textContent = (POZ.sonuc.match(/cakisma \d+/)||['kontrol'])[0].replace('cakisma','çakışma') + (bos ? ' · min boşluk ' + bos + ' mm' : '');
+
+  /* ---------- sahne ---------- */
+  const kutu = $('#sahne');
+  const renderer = new THREE.WebGLRenderer({antialias:true});
+  renderer.setPixelRatio(Math.min(devicePixelRatio,2)); renderer.setClearColor(0x140824);
+  renderer.outputEncoding = THREE.sRGBEncoding;
+  kutu.prepend(renderer.domElement);
+  const scene = new THREE.Scene();
+  const cam = new THREE.PerspectiveCamera(30,1,1,4000);
+  const ctl = new THREE.OrbitControls(cam, renderer.domElement); ctl.enableDamping = true;
+  scene.add(new THREE.HemisphereLight(0xeef2ff,0x2a1440,0.9));
+  const d1 = new THREE.DirectionalLight(0xffffff,0.8); d1.position.set(80,120,160); scene.add(d1);
+  const d2 = new THREE.DirectionalLight(0x88ccff,0.35); d2.position.set(-120,-30,-120); scene.add(d2);
+
+  const GORUNUM = {                        // v3 modeli v2'den ~1.6x buyuk: kamera daha uzakta
+    on:        {p:[0,30,430],     t:[0,-5,0],    maske:false},
+    mekanizma: {p:[260,160,230],  t:[0,-15,-40], maske:false},
+    arka:      {p:[-170,130,-340],t:[0,-15,-40], maske:false},
+    yan:       {p:[400,30,-40],   t:[0,-15,-40], maske:false},
+  };
+  function gorunum(ad){
+    const g = GORUNUM[ad]; cam.position.set(...g.p); ctl.target.set(...g.t);
+    gorunurluk();
+  }
+
+  /* ---------- GLB (sayfaya gömülü: dosya olarak açılınca da çalışsın) ---------- */
+  const bin = Uint8Array.from(atob(GLB_B64), c => c.charCodeAt(0)).buffer;
+  const gruplar = {};            // grup adı → {node, M0}
+  const kabuklar = [], maskeler = [];
+  let maskeAcik = false;                     // ön maske: yalnız "Ön maske" düğmesi değiştirir
+  new THREE.GLTFLoader().parse(bin, '', gltf => {
+    const kok = gltf.scene; scene.add(kok);
+    kok.traverse(o => {
+      if (o.name && o.name.startsWith('G_')){
+        o.updateMatrix(); o.matrixAutoUpdate = false;
+        gruplar[o.name.slice(2)] = {node:o, M0:o.matrix.clone()};
+      }
+      if (o.isMesh){
+        o.material = o.material.clone(); o.material.side = THREE.DoubleSide;
+        let p = o; while (p && !/^mask/.test(p.name)) p = p.parent;
+        if (p) kabuklar.push(o);   // v5: saydamlik ve gizleme MASKEYE uygulanir
+      }
+    });
+    $('#yukle').remove();
+    renkKur();
+    gorunum('on');
+    uygula();
+  }, err => { $('#yukle').textContent = 'model yüklenemedi: ' + err; });
+
+  /* ---------- montaj ağacı: gruplar + parçalar (göster/gizle, vurgula, filament rengi) ---------- */
+  const FILAMENT = [['Siyah','#26262b'],['Beyaz','#f2f0ea'],['Kırmızı','#c8102e']];   // siyah sahnede görünsün diye hafif açık
+  const VARSAYILAN = {eye:'#f2f0ea', iris:'#c8102e'};                               // STL anahtarına göre; gerisi siyah
+  const L = (ad, ...parca) => ({ad, parca});
+  const G = (ad, ...cocuk) => ({ad, cocuk});
+  const bas = on => Object.keys(POZ.tum).filter(n => n.startsWith(on));
+  const AGAC = [
+    G('Taban (sabit)', L('Taban sol','base_L'), L('Taban sağ','base_R'), L('Pitch braketi','pivot_bracket'),
+      L('Pitch servosu','servo_pitch','horn_pitch','cable_pitch')),
+    G('Göz mekanizması',
+      G('Kafes', L('Kafes sol','frame_L'), L('Kafes sağ','frame_R'), L('Yaw servo tutucu','yaw_mount')),
+      G('Gözler', L('Göz küresi','eye_L','eye_R'), L('İris','iris_L','iris_R'), L('Göz bebeği','pupil_L','pupil_R'),
+        L('Göz kolu','eye_lever_L','eye_lever_R')),
+      G('Yaw sürüşü', L('Yaw krankı','yaw_crank'), L('Bağlantı çubuğu','coupler'), L('Yaw servosu','servo_yaw','horn_yaw','cable_yaw')),
+      G('Kapaklar', L('Üst kapak sol','lid_up_L'), L('Üst kapak sağ','lid_up_R'), L('Alt kapak sol','lid_lo_L'),
+        L('Alt kapak sağ','lid_lo_R'), L('Kapak krankı','lid_crank'), L('Üst lama','link_up'), L('Alt lama','link_lo'),
+        L('Kapak servosu','servo_lid','horn_lid','cable_lid'))),
+    G('Bağlantı elemanları', L('Vidalar', ...bas('scr_')), L('Somunlar', ...bas('nut_'))),
+  ];
+  { // ağaçta olmayan parça kalırsa "Diğer"e (model değişince panel eksik kalmasın)
+    const var_ = new Set(); const topla = d => d.parca ? d.parca.forEach(n => var_.add(n)) : d.cocuk.forEach(topla); AGAC.forEach(topla);
+    const kalan = Object.keys(POZ.tum).filter(n => !var_.has(n) && n !== 'mask');   // maske ağaçta değil, kendi düğmesi var
+    if (kalan.length) AGAC.push(G('Diğer', ...kalan.map(n => L(n, n))));
+  }
+  const bomOf = {}; for (const k in POZ.parcalar) POZ.parcalar[k].forEach(n => bomOf[n] = k);
+  const basili = n => POZ.tum[n] === 'printed';
+  const meshOf = {};                           // parça adı → mesh listesi
+  const parcalariOf = d => d.parca ? d.parca : d.cocuk.flatMap(parcalariOf);
+  const RKEY = 'projectEyeV5Renk2', GKEY = 'projectEyeV5Gizli2', AKEY = 'projectEyeV5Acik';
+  const oku = (k, v) => { try { const x = JSON.parse(localStorage.getItem(k)); return x == null ? v : x; } catch(e){ return v; } };
+  const yaz = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch(e){} };
+  let secim = {}, gizli = new Set(), acikDal = {};
+  const renkOf = n => secim[n] || VARSAYILAN[bomOf[n]] || FILAMENT[0][1];
+
+  function boyaParca(n){
+    const c = new THREE.Color(renkOf(n)).convertSRGBToLinear();
+    (meshOf[n] || []).forEach(m => { m.material.color.copy(c); m.material.metalness = 0.05; m.material.roughness = 0.55; });
+  }
+  const gorunur = n => !gizli.has(n);
+  function gosterParca(n, acik){
+    acik ? gizli.delete(n) : gizli.add(n); (meshOf[n] || []).forEach(m => m.visible = acik);
+  }
+  const satirlar = [];                         // {el, parca, tum}
+  function durumlariGuncelle(){
+    satirlar.forEach(({el, parca}) => {
+      const g = parca.filter(gorunur).length;
+      el.querySelector('.goz').setAttribute('aria-pressed', g === parca.length ? 'true' : g ? 'mixed' : 'false');
+      const bp = parca.filter(basili);
+      el.querySelectorAll('.sw button').forEach(b => b.setAttribute('aria-pressed', bp.length > 0 && bp.every(n => renkOf(n).toLowerCase() === b.dataset.c.toLowerCase())));
+      const inp = el.querySelector('.sw input'); if (inp && bp.length) inp.value = renkOf(bp[0]);
+      const ad = el.querySelector('.ad'); if (ad && ad.tagName === 'BUTTON') ad.setAttribute('aria-pressed', vurgulu === el);
+    });
+  }
+  const GOZ_SVG = `<svg class="acik" viewBox="0 0 16 16" aria-hidden="true"><path d="M1 8s2.6-4.5 7-4.5S15 8 15 8s-2.6 4.5-7 4.5S1 8 1 8z" fill="none" stroke="currentColor" stroke-width="1.4"/><circle cx="8" cy="8" r="2" fill="currentColor"/></svg>` +
+    `<svg class="kapali" viewBox="0 0 16 16" aria-hidden="true"><path d="M1 8s2.6-4.5 7-4.5S15 8 15 8s-2.6 4.5-7 4.5S1 8 1 8z" fill="none" stroke="currentColor" stroke-width="1.4" opacity=".6"/><path d="M2.5 13.5l11-11" stroke="currentColor" stroke-width="1.5"/></svg>`;
+  /* ---------- STL indirme ----------
+     Yerel dosya (panelden açılınca): düz bağlantı, cad/out/stl/<stl>.stl.
+     Artifact: downloads yetkisi; izin listesinde .stl yok -> STL'ler (+ ADETLER.txt) zip içinde. */
+  const INDIR_SVG = `<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 2v8M4.5 6.5L8 10l3.5-3.5M2.5 13.5h11" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>`;
+  // claude.ai köprüsü sayfa betiğinden SONRA da gelebilir: 6 sn'ye kadar bekle (yoksa yerel dosya modu)
+  let ARTIFACT = !!(window.claude && window.claude.use);
+  const claudeHazir = new Promise(res => {
+    const t0 = Date.now();
+    (function bak(){
+      if (window.claude && window.claude.use){ ARTIFACT = true; return res(window.claude); }
+      if (Date.now() - t0 > 6000 || location.protocol === 'file:') return res(null);
+      setTimeout(bak, 100);
+    })();
+  });
+  let indirici = null;
+  claudeHazir.then(c => { if (!c) return; document.body.classList.add('indirme-yok');
+    c.use('downloads').then(d => { indirici = d; document.body.classList.toggle('indirme-yok', !d); }).catch(() => {}); });
+  const durumYaz = t => { $('#indirDurum').textContent = t; };
+  const dosyaAdi = t => t.toLowerCase().replace(/[çğıöşü]/g, c => ({ç:'c',ğ:'g',ı:'i',ö:'o',ş:'s',ü:'u'})[c]).replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  async function indir(ad, parcalar, dugme){
+    const adet = {}; parcalar.forEach(n => adet[bomOf[n]] = (adet[bomOf[n]] || 0) + 1);
+    const dosyalar = Object.keys(adet);
+    if (!ARTIFACT){                                   // yerel: tarayıcı doğrudan indirir
+      dosyalar.forEach((f, i) => setTimeout(() => {
+        const a = document.createElement('a'); a.href = `cad/out/stl/${f}.stl`; a.download = f + '.stl';
+        document.body.appendChild(a); a.click(); a.remove(); }, i * 350));
+      durumYaz(`${dosyalar.length} STL indiriliyor`); return;
+    }
+    if (!indirici || dugme.getAttribute('aria-busy') === 'true') return;
+    dugme.setAttribute('aria-busy', 'true'); durumYaz(`${ad}: hazırlanıyor…`);
+    try {
+      const zip = new JSZip();
+      for (const f of dosyalar){
+        // artifact yalnız web türlerini sunar: STL'ler base64 metin olarak yayınlandı (stl/<ad>.b64.txt)
+        const r = await fetch(`stl/${f}.b64.txt`); if (!r.ok) throw {code:'fetch', message:f};
+        const b64 = (await r.text()).replace(/\s+/g, '');
+        zip.file(`${f}.stl`, Uint8Array.from(atob(b64), c => c.charCodeAt(0)));
+      }
+      zip.file('ADETLER.txt', 'Project Eye v5 - basilacak adetler\n' + dosyalar.map(f => `${f}.stl  x${adet[f]}`).join('\n') + '\n');
+      const blob = await zip.generateAsync({type:'blob', compression:'DEFLATE'});
+      await indirici.save({filename: `project-eye-v5_${dosyaAdi(ad)}.zip`, data: blob});
+      durumYaz(`${ad}: indirildi`);
+    } catch(e){
+      durumYaz(e && e.code === 'declined' ? 'İndirme iptal edildi' : e && e.code === 'rate_limited' ? 'Önceki indirme onayı bekleniyor' :
+               e && e.code === 'fetch' ? `Dosya bulunamadı: ${e.message}.stl` : 'İndirme bu görünümde kullanılamıyor');
+    } finally { dugme.setAttribute('aria-busy', 'false'); }
+  }
+
+  function satirYap(ad, parca, {grup = false, tum = false, derinlik = 0} = {}){
+    const d = document.createElement('div'); d.className = 'renk' + (tum ? ' tum' : '') + (grup ? ' grup' : ''); d.style.paddingLeft = (derinlik*14) + 'px';
+    const adet = !grup && !tum && parca.length > 1 && parca.every(basili) ? `<small>×${parca.length}</small>` : '';
+    const bp = parca.filter(basili);
+    d.innerHTML =
+      (grup ? `<button class="ok" aria-expanded="true" aria-label="${ad}: aç / kapat"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M3 2l4 3-4 3" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></button>` : '<span class="ok-bos"></span>') +
+      `<button class="goz" aria-pressed="true" aria-label="${ad}: göster / gizle" title="Göster / gizle">${GOZ_SVG}</button>` +
+      (tum ? `<span class="ad">${ad}</span>` : `<button class="ad" aria-pressed="false" title="3B görünümde vurgula">${ad}${adet}</button>`) +
+      (bp.length ? `<span class="sw">` + FILAMENT.map(([n,c]) => `<button data-c="${c}" style="background:${c}" title="${n}" aria-label="${ad}: ${n}"></button>`).join('') +
+        `<input type="color" value="#26262b" title="Özel renk" aria-label="${ad}: özel renk"></span>` : '<span></span>') +
+      (bp.length ? `<button class="indir" aria-label="${ad}: STL indir" title="STL indir${grup || tum ? ' (gruptaki tüm parçalar)' : ''}">${INDIR_SVG}</button>` : '<span></span>');
+    const hedef = parca;
+    d.querySelector('.goz').onclick = () => {
+      const hepsi = hedef.every(gorunur); hedef.forEach(n => gosterParca(n, !hepsi)); yaz(GKEY, [...gizli]); durumlariGuncelle();
+    };
+    const sec = c => { bp.forEach(n => { secim[n] = c; boyaParca(n); }); yaz(RKEY, secim); durumlariGuncelle(); };
+    d.querySelectorAll('.sw button').forEach(b => b.onclick = () => sec(b.dataset.c));
+    const inp = d.querySelector('.sw input'); if (inp) inp.oninput = e => sec(e.target.value);
+    if (!tum) d.querySelector('.ad').onclick = () => vurgula(vurgulu === d ? null : d);
+    const ib = d.querySelector('.indir'); if (ib) ib.onclick = () => indir(ad, bp, ib);
+    satirlar.push({el: d, parca, tum}); d._parca = parca;
+    return d;
+  }
+  function dalYap(dugum, derinlik, yol){
+    const parca = parcalariOf(dugum);
+    if (dugum.parca) return satirYap(dugum.ad, parca, {derinlik});
+    const kap = document.createElement('div'); kap.className = 'dal';
+    const bas_ = satirYap(dugum.ad, parca, {grup: true, derinlik});
+    const ic = document.createElement('div'); ic.className = 'cocuklar';
+    dugum.cocuk.forEach((c, i) => ic.appendChild(dalYap(c, derinlik + 1, yol + '/' + i)));
+    const ok = bas_.querySelector('.ok');
+    const ayarla = acik => { ic.hidden = !acik; ok.setAttribute('aria-expanded', acik); };
+    ayarla(acikDal[yol] !== false);
+    ok.onclick = () => { const a = ic.hidden; ayarla(a); acikDal[yol] = a; yaz(AKEY, acikDal); };
+    kap._ac = () => ayarla(true);
+    kap.append(bas_, ic);
+    return kap;
+  }
+  function renkKur(){
+    scene.traverse(o => {
+      if (!o.isMesh) return;
+      let p = o, n;
+      while (p && !(n = (POZ.tum[p.name] && p.name) || (p.material && POZ.tum[p.material.name] && p.material.name))) p = p.parent;
+      if (n) (meshOf[n] = meshOf[n] || []).push(o);
+    });
+    secim = oku(RKEY, {}); gizli = new Set(oku(GKEY, [])); acikDal = oku(AKEY, {});
+    gizli.delete('mask'); gizli.forEach(n => (meshOf[n] || []).forEach(m => m.visible = false));
+    Object.keys(meshOf).filter(basili).forEach(boyaParca);
+    const kutuR = $('#renkler'); kutuR.innerHTML = '';
+    kutuR.appendChild(satirYap('Tümü', Object.keys(meshOf).filter(n => n !== 'mask'), {tum: true}));
+    const mod = document.createElement('div'); mod.id = 'agacModuler';
+    AGAC.forEach((d, i) => mod.appendChild(dalYap(d, 0, String(i))));
+    // sıralı: masaüstündeki dosya numaralarıyla (01–18); maske listede yok (kendi düğmesi var) ama numarası korunur
+    const sir = document.createElement('div'); sir.id = 'agacSirali';
+    const sira = [...TK_SIRA.filter(k => POZ.parcalar[k]), ...Object.keys(POZ.parcalar).filter(k => !TK_SIRA.includes(k))];
+    sira.forEach((k, i) => {
+      if (k === 'mask') return;
+      const r = satirYap(`${String(i + 1).padStart(2, '0')} · ${TK_AD[k] || k}`, POZ.parcalar[k]);
+      r.classList.add('sirali'); r.querySelector('.ad').after(tkKutular(k)); sir.appendChild(r);
+    });
+    kutuR.append(mod, sir);
+    listeGorunum(oku(LKEY, 'moduler'));
+    tkCiz();
+    durumlariGuncelle();
+  }
+  const LKEY = 'projectEyeV5Liste';
+  function listeGorunum(m){
+    const sirali = m === 'sirali';
+    $('#agacModuler').hidden = sirali; $('#agacSirali').hidden = !sirali;
+    $('#gModuler').setAttribute('aria-pressed', !sirali); $('#gSirali').setAttribute('aria-pressed', sirali);
+    yaz(LKEY, sirali ? 'sirali' : 'moduler');
+  }
+  $('#gModuler').onclick = () => listeGorunum('moduler');
+  $('#gSirali').onclick = () => listeGorunum('sirali');
+  $('#renkSifirla').onclick = () => { secim = {}; yaz(RKEY, secim); Object.keys(meshOf).filter(basili).forEach(boyaParca); durumlariGuncelle(); };
+
+  /* ---------- vurgulama: diğer parçaların arkasında kalsa da görünür (derinlik testi kapalı katman) ---------- */
+  let vurgulu = null; const vurguKatman = [];
+  const VURGU_DOLGU = new THREE.MeshBasicMaterial({color:0x00F0FF, transparent:true, opacity:.35, depthTest:false, depthWrite:false});
+  const VURGU_KENAR = new THREE.LineBasicMaterial({color:0x00F0FF, transparent:true, opacity:.95, depthTest:false, depthWrite:false});
+  const kenarOnbellek = new Map();
+  function vurgula(satirEl){
+    vurguKatman.splice(0).forEach(o => o.parent && o.parent.remove(o));
+    vurgulu = satirEl;
+    if (satirEl) satirEl._parca.forEach(n => (meshOf[n] || []).forEach(m => {
+      const dolgu = new THREE.Mesh(m.geometry, VURGU_DOLGU); dolgu.renderOrder = 998;
+      if (!kenarOnbellek.has(m.geometry)) kenarOnbellek.set(m.geometry, new THREE.EdgesGeometry(m.geometry, 30));
+      const kenar = new THREE.LineSegments(kenarOnbellek.get(m.geometry), VURGU_KENAR); kenar.renderOrder = 999;
+      m.add(dolgu, kenar); vurguKatman.push(dolgu, kenar);      // mesh'in çocuğu: pozla birlikte hareket eder
+    }));
+    durumlariGuncelle();
+  }
+  // 3B'de tıklayınca da seç (sürükleme değilse): en alttaki ağaç satırı vurgulanır, grupları açılır; boşluk = vurgu kalkar
+  const ray = new THREE.Raycaster(), fare = new THREE.Vector2(); let basis = null;
+  renderer.domElement.addEventListener('pointerdown', e => basis = [e.clientX, e.clientY]);
+  renderer.domElement.addEventListener('pointerup', e => {
+    if (!basis || Math.hypot(e.clientX - basis[0], e.clientY - basis[1]) > 5) return;
+    const r = renderer.domElement.getBoundingClientRect();
+    fare.set((e.clientX - r.left)/r.width*2 - 1, -(e.clientY - r.top)/r.height*2 + 1);
+    ray.setFromCamera(fare, cam);
+    const tum = []; for (const n in meshOf) meshOf[n].forEach(m => { if (m.visible) tum.push(m); });
+    const hit = ray.intersectObjects(tum, false)[0];
+    const n = hit ? Object.keys(meshOf).find(x => meshOf[x].includes(hit.object)) : null;
+    const aktif = $('#agacSirali').hidden ? '#agacModuler' : '#agacSirali';
+    const s_ = n ? satirlar.find(s => !s.tum && !s.el.classList.contains('grup') && s.el.closest(aktif) && s.parca.includes(n)) : null;
+    const el = s_ ? s_.el : null;
+    vurgula(el === vurgulu ? null : el);
+    if (el){
+      for (let p = el.parentElement; p; p = p.parentElement) if (p._ac) p._ac();
+      el.scrollIntoView({block:'nearest', behavior: azHareket ? 'auto' : 'smooth'});
+    }
+  });
+  addEventListener('keydown', e => { if (e.key === 'Escape') vurgula(null); });
+
+  function gorunurluk(){
+    $('#maske').setAttribute('aria-pressed', maskeAcik);
+    kabuklar.forEach(m => { const s = $('#xray').checked; m.visible = maskeAcik; m.material.transparent = s; m.material.opacity = s ? .25 : 1; m.material.depthWrite = !s; });
+  }
+  $('#xray').onchange = gorunurluk; $('#maske').onclick = () => { maskeAcik = !maskeAcik; gorunurluk(); };
+  document.querySelectorAll('.gorunum button').forEach(b => b.onclick = () => gorunum(b.dataset.g));
+
+  /* ---------- poz → grup dönüşümleri (ızgaradan enterpolasyon) ---------- */
+  const lerp16 = (a,b,t) => a.map((x,i) => x + (b[i]-x)*t);
+  function izgara(dizi, deger){          // eşit aralıklı ızgarada alt indeks + kesir
+    const n = dizi.length, u = (deger - dizi[0]) / (dizi[n-1] - dizi[0]) * (n-1);
+    const i = Math.max(0, Math.min(n-2, Math.floor(u)));
+    return [i, Math.max(0, Math.min(1, u - i))];
+  }
+  function poz(yaw, pitch, lid){          // uc dogrusal enterpolasyon (yaw x pitch x kapak)
+    const [i,a] = izgara(POZ.yaws, yaw), [j,b] = izgara(POZ.pitches, pitch), [k,c] = izgara(POZ.lids, lid);
+    const G = POZ.grid, S = POZ.servo, out = {}, sv = [0,0,0];
+    const w = [[i,j,k,(1-a)*(1-b)*(1-c)],[i+1,j,k,a*(1-b)*(1-c)],[i,j+1,k,(1-a)*b*(1-c)],[i+1,j+1,k,a*b*(1-c)],
+               [i,j,k+1,(1-a)*(1-b)*c],[i+1,j,k+1,a*(1-b)*c],[i,j+1,k+1,(1-a)*b*c],[i+1,j+1,k+1,a*b*c]];
+    for (const g in G[0][0][0]){
+      const m = new Array(16).fill(0);
+      w.forEach(([x,y,z,q]) => { if (q) G[x][y][z][g].forEach((v,n) => m[n] += v*q); });
+      out[g] = m;
+    }
+    w.forEach(([x,y,z,q]) => { if (q) S[x][y][z].forEach((v,n) => sv[n] += v*q); });
+    return {M:out, servo:sv};
+  }
+  const m4 = new THREE.Matrix4();
+  function ata(M){
+    for (const ad in M){ const g = gruplar[ad]; if (!g) continue;
+      m4.set(...M[ad]);                       // numpy satır-öncelikli → Matrix4.set satır-öncelikli
+      g.node.matrix.multiplyMatrices(m4, g.M0); g.node.matrixWorldNeedsUpdate = true; }
+  }
+
+  /* ---------- durum ---------- */
+  const durum = {yaw:0, pitch:0, kap:.8};
+  const hedef = {yaw:0, pitch:0};
+  const kirpmalar = [];     // {t0, taraf}
+  const KANAL = [['EYE_YAW','D3'],['EYE_PITCH','D5'],['LIDS','D6']];
+  $('#servolar').innerHTML = KANAL.map(([k,p]) => `<tr><td>${k}</td><td>${p}</td><td id="s_${k}">—</td></tr>`).join('');
+
+  function uygula(t = performance.now()){
+    let carp = 1;                                           // kirpma (150 ms kapan + 150 ms ac)
+    for (let i = kirpmalar.length-1; i >= 0; i--){
+      const p = (t - kirpmalar[i].t0) / 300;
+      if (p >= 1){ kirpmalar.splice(i,1); continue; }
+      carp = Math.min(carp, Math.abs(1-2*p));
+    }
+    const r = poz(durum.yaw, durum.pitch, durum.kap * carp); ata(r.M);
+    ['EYE_YAW','EYE_PITCH','LIDS'].forEach((k,n) => { const el = document.getElementById('s_'+k); if (el) el.textContent = r.servo[n].toFixed(1)+'°'; });
+  }
+
+  /* ---------- kontroller ---------- */
+  const yawEl = $('#yaw'), pitchEl = $('#pitch'), kapEl = $('#kap');
+  function etiketler(){
+    $('#yawO').textContent = durum.yaw.toFixed(1)+'°'; $('#pitchO').textContent = durum.pitch.toFixed(1)+'°';
+    $('#kapO').textContent = Math.round(durum.kap*100)+'%';
+  }
+  function canliKapat(){ canli = izle = false; $('#canli').setAttribute('aria-pressed','false'); $('#izle').setAttribute('aria-pressed','false'); }
+  yawEl.oninput = () => { canliKapat(); durum.yaw = hedef.yaw = +yawEl.value; };
+  pitchEl.oninput = () => { canliKapat(); durum.pitch = hedef.pitch = +pitchEl.value; };
+  kapEl.oninput = () => { canliKapat(); durum.kap = kapEl.value/100; };
+  const kirp = () => kirpmalar.push({t0:performance.now()});
+  $('#kirp').onclick = kirp;
+  let canli = false, izle = true, sonrakiSakkad = 0, sonrakiKirpma = 0;
+  $('#canli').onclick = () => { const a = !canli; canliKapat(); canli = a; $('#canli').setAttribute('aria-pressed', a); };
+  $('#izle').onclick = () => { const a = !izle; canliKapat(); izle = a; $('#izle').setAttribute('aria-pressed', a); };
+  // izleme: kamera (bakan kişi) yönü -> yaw/pitch; model koordinatları CAD ile aynı (+Z ön, +Y üst, +yaw sağa/+X, +pitch yukarı)
+  const SINIR = {yaw:[+yawEl.min, +yawEl.max], pitch:[+pitchEl.min, +pitchEl.max]};
+  const kis = (v, [a,b]) => Math.max(a, Math.min(b, v));
+  function kameraYonu(){
+    const c = cam.position, d = 180/Math.PI;
+    return {yaw: kis(Math.atan2(c.x, c.z)*d, SINIR.yaw), pitch: kis(Math.atan2(c.y, Math.hypot(c.x, c.z))*d, SINIR.pitch)};
+  }
+  // mesafe -> kapak açıklığı: yakında tam açık, uzakta göz kısılır (uzağa bakan insan gibi)
+  const YAKIN = 250, UZAK = 900, KISIK = 0.3;
+  function kapakHedef(){
+    const u = kis((cam.position.length() - YAKIN) / (UZAK - YAKIN), [0, 1]);
+    return 1 - (1 - KISIK) * u*u*(3 - 2*u);     // yumuşak geçiş
+  }
+  $('#notr').onclick = () => { canliKapat(); durum.yaw = durum.pitch = hedef.yaw = hedef.pitch = 0; yawEl.value = pitchEl.value = 0; };
+
+  function boyut(){ const w = kutu.clientWidth, h = kutu.clientHeight; renderer.setSize(w,h,false); cam.aspect = w/h; cam.updateProjectionMatrix(); }
+  addEventListener('resize', boyut); boyut();
+  // panel kayarken setSize HER KAREDE çağrılırsa WebGL tamponu her karede yeniden ayrılır -> animasyon donar.
+  // Kayma sırasında yalnız kamera oranı güncellenir (tuval CSS ile esner, görüntü bozulmaz); gerçek boyut bitince bir kez.
+  let boyutZ = 0;
+  new ResizeObserver(() => {
+    const w = kutu.clientWidth, h = kutu.clientHeight;
+    if (w && h){ cam.aspect = w/h; cam.updateProjectionMatrix(); }
+    clearTimeout(boyutZ); boyutZ = setTimeout(boyut, 120);
+  }).observe(kutu);
+
+  /* ---------- menü aç/kapat (durum tarayıcıda hatırlanır) ---------- */
+  const kap_ = $('.kap'), pd = $('#panelDugme'), panel = $('#panel');
+  function panelAyarla(acik, kaydet){
+    kap_.classList.toggle('kapali', !acik);
+    pd.setAttribute('aria-expanded', acik); pd.setAttribute('aria-label', acik ? 'Menüyü kapat' : 'Menüyü aç');
+    panel.inert = !acik;
+    if (kaydet) try { localStorage.setItem('projectEyeV5Panel', acik ? '1' : '0'); } catch(e){}
+  }
+  pd.onclick = () => panelAyarla(kap_.classList.contains('kapali'), true);
+  panel.addEventListener('transitionend', e => { if (e.propertyName === 'width'){ clearTimeout(boyutZ); boyut(); } });
+
+  /* ---------- baskı takibi: Sıralı listede her dosyanın yanında adet kadar küçük kutu; otomatik kayıt ----------
+     Artifact'te db (her cihazda aynı, Claude da okuyabilir): baski/<stl> {basilan, adet}.
+     Yerel dosyada (panelden açılınca) tarayıcı deposu. */
+  const TK_SIRA = ['eye_lever','link_up','link_lo','yaw_crank','eye','pivot_bracket','coupler','yaw_mount','iris','pupil',
+                   'lid_up_L','lid_up_R','lid_lo_L','lid_lo_R','frame_L','frame_R','mask','base_L','base_R'];
+  const TK_AD = {eye_lever:'Göz kolu', link_up:'Üst lama', link_lo:'Alt lama', yaw_crank:'Krank (yaw + kapak)', eye:'Göz küresi',
+    pivot_bracket:'Pitch braketi', coupler:'Bağlantı çubuğu', yaw_mount:'Yaw servo tutucu', iris:'İris', pupil:'Göz bebeği',
+    lid_up_L:'Üst kapak sol', lid_up_R:'Üst kapak sağ', lid_lo_L:'Alt kapak sol', lid_lo_R:'Alt kapak sağ',
+    frame_L:'Kafes sol', frame_R:'Kafes sağ', mask:'Maske', base_L:'Taban sol', base_R:'Taban sağ'};
+  const tkAnahtar = [...TK_SIRA.filter(k => POZ.parcalar[k]), ...Object.keys(POZ.parcalar).filter(k => !TK_SIRA.includes(k))];
+  const tkAdet = k => POZ.parcalar[k].length;
+  // her parça tanesi için durum: 0 boş, 1 basılıyor (mavi), 2 basıldı (yeşil)
+  const bDurum = {}; tkAnahtar.forEach(k => bDurum[k] = Array(tkAdet(k)).fill(0));
+  let tkDb = null, tkYerel = true;
+  const TKKEY = 'projectEyeV5Baski2';
+  const DURUM_AD = ['basılmadı', 'basılıyor', 'basıldı'];
+  function durumOku(k, veri){                          // eski kayıt {basilan:n} da okunur
+    const n = tkAdet(k);
+    if (veri && Array.isArray(veri.durum)) return Array.from({length: n}, (_, i) => [0, 1, 2].includes(veri.durum[i]) ? veri.durum[i] : 0);
+    const b = Math.min(n, +(veri && veri.basilan) || 0);
+    return Array.from({length: n}, (_, i) => i < b ? 2 : 0);
+  }
+  // proje ilerlemesi: basılan katı hacim / toplam (her STL hacmi x adedi); mavi = basılıyor
+  function ilerlemeCiz(){
+    const H = POZ.hacim || {};
+    let top = 0, bit = 0, sur = 0;
+    tkAnahtar.forEach(k => { const v = H[k] || 0; bDurum[k].forEach(x => { top += v; if (x === 2) bit += v; else if (x === 1) sur += v; }); });
+    const y = top ? bit / top * 100 : 0, ys = top ? sur / top * 100 : 0;
+    $('#ilerleYuzde').textContent = `%${Math.floor(y)}`;
+    $('#ilerleYazi').textContent = `basıldı · ${Math.round(bit)}/${Math.round(top)} cm³` + (sur ? ` · +%${Math.round(ys)} basılıyor` : '');
+    $('#ilerleDolu').style.width = y + '%'; $('#ilerleSur').style.left = y + '%'; $('#ilerleSur').style.width = ys + '%';
+    $('#ilerle').title = 'Proje ilerlemesi, basılan parça HACMİNE göre (katı hacim; dolgu oranı hesaba katılmaz)';
+  }
+  function tkCiz(){
+    ilerlemeCiz();
+    tkAnahtar.forEach(k => {
+      const d = bDurum[k];
+      document.querySelectorAll(`.kutular[data-k="${k}"]`).forEach(sp => {
+        const r = sp.closest('.renk');
+        if (r){ r.classList.toggle('bitti', d.every(x => x === 2)); r.classList.toggle('suruyor', d.includes(1) && !d.every(x => x === 2)); }
+        sp.querySelectorAll('.tkb').forEach((b, i) => {
+          b.dataset.s = d[i];
+          b.setAttribute('aria-label', `${TK_AD[k] || k} ${i + 1}/${d.length}: ${DURUM_AD[d[i]]}`);
+          b.title = `${i + 1}/${d.length}: ${DURUM_AD[d[i]]} (tıkla: boş → basılıyor → basıldı)`;
+        });
+      });
+    });
+  }
+  const TIK = `<svg class="s2" viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 6.2l2.3 2.3 4.7-5" fill="none" stroke="#10301f" stroke-width="2"/></svg>` +
+              `<svg class="s1" viewBox="0 0 12 12" aria-hidden="true"><circle cx="3" cy="6" r="1.1" fill="#fff"/><circle cx="6" cy="6" r="1.1" fill="#fff"/><circle cx="9" cy="6" r="1.1" fill="#fff"/></svg>`;
+  function tkKutular(k){
+    const n = tkAdet(k);
+    const sp = document.createElement('span'); sp.className = 'kutular'; sp.dataset.k = k;
+    sp.innerHTML = Array.from({length: n}, () => `<button class="tkb" data-s="0">${TIK}</button>`).join('');
+    sp.querySelectorAll('.tkb').forEach((b, i) => b.onclick = () => {
+      bDurum[k] = bDurum[k].slice(); bDurum[k][i] = (bDurum[k][i] + 1) % 3; tkCiz(); tkKaydet(k);
+    });
+    return sp;
+  }
+  const tkSira = {};                                     // belge başına tek yazma
+  function tkKaydet(k){
+    if (tkYerel){ try { localStorage.setItem(TKKEY, JSON.stringify(bDurum)); durumYaz('Baskı durumu kaydedildi (bu tarayıcı)'); } catch(e){} return; }
+    const d = bDurum[k].slice();
+    const onceki = tkSira[k] || Promise.resolve();
+    tkSira[k] = onceki.then(() => tkDb.doc('baski/' + k).set({durum: d, basilan: d.filter(x => x === 2).length, suruyor: d.filter(x => x === 1).length, adet: d.length}))
+      .then(() => durumYaz('Baskı durumu kaydedildi'), e => durumYaz(e && e.code === 'invalid_argument' ? 'Bu görünümde kaydetme izni yok' : 'Kaydedilemedi, tekrar dene'));
+  }
+  // yerel kayıt: yeni biçim + eski biçim ({stl: basılan adet}) BİRLEŞTİRİLİR (tane başına büyük olan kazanır;
+  // böylece yeni biçimde boş bir kayıt eski yeşilleri gizleyemez)
+  const birlestir = (a, b) => a.map((x, i) => Math.max(x, b[i] || 0));
+  let yerelVar = false;
+  try {
+    const yeni = JSON.parse(localStorage.getItem(TKKEY)) || {};
+    const eski = JSON.parse(localStorage.getItem('projectEyeV5Baski')) || {};
+    tkAnahtar.forEach(k => {
+      let d = bDurum[k];
+      if (eski[k]) d = birlestir(d, durumOku(k, {basilan: eski[k]}));
+      if (yeni[k]) d = birlestir(d, durumOku(k, {durum: yeni[k]}));
+      bDurum[k] = d; if (d.some(x => x)) yerelVar = true;
+    });
+  } catch(e){}
+  durumYaz('Baskı kaydı: bu tarayıcı');
+  claudeHazir.then(c => c ? c.use('db') : null).then(db => {
+    if (!db){ durumYaz('Baskı kaydı: bu tarayıcı'); return; }
+    tkDb = db; tkYerel = false; durumYaz('Baskı kaydı: paylaşılan (claude.ai)');
+    const yerel = {}; tkAnahtar.forEach(k => yerel[k] = bDurum[k].slice());
+    let ilk = true;
+    db.collection('baski').onSnapshot(snap => {
+      const gelen = {};
+      snap.docs.forEach(d => { if (d.id in bDurum) gelen[d.id] = durumOku(d.id, d.data()); });
+      tkAnahtar.forEach(k => bDurum[k] = gelen[k] || Array(tkAdet(k)).fill(0));
+      if (ilk && !snap.metadata.fromCache){        // ilk kesin görüntü: yalnız bu tarayıcıda olan işaretleri paylaşılana taşı
+        ilk = false;
+        if (yerelVar) tkAnahtar.forEach(k => {
+          const b = birlestir(bDurum[k], yerel[k]);
+          if (b.some((x, i) => x !== bDurum[k][i])){ bDurum[k] = b; tkKaydet(k); }
+        });
+      }
+      tkCiz();
+    }, () => durumYaz('Baskı kaydı bağlantısı koptu; sayfayı yenile'));
+  }).catch(() => durumYaz('Baskı kaydı: bu tarayıcı'));
+  try { if (localStorage.getItem('projectEyeV5Panel') === '0') panelAyarla(false, false); } catch(e){}
+  let once = performance.now();
+  (function kare(t){
+    const dt = Math.min(.05, (t - once)/1000 || 0); once = t;
+    if (canli && !azHareket){
+      if (t > sonrakiSakkad){ hedef.yaw = (Math.random()*2-1)*23; hedef.pitch = (Math.random()*2-1)*17; sonrakiSakkad = t + 700 + Math.random()*1600; }
+      if (t > sonrakiKirpma){ kirp(); sonrakiKirpma = t + 3000 + Math.random()*3000; }
+      const k = 1 - Math.exp(-dt/0.06);
+      durum.yaw += (hedef.yaw - durum.yaw)*k; durum.pitch += (hedef.pitch - durum.pitch)*k;
+      yawEl.value = durum.yaw; pitchEl.value = durum.pitch;
+    } else if (izle){
+      const h = kameraYonu(); hedef.yaw = h.yaw; hedef.pitch = h.pitch;
+      durum.kap += (kapakHedef() - durum.kap) * (azHareket ? 1 : 1 - Math.exp(-dt/0.25)); kapEl.value = durum.kap*100;
+      if (!azHareket && t > sonrakiKirpma){ kirp(); sonrakiKirpma = t + 3500 + Math.random()*3500; }
+      const k = azHareket ? 1 : 1 - Math.exp(-dt/0.08);
+      durum.yaw += (hedef.yaw - durum.yaw)*k; durum.pitch += (hedef.pitch - durum.pitch)*k;
+      yawEl.value = durum.yaw; pitchEl.value = durum.pitch;
+    }
+    etiketler();
+    if (Object.keys(gruplar).length) uygula(t);
+    ctl.update(); renderer.render(scene, cam); requestAnimationFrame(kare);
+  })(performance.now());
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+{
+  "serial_port": "auto",
+  "channels": {
+    "EYE_YAW":   {"center": 90, "min": 65, "max": 115, "invert": true, "deg_per_unit": 25.0},
+    "EYE_PITCH": {"center": 90, "min": 70, "max": 110, "invert": false, "deg_per_unit": 20.0},
+    "LIDS":      {"closed": 102.29, "open": 77.71, "min": 77.71, "max": 102.29, "invert": false}
+  },
+  "behaviour": {
+    "blink_interval_s": [3, 6],
+    "lid_follow_pitch": 0.0,
+    "saccade_speed_deg_s": 500,
+    "idle_after_s": 1.5
+  }
+}
