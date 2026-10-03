@@ -27,7 +27,15 @@ Every version is kept; a revision never edits an older folder.
 | v2 | Full mechanism: 2 eyes, 4 lids, 6 servos, M2 hardware, ball joints. Software complete, never built |
 | v3 | Simplified for a hobby printer: 3 servos, M3/M4 screw pins instead of ball joints |
 | v4 | Lower lids on the same servo as the upper lids, front mask, fillets; irises fully covered when closed |
-| **v5** | **Built and running.** Captive hex nuts at every joint, separate iris and pupil inserts, base split in two for a 220 mm bed, cable slots on the correct servo end |
+| **v5** | **Built, partly working** (see Status). Captive hex nuts at every joint, separate iris and pupil inserts, base split in two for a 220 mm bed, cable slots on the correct servo end |
+
+## Status
+
+v5 was built as a showcase stand, not as a measured experiment.
+
+- **Yaw (left/right) and eyelids:** work.
+- **Pitch (up/down):** the servo moves, but cannot hold the pitch frame under load (the frame also carries the eyelid servo and all four lids). A rubber-band counterbalance on the front of the frame restored free motion, confirming a torque shortfall. A torque check was never part of the design loop; the design notes already flagged it as unverified.
+- **Accuracy vs. simulation:** not measured. Since the eyes and lids ride on the pitch frame, their real angles may also differ from the model; hand calibration already found a different yaw range (45–111°) than the model (65–115°).
 
 ## v5 at a glance
 

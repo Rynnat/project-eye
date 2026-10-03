@@ -314,7 +314,7 @@ static void handleLine(char *line, unsigned long now) {
     Serial.println(F("OK"));
   } else if (c == 'C') {
     char *tok = strtok(NULL, delim);
-    if (tok == NULL || strtok(NULL, delim) != NULL || tok[1] != ' ' || (tok[0] != '0' && tok[0] != '1')) {
+    if (tok == NULL || strtok(NULL, delim) != NULL || tok[1] != '\0' || (tok[0] != '0' && tok[0] != '1')) {
       sendErr("C needs 1 or 0");
       return;
     }
