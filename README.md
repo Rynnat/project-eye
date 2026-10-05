@@ -2,6 +2,14 @@
 
 An animatronic eye mechanism: two eyes that look left/right and up/down, with upper and lower eyelids that blink. Three SG90 micro servos, an Arduino Uno, 3D-printed PLA parts and M3/M4 screws with nuts. Built in a few days as the first module of **Epic Project**, a personal series of human-augmentation builds.
 
+## Built and running
+
+![Project Eye v5 running on real hardware: eyes look left and right, eyelids move](media/project_eye_demo.gif)
+
+*v5 on the bench: yaw and eyelids moving (real hardware, 10 s clip).*
+
+## Design
+
 ![Project Eye v5, front view with eyelids open](v5/cad/out/renders/01_front_open.png)
 
 | Eyelids closed | Three-quarter view | Eyelid drive |
