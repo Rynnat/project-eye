@@ -242,9 +242,12 @@ class FirmwareModel:
         self.target[1] = clamp_to_limit(1, IDLE_EYE_CENTER[1] + self.idle_v * IDLE_EYE_DEG_PER_UNIT[1])
         self.target[2] = clamp_to_limit(2, _lid_angle(upper))
 
-    def press_button(self, now_ms: int) -> None:
-        """D2 butonuna basis (debounce sonrasi kararli LOW kenari): idle ac / kapat + notr."""
+    def press_button(self, now_ms: int) -> str | None:
+        """D2 butonuna basis (debounce sonrasi kararli LOW kenari): PC surerken "BTN" doner
+        (firmware seriye yazar), yoksa idle ac / kapat + notr."""
         self.advance(now_ms)
+        if not self.idle_active and now_ms - self.last_s_ms < IDLE_TIMEOUT_MS:
+            return "BTN"
         if self.idle_enabled:
             self.idle_enabled = False
             self._idle_stop()
@@ -255,6 +258,7 @@ class FirmwareModel:
             self.attached = True
             self._idle_enter(now_ms)
         self.attached = True
+        return None
 
     def _idle_stop(self) -> None:
         self.idle_active = False
@@ -379,6 +383,12 @@ class SimSerial:
         line = bytes(self._rx[:idx + 1])
         del self._rx[:idx + 1]
         return line
+
+    def press_button(self) -> None:
+        """D2 butonuna bas (firmware'in yazdigi satir varsa okunacak tampona girer)."""
+        resp = self.model.press_button(self._now_ms())
+        if resp:
+            self._rx += (resp + "\r\n").encode("ascii")
 
     def reset_input_buffer(self) -> None:
         self._rx.clear()

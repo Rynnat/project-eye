@@ -523,6 +523,7 @@ class EyeLink:
         self.simulated = simulated
         self.ok_count = 0
         self.err_count = 0
+        self.button_presses = 0     # firmware "BTN" (PC surerken D2 butonuna basildi)
         self.last_error: str | None = None
         self.last_state = None
         self.alive = True
@@ -587,6 +588,8 @@ class EyeLink:
             lines.append(line)
             if line == "OK":
                 self.ok_count += 1
+            elif line == "BTN":
+                self.button_presses += 1
             elif line.startswith("ERR"):
                 self.err_count += 1
                 self.last_error = line

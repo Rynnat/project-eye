@@ -82,6 +82,15 @@ if __name__ == "__main__":
 class ButtonTests(unittest.TestCase):
     """D2 butonu: acilista notr (idle yok); bas -> idle hemen; tekrar bas -> notr poza doner, idle kalici kapali."""
 
+    def test_button_reports_to_pc_while_pc_drives(self):
+        m = FirmwareModel(now_ms=0, seed=7)
+        m.handle_line("S 78 90 87", 1000)
+        self.assertEqual(m.press_button(1500), "BTN")
+        self.assertFalse(m.idle_enabled)                # PC surerken idle'a dokunmaz
+        m.advance(5000)                                  # PC sustu
+        self.assertIsNone(m.press_button(5000))
+        self.assertTrue(m.idle_active)                   # eski davranis
+
     def test_boot_neutral_then_toggle(self):
         m = FirmwareModel(now_ms=0, seed=7)
         m.advance(10000)

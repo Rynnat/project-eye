@@ -83,7 +83,9 @@ const float BOOT_LID_OPENNESS = 0.8f;
 
 // Buton (kullanici 2026-09-30): D2 <-> GND, dahili pull-up. Basinca dogal hareket (idle) baslar, tekrar basinca
 // notr poza (acilis pozu: gozler duz, kapaklar %80 acik) doner. Acilista notr (idle kapali). Karttaki LED (D13) = idle acik.
-// Seri komut A 1 / A 0 ayni anahtari degistirir; buton seriye bir sey yazmaz (PC protokolunu bozmamak icin).
+// Seri komut A 1 / A 0 ayni anahtari degistirir.
+// 2026-10-06: PC kontrolu suruyorsa (son S < IDLE_TIMEOUT_MS ve idle degil) buton idle'i DEGISTIRMEZ, yalniz
+// "BTN" satiri yazar -> tracker sonraki moda gecer. Eski PC yazilimi bilinmeyen satiri yok sayar.
 const uint8_t BUTTON_PIN = 2;
 const unsigned long BUTTON_DEBOUNCE_MS = 40;
 const bool IDLE_AT_BOOT = false;
@@ -243,6 +245,7 @@ static void pollButton(unsigned long now) {
   if (now - degisim >= BUTTON_DEBOUNCE_MS && r != kararli) {
     kararli = r;
     if (kararli == LOW && hazir) {              // basildi (birakma yok sayilir)
+      if (!idleActive && now - lastSMs < IDLE_TIMEOUT_MS) { Serial.println(F("BTN")); return; }   // PC surerken: PC'ye bildir
       if (idleEnabled) { idleEnabled = false; goNeutral(); }
       else { idleEnabled = true; attachAll(); idleEnter(now); }
     }

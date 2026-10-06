@@ -26,7 +26,7 @@ Modlar (penceredeki butonlar ya da 1-4 tuslari; kamera her modda acik):
                        yuz gidince son noktada bekler
     NOTR               gozler ortada, kapak acik, kirpma yok
 
-Tuslar: q / ESC cikis, 1-4 mod, b kirp, m ayna (u yonunu cevir),
+Tuslar: q / ESC cikis, 1-4 mod, b kirp, i teknik bilgi, m ayna (u yonunu cevir),
         h kontrolu firmware idle'ina birak / geri al, d servolari birak (detach).
 
 Kamera koordinati: kamera robotun uzerinde/yaninda ILERI (izleyiciye) bakiyor
@@ -173,6 +173,10 @@ class ModeBrain:
             self.live = FollowBrain(eye)
             self.live.lid = self.lid
 
+    def next_mode(self) -> None:
+        """Breadboard'daki D2 butonu: modlar arasinda sirayla dolas."""
+        self.set_mode(MODES[(MODES.index(self.mode) + 1) % len(MODES)])
+
     def step(self, now: float, dt: float, target) -> None:
         # karsisinda biri varken insanlar daha sik kirpar (Bentivoglio 1997: ~26/dk vs ~17/dk)
         self.eye.blink_context = "conversation" if target is not None and self.mode == "TAKIP" else "rest"
@@ -228,9 +232,9 @@ def acquire_single_instance_lock(path: str = LOCK_PATH):
 # ---------------------------------------------------------------------------
 def draw_eye_schematic(cv2, img, x, y, w, h, eye: EyeController) -> None:
     """Izleyicinin gordugu gibi iki goz: robotun SAG gozu solda, bebek -u yonunde."""
-    cv2.rectangle(img, (x, y), (x + w, y + h), (20, 18, 16), -1)
-    cv2.rectangle(img, (x, y), (x + w, y + h), (0, 140, 255), 1)
-    r = int(min(w * 0.2, h * 0.38))
+    import hud
+    hud.panel(img, x, y, w, h, edge=hud.PANEL_EDGE)
+    r = int(min(w * 0.2, h * 0.34))
     cy = y + h // 2
     k = eye.settings["behaviour"]["lid_follow_pitch"] if eye.follow_pitch else 0.0
     # (ekran x merkezi, taraf) - izleyiciye gore sol = robotun sagi
@@ -258,74 +262,18 @@ def draw_eye_schematic(cv2, img, x, y, w, h, eye: EyeController) -> None:
         cv2.rectangle(lids, (0, min(2 * r, bot_edge - y0)), (2 * r, 2 * r), (70, 66, 62), -1)
         inside = mask[:, :, 0] > 0
         roi[inside] = lids[inside]
-        cv2.circle(img, (cx, cy), r, (0, 140, 255), 2, cv2.LINE_AA)
-
-
-BTN_W, BTN_H, BTN_GAP, BTN_X0, BTN_Y0 = 160, 32, 6, 12, 12
-
-
-def mode_button_rects():
-    return [(m, BTN_X0 + i * (BTN_W + BTN_GAP), BTN_Y0) for i, m in enumerate(MODES)]
-
-
-def make_button_images():
-    """Mod butonlari (pasif/aktif) bir kez cizilir; Turkce harf icin PIL (cv2 yazisi 'O' basamaz)."""
-    import numpy as np
-    from PIL import Image, ImageDraw, ImageFont
-    font = None
-    for name in ("seguisb.ttf", "segoeuib.ttf", "arialbd.ttf"):
-        try:
-            font = ImageFont.truetype(name, 15)
-            break
-        except OSError:
-            pass
-    font = font or ImageFont.load_default()
-    imgs = {}
-    for m in MODES:
-        for active in (False, True):
-            # Edgerunners paleti (panel ile ayni): koyu mor zemin, cyan vurgu
-            bg, fg, edge = ((0, 240, 255), (26, 10, 46), (0, 240, 255)) if active else ((36, 18, 61), (244, 213, 253), (110, 70, 150))
-            im = Image.new("RGB", (BTN_W, BTN_H), bg)
-            d = ImageDraw.Draw(im)
-            d.rectangle([0, 0, BTN_W - 1, BTN_H - 1], outline=edge, width=2)
-            text = MODE_LABELS[m]
-            x0, y0, x1, y1 = d.textbbox((0, 0), text, font=font)
-            d.text(((BTN_W - (x1 - x0)) / 2 - x0, (BTN_H - (y1 - y0)) / 2 - y0), text, fill=fg, font=font)
-            imgs[m, active] = np.ascontiguousarray(np.asarray(im)[:, :, ::-1])
-    return imgs
+        cv2.circle(img, (cx, cy), r, hud.CYAN, 2, cv2.LINE_AA)
 
 
 def schematic_rect(w: int, h: int):
-    """Goz semasi sag ustte, butonlarin sagindaki bosluga sigar; cok darsa butonlarin altina."""
-    sw, sh = int(w * 0.34), int(h * 0.24)
-    free = w - 12 - (mode_button_rects()[-1][1] + BTN_W + 10)
-    if free >= int(w * 0.24):
-        return w - min(sw, free) - 12, 12, min(sw, free), sh
-    return w - sw - 12, BTN_Y0 + BTN_H + 48, sw, sh
+    """Goz semasi sag ustte."""
+    sw, sh = int(w * 0.30), int(h * 0.22)
+    return w - sw - 12, 12, sw, sh
 
 
-def draw_mode_buttons(img, imgs, current: str) -> None:
-    h, w = img.shape[:2]
-    for m, x, y in mode_button_rects():
-        if x + BTN_W <= w and y + BTN_H <= h:
-            img[y:y + BTN_H, x:x + BTN_W] = imgs[m, m == current]
+MODE_HINT = "BUTONA BAS · MOD DEĞİŞTİR"
 
 
-def hit_mode_button(px: int, py: int):
-    for m, x, y in mode_button_rects():
-        if x <= px < x + BTN_W and y <= py < y + BTN_H:
-            return m
-    return None
-
-
-def put(cv2, img, text, org, scale=0.5, color=(230, 230, 230), thick=1):
-    (tw, th), base = cv2.getTextSize(text, cv2.FONT_HERSHEY_SIMPLEX, scale, thick)
-    x, y = org
-    cv2.rectangle(img, (x - 4, y - th - 4), (x + tw + 4, y + base + 2), (0, 0, 0), -1)
-    cv2.putText(img, text, (x, y), cv2.FONT_HERSHEY_SIMPLEX, scale, color, thick, cv2.LINE_AA)
-
-
-# ---------------------------------------------------------------------------
 def open_camera(cv2, index: int):
     cap = cv2.VideoCapture(index, cv2.CAP_DSHOW) if os.name == "nt" else cv2.VideoCapture(index)
     if not cap.isOpened():
@@ -361,17 +309,21 @@ def run(args) -> int:
     mirror = args.mirror
     detector = create_detector(args.model, args.min_conf)
     cap = open_camera(cv2, args.camera)
+    import hud
     cv2.namedWindow(WINDOW_NAME, cv2.WINDOW_NORMAL)
-    btn_imgs = make_button_images()
+    labels = [MODE_LABELS[m] for m in MODES]
     clicked = []
+    frame_size = [960, 540]
+    show_debug = False
 
     def on_mouse(event, x, y, flags, param):
         if event == cv2.EVENT_LBUTTONDOWN:
-            m = hit_mode_button(x, y)
-            if m:
-                clicked.append(m)
+            i = hud.hit_pill(labels, frame_size[0], frame_size[1], x, y)
+            if i is not None:
+                clicked.append(MODES[i])
 
     cv2.setMouseCallback(WINDOW_NAME, on_mouse)
+    seen_presses = eye.link.button_presses
 
     start = time.monotonic()
     prev = start
@@ -388,6 +340,7 @@ def run(args) -> int:
             dt = max(1e-3, now - prev)
             prev = now
             h, w = frame.shape[:2]
+            frame_size[:] = [w, h]
 
             rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             image = mp.Image(image_format=mp.ImageFormat.SRGB, data=rgb)
@@ -402,7 +355,8 @@ def run(args) -> int:
                 x1, y1 = max(0, bb.origin_x), max(0, bb.origin_y)
                 x2, y2 = min(w, bb.origin_x + bb.width), min(h, bb.origin_y + bb.height)
                 if x2 > x1 and y2 > y1:
-                    boxes.append((x1, y1, x2, y2))
+                    score = det.categories[0].score if det.categories else None
+                    boxes.append((x1, y1, x2, y2, score))
             primary = max(boxes, key=lambda b: (b[2] - b[0]) * (b[3] - b[1])) if boxes else None
 
             target = None
@@ -415,35 +369,34 @@ def run(args) -> int:
 
             while clicked:
                 brain.set_mode(clicked.pop(0))
+            while seen_presses < eye.link.button_presses:      # D2 butonu (firmware "BTN")
+                seen_presses += 1
+                brain.next_mode()
             brain.step(now, dt, target)
             angles = eye.update(dt)
 
-            # --- onizleme (izleyici icin aynali) ----------------------------
+            # --- stant ekrani (izleyici icin aynali) ------------------------
             view = cv2.flip(frame, 1)
-            for b in boxes:
-                x1, x2 = w - b[2], w - b[0]
-                col = (0, 0, 255) if b is primary else (255, 220, 0)
-                cv2.rectangle(view, (x1, b[1]), (x2, b[3]), col, 2 if b is primary else 1)
-            # bakisin karedeki karsiligi (aynali karede robotun sagi = sol)
+            for bx in boxes:
+                hud.draw_face(view, (w - bx[2], bx[1], w - bx[0], bx[3]), bx is primary, bx[4], brain.status)
+            # gozun baktigi nokta (aynali karede robotun sagi = sol); pitch_dead iken hesaplanan bakis
             gu = -eye.gaze_u if not mirror else eye.gaze_u
             gx = int(w / 2 * (1 + gu / GAIN))
             gy = int(h / 2 * (1 - eye.gaze_v / GAIN))
-            cv2.circle(view, (gx, gy), 18, (0, 140, 255), 2, cv2.LINE_AA)
+            hud.reticle(view, gx, gy, hud.MAGENTA)
 
             fps = 0.9 * fps + 0.1 / dt
-            mode = f"{eye.mode} {eye.mapping}" + (" (firmware idle)" if released else "")
-            draw_mode_buttons(view, btn_imgs, brain.mode)
-            put(cv2, view, f"{brain.status}   {mode}", (12, BTN_Y0 + BTN_H + 30), 0.7,
-                (0, 0, 255) if brain.status in ("LOCK!", "FOCUS") else (0, 220, 255), 2)
             # pitch_dead iken servo merkezde; ekranda hesaplanan pitch gosterilir
-            shown = (angles[0], eye.pitch_wanted, angles[2])
-            put(cv2, view, "YAW {:6.2f}  PITCH {:6.2f}  LIDS {:6.2f}".format(*shown),
-                (12, h - 40), 0.5)
-            put(cv2, view, f"lid {eye.effective_open:.2f}  "
-                           f"S {eye.sent_count}  ERR {eye.link.err_count}  FPS {fps:4.1f}"
-                           f"{'  MIRROR' if mirror else ''}   q:cik 1-4:mod b:kirp m:ayna h:fw-idle d:detach",
-                (12, h - 14), 0.45, (180, 180, 180))
+            sub = "YAW {:5.1f}°  PITCH {:5.1f}°  KAPAK %{:d}".format(
+                angles[0], eye.pitch_wanted, int(round(eye.effective_open * 100)))
+            hud.draw_header(view, brain.status, sub)
             draw_eye_schematic(cv2, view, *schematic_rect(w, h), eye)
+            hud.draw_pills(view, labels, MODES.index(brain.mode), MODE_HINT)
+            if show_debug:
+                dbg = (f"{eye.mode} {eye.mapping}{' fw-idle' if released else ''}  S {eye.sent_count}  "
+                       f"ERR {eye.link.err_count}  BTN {eye.link.button_presses}  FPS {fps:4.1f}"
+                       f"{'  MIRROR' if mirror else ''}  |  q cik  1-4 mod  b kirp  m ayna  h fw-idle  d detach  i gizle")
+                hud.draw_text(view, dbg, 14, h - 70, 12, hud.INK_DIM, kind="mono")
 
             cv2.imshow(WINDOW_NAME, view)
             key = cv2.waitKey(1) & 0xFF
@@ -458,6 +411,8 @@ def run(args) -> int:
                 brain.set_mode(MODES[key - ord("1")])
             elif key == ord("b"):
                 eye.blink()
+            elif key == ord("i"):
+                show_debug = not show_debug
             elif key == ord("m"):
                 mirror = not mirror
             elif key == ord("d"):

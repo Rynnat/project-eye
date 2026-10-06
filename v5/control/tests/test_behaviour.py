@@ -207,11 +207,31 @@ class ModeBrainTests(unittest.TestCase):
         self.assertIsNone(self.eye._blink_start)
         self.assertAlmostEqual(self.eye.openness, self.ff.LID_OPEN_TRACK, places=2)
 
-    def test_buttons_hit(self):
-        for m, x, y in self.ff.mode_button_rects():
-            self.assertEqual(self.ff.hit_mode_button(x + 5, y + 5), m)
-        self.assertIsNone(self.ff.hit_mode_button(2, 2))
+    def test_hardware_button_cycles_modes(self):
+        """PC surerken D2'ye basilinca firmware "BTN" yazar, idle'i degistirmez; tracker sonraki moda gecer."""
+        self.brain.set_mode(self.ff.MODES[0])
+        seen = self.eye.link.button_presses
+        order = []
+        for _ in range(len(self.ff.MODES)):
+            self.frames(5, None)                      # S komutlari gidiyor -> PC kontrolde
+            self.eye.link.ser.press_button()
+            self.frames(1, None)
+            while seen < self.eye.link.button_presses:
+                seen += 1
+                self.brain.next_mode()
+            order.append(self.brain.mode)
+            self.assertFalse(self.eye.link.ser.model.idle_enabled)
+        self.assertEqual(order, list(self.ff.MODES[1:]) + [self.ff.MODES[0]])
 
+    def test_buttons_hit(self):
+        import hud
+        labels = [self.ff.MODE_LABELS[m] for m in self.ff.MODES]
+        rects = hud.pill_rects(labels, 960, 540)
+        self.assertEqual(len(rects), len(self.ff.MODES))
+        for i, x, y, bw, bh in rects:
+            self.assertEqual(hud.hit_pill(labels, 960, 540, x + 3, y + 3), i)
+            self.assertLessEqual(x + bw, 960)
+        self.assertIsNone(hud.hit_pill(labels, 960, 540, 2, 2))
 
 if __name__ == "__main__":
     unittest.main()
