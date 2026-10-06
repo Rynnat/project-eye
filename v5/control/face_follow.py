@@ -419,6 +419,7 @@ def run(args) -> int:
     cv2.setMouseCallback(WINDOW_NAME, on_mouse)
     seen_presses = eye.link.button_presses
     monitor = LinkMonitor(eye)
+    frozen = None
 
     start = time.monotonic()
     prev = start
@@ -486,8 +487,15 @@ def run(args) -> int:
                 angles[0], eye.pitch_wanted, int(round(eye.effective_open * 100)))
             hud.draw_header(view, brain.status, sub)
             srect = schematic_rect(w, h)
-            draw_eye_schematic(cv2, view, *srect, eye)
-            hud.draw_health(view, *srect, monitor.update(now))
+            health = monitor.update(now)
+            sx, sy, sw, sh = srect
+            if health in ("ok", "sim") or frozen is None or frozen.shape[:2] != (sh, sw):
+                draw_eye_schematic(cv2, view, *srect, eye)
+                frozen = view[sy:sy + sh, sx:sx + sw].copy()   # son saglikli kare
+            else:
+                # kart cevap vermiyor: gozler son bilinen halde DONAR (gercek motorlar da hareket etmiyor)
+                view[sy:sy + sh, sx:sx + sw] = frozen
+            hud.draw_health(view, *srect, health)
             hud.draw_pills(view, labels, MODES.index(brain.mode))
             if show_debug:
                 dbg = (f"{eye.mode} {eye.mapping}{' fw-idle' if released else ''}  S {eye.sent_count}  "
