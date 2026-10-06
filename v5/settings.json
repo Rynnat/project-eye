@@ -1,7 +1,7 @@
 {
   "serial_port": "auto",
   "channels": {
-    "EYE_YAW":   {"center": 78, "min": 45, "max": 111, "invert": true, "deg_per_unit": 33.0},
+    "EYE_YAW":   {"center": 78, "min": 45, "max": 111, "invert": false, "deg_per_unit": 33.0},
     "EYE_PITCH": {"center": 90, "min": 70, "max": 110, "invert": false, "deg_per_unit": 20.0},
     "LIDS":      {"closed": 115.0, "open": 80.0, "min": 80.0, "max": 115.0, "invert": false}
   },
