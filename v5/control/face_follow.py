@@ -18,14 +18,12 @@ Calistirma (mediapipe + opencv Lunar venv'inde var):
     ... face_follow.py --sim          # donanimi arama
     ... face_follow.py --port COM5 --camera 1
 
-Modlar (penceredeki butonlar ya da 1-4 tuslari; kamera her modda acik):
-    IDLE      yuzu yok sayar, uykulu kapakla yavasca etrafi kolacan eder
-    CANLI     yukaridaki tam davranis (takip + irkilme + odak + kirpma + idle)
-    NOTR      gozler ortada, kapak acik, kirpma yok
-    TRACKING  yalniz takip: yuze bakar, kapak sabit acik, irkilme/kirpma yok;
-              yuz kaybolunca son noktada bekler
+Modlar (penceredeki butonlar ya da 1-3 tuslari; kamera her modda acik):
+    NO TRACKING CANLI  yuzu yok sayar; insan istatistikli bakinma + kirpma, kapak acik
+    TRACKING CANLI     yukaridaki tam davranis (takip + irkilme + odak + kirpma + idle)
+    NOTR               gozler ortada, kapak acik, kirpma yok
 
-Tuslar: q / ESC cikis, 1-4 mod, b kirp, m ayna (u yonunu cevir),
+Tuslar: q / ESC cikis, 1-3 mod, b kirp, m ayna (u yonunu cevir),
         h kontrolu firmware idle'ina birak / geri al, d servolari birak (detach).
 
 Kamera koordinati: kamera robotun uzerinde/yaninda ILERI (izleyiciye) bakiyor
@@ -65,9 +63,9 @@ FOCUS_SPEED_RAMP = 1.2
 TARGET_DEBOUNCE_FRAMES = 5
 GAIN = 1.0                  # kare kenari -> u = +-GAIN
 
-MODES = ("IDLE", "CANLI", "NOTR", "TRACKING")
-MODE_LABELS = {"IDLE": "IDLE", "CANLI": "CANLI", "NOTR": "NÖTR", "TRACKING": "TRACKING"}
-DEFAULT_MODE = "CANLI"
+MODES = ("SERBEST", "TAKIP", "NOTR")
+MODE_LABELS = {"SERBEST": "NO TRACKING CANLI", "TAKIP": "TRACKING CANLI", "NOTR": "NÖTR"}
+DEFAULT_MODE = "TAKIP"
 
 
 def _ema(current: float, target: float, dt: float, tau: float) -> float:
@@ -146,13 +144,12 @@ class FollowBrain:
 
 
 class ModeBrain:
-    """Mod secici: CANLI = FollowBrain, digerleri sade davranislar. cv2 gerektirmez."""
+    """Mod secici: TAKIP = FollowBrain, SERBEST = takipsiz canli, NOTR = sabit. cv2 gerektirmez."""
 
     def __init__(self, eye: EyeController, mode: str = DEFAULT_MODE):
         self.eye = eye
         self.live = FollowBrain(eye)
         self.mode = None
-        self.aim = None
         self.lid = eye.openness
         self.status = ""
         self.set_mode(mode)
@@ -162,37 +159,26 @@ class ModeBrain:
             return
         self.mode = mode
         eye = self.eye
-        eye.auto_blink = mode in ("IDLE", "CANLI")
-        eye.idle_wander = mode in ("IDLE", "CANLI")
-        if mode == "IDLE":
-            eye._last_look = -1e9       # look() gelmiyor sayilsin: hemen kolacan etmeye basla
-        elif mode == "CANLI":
+        eye.auto_blink = eye.idle_wander = mode != "NOTR"
+        if mode == "SERBEST":
+            eye._last_look = -1e9       # look() gelmiyor sayilsin: hemen bakinmaya basla
+        elif mode == "TAKIP":
             self.live = FollowBrain(eye)
             self.live.lid = self.lid
-        self.aim = None
 
     def step(self, now: float, dt: float, target) -> None:
         # karsisinda biri varken insanlar daha sik kirpar (Bentivoglio 1997: ~26/dk vs ~17/dk)
-        self.eye.blink_context = "conversation" if target is not None and self.mode != "IDLE" else "rest"
-        if self.mode == "CANLI":
+        self.eye.blink_context = "conversation" if target is not None and self.mode == "TAKIP" else "rest"
+        if self.mode == "TAKIP":
             self.live.step(now, dt, target)
             self.lid, self.status = self.live.lid, self.live.status
             return
-        if self.mode == "IDLE":
-            lid_target, self.status = LID_OPEN_IDLE, "IDLE"
-        elif self.mode == "NOTR":
+        if self.mode == "SERBEST":
+            self.status = "CANLI"
+        else:
             self.eye.look(0.0, 0.0)
-            lid_target, self.status = LID_OPEN_TRACK, "NOTR"
-        else:  # TRACKING
-            if target is not None:
-                self.aim = target if self.aim is None else (
-                    _ema(self.aim[0], target[0], dt, AIM_TAU_S), _ema(self.aim[1], target[1], dt, AIM_TAU_S))
-                self.status = "TRACKING"
-            else:
-                self.status = "TRACKING - yuz yok"
-            self.eye.look(*(self.aim or (0.0, 0.0)))
-            lid_target = LID_OPEN_TRACK
-        self.lid = _ema(self.lid, lid_target, dt, LID_TAU_S)
+            self.status = "NOTR"
+        self.lid = _ema(self.lid, LID_OPEN_TRACK, dt, LID_TAU_S)
         self.eye.lids(self.lid)
 
 
@@ -218,7 +204,7 @@ def acquire_single_instance_lock(path: str = LOCK_PATH):
 # ---------------------------------------------------------------------------
 # Cizim
 # ---------------------------------------------------------------------------
-BTN_W, BTN_H, BTN_GAP, BTN_X0, BTN_Y0 = 120, 34, 8, 12, 12
+BTN_W, BTN_H, BTN_GAP, BTN_X0, BTN_Y0 = 190, 34, 8, 12, 12
 
 
 def mode_button_rects():
@@ -389,7 +375,7 @@ def run(args) -> int:
                 (12, h - 40), 0.5)
             put(cv2, view, f"lid {eye.effective_open:.2f}  "
                            f"S {eye.sent_count}  ERR {eye.link.err_count}  FPS {fps:4.1f}"
-                           f"{'  MIRROR' if mirror else ''}   q:cik 1-4:mod b:kirp m:ayna h:fw-idle d:detach",
+                           f"{'  MIRROR' if mirror else ''}   q:cik 1-3:mod b:kirp m:ayna h:fw-idle d:detach",
                 (12, h - 14), 0.45, (180, 180, 180))
 
             cv2.imshow(WINDOW_NAME, view)
@@ -401,7 +387,7 @@ def run(args) -> int:
             # X ile kapatildiysa: waitKey pencereyi yeniden yaratmadan once cik
             if cv2.getWindowProperty(WINDOW_NAME, cv2.WND_PROP_VISIBLE) < 1:
                 break
-            if ord("1") <= key <= ord("4"):
+            if ord("1") <= key < ord("1") + len(MODES):
                 brain.set_mode(MODES[key - ord("1")])
             elif key == ord("b"):
                 eye.blink()

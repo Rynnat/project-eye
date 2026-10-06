@@ -158,28 +158,26 @@ class ModeBrainTests(unittest.TestCase):
         self.assertFalse(self.eye.auto_blink)
         self.assertAlmostEqual(self.eye.openness, self.ff.LID_OPEN_TRACK, places=2)
 
-    def test_tracking_follows_then_holds(self):
-        self.brain.set_mode("TRACKING")
-        self.frames(60, (0.6, -0.3))
-        self.assertAlmostEqual(self.eye.gaze_u, 0.6, places=2)
-        self.assertEqual(self.brain.status, "TRACKING")
-        self.frames(120, None)           # yuz kayboldu: son noktada bekler, kolacan etmez
-        self.assertAlmostEqual(self.eye.gaze_u, 0.6, places=2)
+    def test_free_live_ignores_face_but_moves(self):
+        self.brain.set_mode("SERBEST")
+        self.assertTrue(self.eye.idle and self.eye.auto_blink)
+        us = []
+        for _ in range(10):
+            self.frames(30, (0.9, 0.0))
+            us.append(round(self.eye.gaze_u, 3))
+        self.assertEqual(self.brain.status, "CANLI")
+        self.assertGreater(len(set(us)), 1)                        # bakiniyor
+        self.assertNotAlmostEqual(self.eye.gaze_u, 0.9, places=1)  # yuze kilitlenmiyor
         self.assertAlmostEqual(self.eye.openness, self.ff.LID_OPEN_TRACK, places=2)
 
-    def test_idle_wanders_with_face_present(self):
-        self.brain.set_mode("IDLE")
-        self.assertTrue(self.eye.idle)
-        self.frames(90, (0.9, 0.0))
-        self.assertAlmostEqual(self.eye.openness, self.ff.LID_OPEN_IDLE, places=2)
-        self.assertNotAlmostEqual(self.eye.gaze_u, 0.9, places=1)
-
-    def test_switch_back_to_live(self):
+    def test_tracking_live_locks_on(self):
         self.brain.set_mode("NOTR")
-        self.brain.set_mode("CANLI")
+        self.brain.set_mode("TAKIP")
         self.assertTrue(self.eye.auto_blink and self.eye.idle_wander)
         self.frames(self.ff.TARGET_DEBOUNCE_FRAMES + 3, (0.5, 0.2))
         self.assertEqual(self.brain.status, "LOCK!")
+        self.frames(30, (0.5, 0.2))
+        self.assertAlmostEqual(self.eye.gaze_u, 0.5, places=2)
 
     def test_buttons_hit(self):
         for m, x, y in self.ff.mode_button_rects():
