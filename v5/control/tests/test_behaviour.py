@@ -270,7 +270,16 @@ class LinkMonitorTests(unittest.TestCase):
         self.ff = ff
         self.eye, self.clock = make()
         self.eye.link.simulated = False          # sim karti "donanim" gibi izle
-        self.mon = ff.LinkMonitor(self.eye)
+        self.found = []                          # Reconnector'un "bulacagi" kart
+        self.scans = 0
+
+        def finder(port):
+            self.scans += 1
+            return self.found.pop(0) if self.found else (None, None)
+
+        self.ports = ["COM3"]
+        rc = ff.Reconnector("auto", finder=finder, lister=lambda: list(self.ports))
+        self.mon = ff.LinkMonitor(self.eye, rc)
 
     def tick(self, seconds, dt=0.05):
         st = None
@@ -298,6 +307,59 @@ class LinkMonitorTests(unittest.TestCase):
         self.eye.link.ser._rx += b"EYE v5 READY\r\n"
         self.assertEqual(self.tick(0.2), "reset")
         self.assertEqual(self.tick(self.ff.LinkMonitor.RESET_SHOW_S + 0.5), "ok")
+
+    def new_board(self):
+        import sim
+        ser = sim.SimSerial(clock=self.clock, seed=1)
+        ser.reset_input_buffer()                 # banner'i el sikisma tuketmis gibi
+        return ser, "COM3"
+
+    def wait_scan(self):
+        t = self.mon.reconnector._thread
+        if t is not None:
+            t.join(2)
+
+    def test_reconnects_after_cable_back(self):
+        self.tick(1.0)
+        self.eye.link.alive = False              # kablo cekildi
+        self.ports = []
+        self.assertEqual(self.tick(0.2), "lost")
+        self.wait_scan()
+        self.found.append(self.new_board())      # kablo takildi
+        self.ports = ["COM3"]
+        self.tick(0.05)
+        self.wait_scan()
+        self.assertEqual(self.tick(0.5), "ok")
+        self.assertFalse(self.eye.simulated)
+        self.assertGreater(self.eye.link.ser.model.last_s_ms, 0)   # yeni karta komut gidiyor
+
+    def test_no_hardware_recovers_when_board_plugged(self):
+        self.eye.link.simulated = True
+        self.assertEqual(self.tick(0.1), "sim")
+        self.wait_scan()
+        self.found.append(self.new_board())
+        self.ports = ["COM3", "COM4"]            # port listesi degisti -> hemen tara
+        self.tick(0.05)
+        self.wait_scan()
+        self.assertEqual(self.tick(0.5), "ok")
+        self.assertFalse(self.eye.simulated)
+
+    def test_scan_not_repeated_while_ports_unchanged(self):
+        self.eye.link.simulated = True
+        for _ in range(20):
+            self.tick(0.1)
+            self.wait_scan()
+        self.assertEqual(self.scans, 1)          # Lunar gimbal'i surekli resetleme
+
+    def test_long_silence_reopens(self):
+        self.tick(1.0)
+        self.eye.link.ser.write = lambda data: len(data)
+        self.assertEqual(self.tick(2.0), "silent")
+        self.wait_scan()
+        self.found.append(self.new_board())
+        st = self.tick(4.0)
+        self.wait_scan()
+        self.assertEqual(self.tick(0.5), "ok")
 
     def test_sim_reported(self):
         self.eye.link.simulated = True

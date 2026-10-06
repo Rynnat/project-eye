@@ -49,7 +49,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 if HERE not in sys.path:
     sys.path.insert(0, HERE)
 
-from eye_control import EyeController, clamp, lid_follow  # noqa: E402
+from eye_control import EyeController, EyeLink, candidate_ports, clamp, find_eye_port, lid_follow  # noqa: E402
 
 WINDOW_NAME = "Project Eye v5 - Face Follow"
 DEFAULT_MODEL = r"C:\Users\LENOVO\lunar-tracker\assets\blaze_face_short_range.tflite"
@@ -230,39 +230,114 @@ class ModeBrain:
         self.eye.lids(self.lid)
 
 
+class Reconnector:
+    """Arka planda Project Eye kartini arar (el sikisma ~2-3 sn surer; ekran donmasin).
+
+    Port listesi degisince (kablo takildi) hemen, yoksa RETRY_S'de bir dener - surekli
+    taramak ayni USB'deki baska kartlari (Lunar gimbal) her seferinde resetlerdi.
+    """
+
+    RETRY_S = 10.0
+
+    def __init__(self, port: str, finder=None, lister=None):
+        import threading
+        self._threading = threading
+        self.port = port or "auto"
+        self.finder = finder or (lambda prt: find_eye_port(prt, log=lambda *_: None))
+        self.lister = lister or (lambda: candidate_ports(os.environ.get("EYE_EXCLUDE_PORTS", "").split(",")))
+        self._thread = None
+        self._result = None
+        self._last_ports = None
+        self._next_try = 0.0
+
+    def poll(self, now: float, force: bool = False):
+        """-> (ser, dev) bulunduysa, yoksa None. Bloklamaz."""
+        if self._thread is not None and self._thread.is_alive():
+            return None
+        if self._result is not None:
+            found, self._result = self._result, None
+            return found
+        try:
+            ports = tuple(sorted(self.lister()))
+        except Exception:
+            ports = ()
+        if force or ports != self._last_ports or now >= self._next_try:
+            self._last_ports = ports
+            self._next_try = now + self.RETRY_S
+
+            def work():
+                try:
+                    ser, dev = self.finder(self.port)
+                except Exception:
+                    ser, dev = None, None
+                if ser is not None:
+                    self._result = (ser, dev)
+
+            self._thread = self._threading.Thread(target=work, daemon=True)
+            self._thread.start()
+        return None
+
+
 class LinkMonitor:
-    """Sag ustteki gozler gercegi gostersin: kart cevap veriyor mu?
+    """Sag ustteki gozler gercegi gostersin: kart cevap veriyor mu? Hata gecince kendiliginden duzelir.
 
     Her HEARTBEAT_S'de '?' gonderir; karttan SILENT_S boyunca satir gelmezse "silent",
     port koptuysa "lost", acilis banner'i yeniden geldiyse (kart resetlendi - cogu zaman
     servo akimiyla brown-out) RESET_SHOW_S boyunca "reset", donanim yoksa "sim".
+    Duzelme: "silent" kendi gecer (kart yeniden cevap verirse); RECONNECT_SILENT_S'den uzun
+    surerse port kapatilip yeniden baglanilir. "lost" ve "sim"de Reconnector karti arar,
+    bulununca baglanti degistirilir.
     NOT: servo besleme hatti tek basina kesilirse kart USB'den calismaya devam eder ve
     bunu seri hattan ANLAYAMAYIZ; onun icin besleme olcumu gerekir.
     """
 
     HEARTBEAT_S = 0.5
     SILENT_S = 1.5
+    RECONNECT_SILENT_S = 5.0
     RESET_SHOW_S = 5.0
 
-    def __init__(self, eye: EyeController):
+    def __init__(self, eye: EyeController, reconnector: Reconnector | None = None):
         self.eye = eye
+        self.reconnector = reconnector or Reconnector(eye.settings["serial_port"])
         self._next_ping = 0.0
         self._resets = eye.link.resets
         self._reset_until = -1.0
+        self._force_scan = False
+
+    def _swap(self, ser, dev) -> None:
+        old = self.eye.link
+        old.close()
+        new = EyeLink(ser, dev, simulated=False, clock=old.clock)
+        self.eye.link = new
+        self.eye._last_sent = None          # yeni karta hemen tam poz gitsin
+        self.eye._lost_reported = False
+        self._resets = new.resets
+        self._reset_until = -1.0
+        self._next_ping = 0.0
 
     def update(self, now: float) -> str:
         link = self.eye.link
-        if self.eye.simulated:
-            return "sim"
-        if not link.alive:
-            return "lost"
+        if self.eye.simulated or not link.alive:
+            if not link.alive and not link.simulated:
+                link.close()                # portu birak ki yeniden acilabilsin
+            found = self.reconnector.poll(now, force=self._force_scan)
+            self._force_scan = False
+            if found is None:
+                return "sim" if self.eye.simulated else "lost"
+            self._swap(*found)
+            link = self.eye.link
         if now >= self._next_ping:
             link.send("?")
             self._next_ping = now + self.HEARTBEAT_S
         if link.resets != self._resets:
             self._resets = link.resets
             self._reset_until = now + self.RESET_SHOW_S
-        if now - link.last_rx_t > self.SILENT_S:
+        silent_for = now - link.last_rx_t
+        if silent_for > self.RECONNECT_SILENT_S:
+            link.close()                    # takildi: kapat, yeniden ara
+            self._force_scan = True
+            return "lost"
+        if silent_for > self.SILENT_S:
             return "silent"
         if now < self._reset_until:
             return "reset"
@@ -418,6 +493,7 @@ def run(args) -> int:
 
     cv2.setMouseCallback(WINDOW_NAME, on_mouse)
     seen_presses = eye.link.button_presses
+    counted_link = eye.link
     monitor = LinkMonitor(eye)
     frozen = None
 
@@ -465,6 +541,8 @@ def run(args) -> int:
 
             while clicked:
                 brain.set_mode(clicked.pop(0))
+            if eye.link is not counted_link:                  # yeniden baglanildi: sayac sifirdan
+                counted_link, seen_presses = eye.link, eye.link.button_presses
             while seen_presses < eye.link.button_presses:      # D2 butonu (firmware "BTN")
                 seen_presses += 1
                 brain.next_mode()
