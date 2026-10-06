@@ -38,6 +38,7 @@ STATUS_TEXT = {
     "CANLI - yuz araniyor": ("YÜZ ARANIYOR", INK),
     "TRACKING - yuz yok": ("YÜZ YOK · BEKLİYOR", INK_DIM),
     "NOTR": ("NÖTR", INK_DIM),
+    "MANUEL": ("MANUEL KONTROL", MAGENTA),
 }
 
 

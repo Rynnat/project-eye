@@ -209,10 +209,10 @@ class ModeBrainTests(unittest.TestCase):
 
     def test_hardware_button_cycles_modes(self):
         """PC surerken D2'ye basilinca firmware "BTN" yazar, idle'i degistirmez; tracker sonraki moda gecer."""
-        self.brain.set_mode(self.ff.MODES[0])
+        self.brain.set_mode(self.ff.BUTTON_CYCLE[0])
         seen = self.eye.link.button_presses
         order = []
-        for _ in range(len(self.ff.MODES)):
+        for _ in range(len(self.ff.BUTTON_CYCLE)):
             self.frames(5, None)                      # S komutlari gidiyor -> PC kontrolde
             self.eye.link.ser.press_button()
             self.frames(1, None)
@@ -221,7 +221,31 @@ class ModeBrainTests(unittest.TestCase):
                 self.brain.next_mode()
             order.append(self.brain.mode)
             self.assertFalse(self.eye.link.ser.model.idle_enabled)
-        self.assertEqual(order, list(self.ff.MODES[1:]) + [self.ff.MODES[0]])
+        self.assertEqual(order, list(self.ff.BUTTON_CYCLE[1:]) + [self.ff.BUTTON_CYCLE[0]])
+
+    def test_manual_mode(self):
+        self.brain.set_mode("TAKIP")
+        self.frames(20, (0.4, 0.0))
+        self.brain.set_mode("MANUEL")
+        self.assertFalse(self.eye.auto_blink or self.eye.idle_wander)
+        self.assertAlmostEqual(self.brain.manual[0], self.eye.gaze_u, places=6)   # sicramadan devralir
+        self.brain.manual_set(u=-0.7, v=0.3, lid=0.4)
+        self.frames(30, (0.9, 0.9))                       # yuz olsa da elle kontrol
+        self.assertAlmostEqual(self.eye.gaze_u, -0.7, places=2)
+        self.assertAlmostEqual(self.eye.openness, 0.4, places=2)
+        self.assertEqual(self.brain.status, "MANUEL")
+        self.brain.manual_set(du=-0.5, dlid=1.0)          # sinirlara kirpilir
+        self.assertEqual(self.brain.manual[0], -1.0)
+        self.assertEqual(self.brain.manual[2], 1.0)
+
+    def test_screen_to_gaze_inverts_reticle(self):
+        for mirror in (False, True):
+            for u, v in ((0.5, -0.25), (-0.8, 0.6), (0.0, 0.0)):
+                gu = -u if not mirror else u
+                x, y = 960 / 2 * (1 + gu), 540 / 2 * (1 - v)
+                ru, rv = self.ff.screen_to_gaze(x, y, 960, 540, mirror)
+                self.assertAlmostEqual(ru, u, places=6)
+                self.assertAlmostEqual(rv, v, places=6)
 
     def test_buttons_hit(self):
         import hud

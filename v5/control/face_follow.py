@@ -18,15 +18,18 @@ Calistirma (mediapipe + opencv Lunar venv'inde var):
     ... face_follow.py --sim          # donanimi arama
     ... face_follow.py --port COM5 --camera 1
 
-Modlar (penceredeki butonlar ya da 1-4 tuslari; kamera her modda acik):
-    NO TRACKING CANLI  yuzu yok sayar; insan istatistikli bakinma + kirpma, kapak acik
-    TRACKING CANLI     yuz varken tam takip (irkilme + odak + kirpma); yuz yokken
-                       NO TRACKING CANLI gibi bakinir, yuz gorunce kilitlenir
-    TRACKING CANSIZ    yalniz takip: kirpma/irkilme/bakinma yok, kapak sabit acik;
-                       yuz gidince son noktada bekler
-    NOTR               gozler ortada, kapak acik, kirpma yok
+Modlar (penceredeki butonlar ya da 1-5 tuslari; kamera her modda acik):
+    LIVE     yuzu yok sayar; insan istatistikli bakinma + kirpma, kapak acik
+    T LIVE   yuz varken tam takip (irkilme + odak + kirpma); yuz yokken LIVE gibi
+             bakinir, yuz gorunce kilitlenir
+    T        yalniz takip: kirpma/irkilme/bakinma yok, kapak sabit acik;
+             yuz gidince son noktada bekler
+    NEUTRAL  gozler ortada, kapak acik, kirpma yok
+    MANUAL   motorlar elle: goruntude surukle = bakis, tekerlek = kapak,
+             ok tuslari = bakis, [ ] = kapak
+D2 butonu (breadboard) otomatik modlar arasinda doner (MANUAL haric: fare ister).
 
-Tuslar: q / ESC cikis, 1-4 mod, b kirp, i teknik bilgi, m ayna (u yonunu cevir),
+Tuslar: q / ESC cikis, 1-5 mod, b kirp, i teknik bilgi, m ayna (u yonunu cevir),
         h kontrolu firmware idle'ina birak / geri al, d servolari birak (detach).
 
 Kamera koordinati: kamera robotun uzerinde/yaninda ILERI (izleyiciye) bakiyor
@@ -66,9 +69,11 @@ FOCUS_SPEED_RAMP = 1.2
 TARGET_DEBOUNCE_FRAMES = 5
 GAIN = 1.0                  # kare kenari -> u = +-GAIN
 
-MODES = ("SERBEST", "TAKIP", "CANSIZ", "NOTR")
-MODE_LABELS = {"SERBEST": "NO TRACKING CANLI", "TAKIP": "TRACKING CANLI",
-               "CANSIZ": "TRACKING CANSIZ", "NOTR": "NÖTR"}
+MODES = ("SERBEST", "TAKIP", "CANSIZ", "NOTR", "MANUEL")
+MODE_LABELS = {"SERBEST": "LIVE", "TAKIP": "T LIVE", "CANSIZ": "T", "NOTR": "NEUTRAL", "MANUEL": "MANUAL"}
+BUTTON_CYCLE = ("SERBEST", "TAKIP", "CANSIZ", "NOTR")   # D2 butonu; MANUEL fare ister
+MANUAL_KEY_STEP = 0.06       # ok tusu basina bakis adimi (-1..1)
+MANUAL_LID_STEP = 0.08
 DEFAULT_MODE = "TAKIP"
 
 
@@ -149,7 +154,7 @@ class FollowBrain:
 
 class ModeBrain:
     """Mod secici: TAKIP = FollowBrain, SERBEST = takipsiz canli, CANSIZ = sade takip,
-    NOTR = sabit. cv2 gerektirmez."""
+    NOTR = sabit, MANUEL = elle (manual_set). cv2 gerektirmez."""
 
     def __init__(self, eye: EyeController, mode: str = DEFAULT_MODE):
         self.eye = eye
@@ -158,6 +163,7 @@ class ModeBrain:
         self.aim = None
         self.lid = eye.openness
         self.status = ""
+        self.manual = [0.0, 0.0, LID_OPEN_TRACK]      # u, v, kapak
         self.set_mode(mode)
 
     def set_mode(self, mode: str) -> None:
@@ -172,10 +178,20 @@ class ModeBrain:
         elif mode == "TAKIP":
             self.live = FollowBrain(eye)
             self.live.lid = self.lid
+        elif mode == "MANUEL":
+            self.manual = [eye.gaze_u, eye.gaze_v, self.lid]   # bulundugu yerden devral, sicrama yok
 
     def next_mode(self) -> None:
-        """Breadboard'daki D2 butonu: modlar arasinda sirayla dolas."""
-        self.set_mode(MODES[(MODES.index(self.mode) + 1) % len(MODES)])
+        """Breadboard'daki D2 butonu: otomatik modlar arasinda sirayla dolas."""
+        i = BUTTON_CYCLE.index(self.mode) if self.mode in BUTTON_CYCLE else -1
+        self.set_mode(BUTTON_CYCLE[(i + 1) % len(BUTTON_CYCLE)])
+
+    def manual_set(self, u=None, v=None, lid=None, du=0.0, dv=0.0, dlid=0.0) -> None:
+        """MANUEL modda hedef: mutlak (u/v/lid) ya da goreli (du/dv/dlid)."""
+        m = self.manual
+        m[0] = clamp((m[0] if u is None else u) + du, -1.0, 1.0)
+        m[1] = clamp((m[1] if v is None else v) + dv, -1.0, 1.0)
+        m[2] = clamp((m[2] if lid is None else lid) + dlid, 0.0, 1.0)
 
     def step(self, now: float, dt: float, target) -> None:
         # karsisinda biri varken insanlar daha sik kirpar (Bentivoglio 1997: ~26/dk vs ~17/dk)
@@ -201,6 +217,12 @@ class ModeBrain:
             else:
                 self.status = "TRACKING - yuz yok"
             self.eye.look(*(self.aim or (0.0, 0.0)))
+        elif self.mode == "MANUEL":
+            self.eye.look(self.manual[0], self.manual[1])
+            self.lid = self.manual[2]
+            self.eye.lids(self.lid)
+            self.status = "MANUEL"
+            return
         else:
             self.eye.look(0.0, 0.0)
             self.status = "NOTR"
@@ -265,6 +287,10 @@ def draw_eye_schematic(cv2, img, x, y, w, h, eye: EyeController) -> None:
         cv2.circle(img, (cx, cy), r, hud.CYAN, 2, cv2.LINE_AA)
 
 
+# cv2.waitKeyEx ok tuslari (Windows) -> ekranda (sag +, yukari +)
+ARROWS = {2424832: (-1, 0), 2555904: (1, 0), 2490368: (0, 1), 2621440: (0, -1)}
+
+
 def schematic_rect(w: int, h: int):
     """Goz semasi sag ustte."""
     sw, sh = int(w * 0.30), int(h * 0.22)
@@ -272,6 +298,14 @@ def schematic_rect(w: int, h: int):
 
 
 MODE_HINT = "BUTONA BAS · MOD DEĞİŞTİR"
+MANUAL_HINT = "SÜRÜKLE: BAKIŞ · TEKERLEK / [ ]: KAPAK · OKLAR: İNCE AYAR"
+
+
+def screen_to_gaze(x, y, w, h, mirror):
+    """Ekrandaki nokta -> bakis (u, v). Nisangahin cizildigi formulun tersi."""
+    gu = clamp(x / (w / 2) - 1.0, -1.0, 1.0) * GAIN
+    v = clamp(1.0 - y / (h / 2), -1.0, 1.0) * GAIN
+    return (gu if mirror else -gu), v
 
 
 def open_camera(cv2, index: int):
@@ -316,11 +350,25 @@ def run(args) -> int:
     frame_size = [960, 540]
     show_debug = False
 
+    dragging = [False]
+
     def on_mouse(event, x, y, flags, param):
+        w_, h_ = frame_size
         if event == cv2.EVENT_LBUTTONDOWN:
-            i = hud.hit_pill(labels, frame_size[0], frame_size[1], x, y)
+            i = hud.hit_pill(labels, w_, h_, x, y)
             if i is not None:
                 clicked.append(MODES[i])
+                return
+            dragging[0] = brain.mode == "MANUEL"
+        if event == cv2.EVENT_LBUTTONUP:
+            dragging[0] = False
+        if brain.mode != "MANUEL":
+            return
+        if dragging[0] and event in (cv2.EVENT_LBUTTONDOWN, cv2.EVENT_MOUSEMOVE):
+            u, v = screen_to_gaze(x, y, w_, h_, mirror)
+            brain.manual_set(u=u, v=v)
+        elif event == cv2.EVENT_MOUSEWHEEL:
+            brain.manual_set(dlid=MANUAL_LID_STEP if cv2.getMouseWheelDelta(flags) > 0 else -MANUAL_LID_STEP)
 
     cv2.setMouseCallback(WINDOW_NAME, on_mouse)
     seen_presses = eye.link.button_presses
@@ -391,15 +439,17 @@ def run(args) -> int:
                 angles[0], eye.pitch_wanted, int(round(eye.effective_open * 100)))
             hud.draw_header(view, brain.status, sub)
             draw_eye_schematic(cv2, view, *schematic_rect(w, h), eye)
-            hud.draw_pills(view, labels, MODES.index(brain.mode), MODE_HINT)
+            hud.draw_pills(view, labels, MODES.index(brain.mode),
+                           MANUAL_HINT if brain.mode == "MANUEL" else MODE_HINT)
             if show_debug:
                 dbg = (f"{eye.mode} {eye.mapping}{' fw-idle' if released else ''}  S {eye.sent_count}  "
                        f"ERR {eye.link.err_count}  BTN {eye.link.button_presses}  FPS {fps:4.1f}"
-                       f"{'  MIRROR' if mirror else ''}  |  q cik  1-4 mod  b kirp  m ayna  h fw-idle  d detach  i gizle")
+                       f"{'  MIRROR' if mirror else ''}  |  q cik  1-5 mod  b kirp  m ayna  h fw-idle  d detach  i gizle")
                 hud.draw_text(view, dbg, 14, h - 70, 12, hud.INK_DIM, kind="mono")
 
             cv2.imshow(WINDOW_NAME, view)
-            key = cv2.waitKey(1) & 0xFF
+            full = cv2.waitKeyEx(1)
+            key = full & 0xFF if 0 <= full < 0x10000 else -1
             if key in (ord("q"), 27):
                 break
             if args.seconds and now - start >= args.seconds:
@@ -409,6 +459,12 @@ def run(args) -> int:
                 break
             if ord("1") <= key < ord("1") + len(MODES):
                 brain.set_mode(MODES[key - ord("1")])
+            elif full in ARROWS and brain.mode == "MANUEL":
+                du, dv = ARROWS[full]
+                # ekranda sol/sag: aynali goruntude robotun sagi solda
+                brain.manual_set(du=(du if mirror else -du) * MANUAL_KEY_STEP, dv=dv * MANUAL_KEY_STEP)
+            elif key in (ord("["), ord("]")) and brain.mode == "MANUEL":
+                brain.manual_set(dlid=MANUAL_LID_STEP if key == ord("]") else -MANUAL_LID_STEP)
             elif key == ord("b"):
                 eye.blink()
             elif key == ord("i"):
