@@ -68,6 +68,7 @@ DEFAULT_SETTINGS = {
         "lid_follow_pitch": 0.0,
         "saccade_speed_deg_s": 500,
         "idle_after_s": 1.5,
+        "pitch_dead": False,   # True: pitch servosu merkezde sabit; istenen aci yalniz hesaplanir (pitch_wanted)
     },
 }
 
@@ -132,6 +133,8 @@ def validate_settings(s: dict) -> None:
     for k in ("lid_follow_pitch", "saccade_speed_deg_s", "idle_after_s"):
         if not isinstance(b.get(k), (int, float)) or b[k] < 0:
             problems.append(f"behaviour.{k}: >= 0 sayi olmali")
+    if not isinstance(b.get("pitch_dead"), bool):
+        problems.append("behaviour.pitch_dead: true/false olmali")
     if not isinstance(s.get("serial_port"), str):
         problems.append("serial_port: metin olmali ('auto' ya da 'COM5')")
     if problems:
@@ -667,6 +670,7 @@ class EyeController:
         self._last_send_t = -1e9
         self.effective_open = self.openness      # kirpma dahil
         self.angles = compute_angles(self.settings, 0.0, 0.0, self.openness, kin=self.kin)
+        self.pitch_wanted = self.angles[1]   # pitch_dead iken servo yerine gostermek icin
         self.sent_count = 0
         self._lost_reported = False
 
@@ -674,6 +678,10 @@ class EyeController:
     @property
     def simulated(self) -> bool:
         return self.link.simulated
+
+    @property
+    def pitch_dead(self) -> bool:
+        return self.settings["behaviour"]["pitch_dead"]
 
     @property
     def mapping(self) -> str:
@@ -776,8 +784,14 @@ class EyeController:
         if self.auto_blink and self._blink_start is None and now >= self._next_blink:
             self.blink()
         self.effective_open = self.openness * self._envelope(now)
-        self.angles = compute_angles(self.settings, self.gaze_u, self.gaze_v, self.effective_open,
-                                     follow_pitch=self.follow_pitch, kin=self.kin)
+        wanted = compute_angles(self.settings, self.gaze_u, self.gaze_v, self.effective_open,
+                                follow_pitch=self.follow_pitch, kin=self.kin)
+        self.pitch_wanted = wanted[1]
+        if self.pitch_dead:
+            # pitch "olu": donanim v=0 pozunda kalir (yaw/kapak da o poza gore), bakis hesabi surer
+            wanted = compute_angles(self.settings, self.gaze_u, 0.0, self.effective_open,
+                                    follow_pitch=self.follow_pitch, kin=self.kin)
+        self.angles = wanted
         self._maybe_send(now)
         self.link.poll()
         if not self.link.alive and not self._lost_reported:

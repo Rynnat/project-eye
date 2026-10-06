@@ -9,6 +9,7 @@
     "blink_interval_s": [3, 6],
     "lid_follow_pitch": 0.0,
     "saccade_speed_deg_s": 500,
-    "idle_after_s": 1.5
+    "idle_after_s": 1.5,
+    "pitch_dead": true
   }
 }

@@ -381,8 +381,14 @@ def run(args) -> int:
             draw_mode_buttons(view, btn_imgs, brain.mode)
             put(cv2, view, f"{brain.status}   {mode}", (12, BTN_Y0 + BTN_H + 30), 0.7,
                 (0, 0, 255) if brain.status in ("LOCK!", "FOCUS") else (0, 220, 255), 2)
-            put(cv2, view, "YAW {:6.2f}  PITCH {:6.2f}  LIDS {:6.2f}".format(*angles),
-                (12, h - 40), 0.5)
+            if eye.pitch_dead:
+                # pitch servosu olu: servo merkezde, gitmesi gereken aci yalniz yaziliyor
+                put(cv2, view, "YAW {:6.2f}  LIDS {:6.2f}".format(angles[0], angles[2]), (12, h - 66), 0.5)
+                put(cv2, view, "PITCH (OLU) olmasi gereken {:6.2f}  servo {:6.2f}".format(
+                    eye.pitch_wanted, angles[1]), (12, h - 40), 0.5, (0, 165, 255))
+            else:
+                put(cv2, view, "YAW {:6.2f}  PITCH {:6.2f}  LIDS {:6.2f}".format(*angles),
+                    (12, h - 40), 0.5)
             put(cv2, view, f"lid {eye.effective_open:.2f}  "
                            f"S {eye.sent_count}  ERR {eye.link.err_count}  FPS {fps:4.1f}"
                            f"{'  MIRROR' if mirror else ''}   q:cik 1-4:mod b:kirp m:ayna h:fw-idle d:detach",

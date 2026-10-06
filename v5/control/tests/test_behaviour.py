@@ -122,6 +122,21 @@ class FollowBrainTests(unittest.TestCase):
         self.assertAlmostEqual(eye.openness, ff.LID_OPEN_IDLE, places=2)
 
 
+class PitchDeadTests(unittest.TestCase):
+    def test_pitch_servo_stays_centered_but_wanted_moves(self):
+        live, c1 = make(pitch_dead=False)
+        dead, c2 = make(pitch_dead=True)
+        for eye, clock in ((live, c1), (dead, c2)):
+            eye.auto_blink = False
+            eye.look(0.4, 0.8)
+            run(eye, clock, 0.5)
+        centre, _ = make(pitch_dead=True)
+        self.assertNotAlmostEqual(live.angles[1], centre.angles[1], places=1)
+        self.assertAlmostEqual(dead.angles[1], centre.angles[1], places=2)   # servo hep v=0 pozunda
+        self.assertAlmostEqual(dead.pitch_wanted, live.angles[1], places=2)  # ama hedef aci hesaplaniyor
+        self.assertEqual(dead.link.query_state()[0][1], dead.angles[1])     # karta da merkez gitti
+
+
 class ModeBrainTests(unittest.TestCase):
     def setUp(self):
         import face_follow as ff
