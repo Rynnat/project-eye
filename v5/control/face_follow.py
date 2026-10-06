@@ -297,7 +297,6 @@ def schematic_rect(w: int, h: int):
     return w - sw - 12, 12, sw, sh
 
 
-MODE_HINT = "BUTONA BAS · MOD DEĞİŞTİR"
 MANUAL_HINT = "SÜRÜKLE: BAKIŞ · TEKERLEK / [ ]: KAPAK · OKLAR: İNCE AYAR"
 
 
@@ -440,7 +439,7 @@ def run(args) -> int:
             hud.draw_header(view, brain.status, sub)
             draw_eye_schematic(cv2, view, *schematic_rect(w, h), eye)
             hud.draw_pills(view, labels, MODES.index(brain.mode),
-                           MANUAL_HINT if brain.mode == "MANUEL" else MODE_HINT)
+                           MANUAL_HINT if brain.mode == "MANUEL" else None)
             if show_debug:
                 dbg = (f"{eye.mode} {eye.mapping}{' fw-idle' if released else ''}  S {eye.sent_count}  "
                        f"ERR {eye.link.err_count}  BTN {eye.link.button_presses}  FPS {fps:4.1f}"
