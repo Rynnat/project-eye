@@ -51,6 +51,17 @@ class WanderTests(unittest.TestCase):
                        if abs(a[0] - b[0]) < 0.02 and abs(a[1] - b[1]) < 0.02)
             self.assertLess(same / win, 0.5, msg=f"kayma {shift * dt:.1f} sn")
 
+    def test_wander_covers_hardware_range(self):
+        w = hm.GazeWander(random.Random(7))
+        seq = [w.step(i * 0.05) for i in range(int(300 / 0.05))]
+        us = [p[0] for p in seq]
+        vs = [p[1] for p in seq]
+        self.assertGreater(max(us), 0.8)
+        self.assertLess(min(us), -0.8)
+        self.assertGreater(max(vs), 0.7)
+        self.assertLess(min(vs), -0.7)
+        self.assertTrue(all(abs(u) <= 1 and abs(v) <= 1 for u, v in seq))
+
     def test_wander_uses_fixations(self):
         w = hm.GazeWander(random.Random(6))
         dt = 0.01

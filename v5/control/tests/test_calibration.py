@@ -79,8 +79,9 @@ class TableTests(unittest.TestCase):
         k = Kinematics.from_dict(synthetic(pitch_curve=True))
         ch = copy.deepcopy(DEFAULT_SETTINGS)["channels"]
         ch["EYE_PITCH"]["max"] = 120
-        self.assertAlmostEqual(eye_angles(ch, 0, 0.5, k)[1], 102.5)   # (90+115)/2
-        self.assertAlmostEqual(eye_angles(ch, 0, 1, k)[1], 115)
+        # +-1 = kalibre donanim siniri (120); egrinin sekli korunur: tabloda 0.5 -> sapmanin yarisi
+        self.assertAlmostEqual(eye_angles(ch, 0, 0.5, k)[1], 105)     # 90 + 0.5*(120-90)
+        self.assertAlmostEqual(eye_angles(ch, 0, 1, k)[1], 120)
         self.assertEqual(lid_angle(LIDS, 0.5, k), 95)                 # tablonun egrisi
         shifted = dict(LIDS, closed=110, open=70, min=60, max=120)
         self.assertEqual(lid_angle(shifted, 0, k), 110)               # uclar kalibrasyona oturur

@@ -326,6 +326,7 @@ def eye_angles(ch: dict, u: float, v: float, kin: Kinematics | None = None) -> t
 
     Tablo varken goz acisi yaw = u * 25, pitch = v * 20 (tablo kapsami):
         servo = center + yon * (T(aci) - T(0)),  yon = settings_yonu * tablo_yonu
+    ve bu sapma her yonde +-1 = settings min/max (kalibre donanim siniri) olacak sekilde olceklenir.
     ``invert`` dogrusal formuldeki anlamini korur (true: +u -> servo azalir); tablo
     yalnizca egrinin SEKLINI verir. Boylece settings_suggestion (yaw invert=true)
     tabloyla (servo = 90 - yaw) birebir ayni sonucu verir, donanimda yon ters
@@ -338,9 +339,21 @@ def eye_angles(ch: dict, u: float, v: float, kin: Kinematics | None = None) -> t
     pitch_deg = clamp(v, -1.0, 1.0) * kin.pitch_range
     wy = (-1.0 if cy.get("invert") else 1.0) * kin.yaw_dir
     wp = (-1.0 if cp.get("invert") else 1.0) * kin.pitch_dir
-    yaw = cy["center"] + wy * (kin.yaw_servo(yaw_deg) - kin.yaw_servo(0.0))
-    pitch = cp["center"] + wp * (kin.pitch_servo(pitch_deg) - kin.pitch_servo(0.0))
+    yaw = cy["center"] + _to_hw_limits(cy, u, wy * (kin.yaw_servo(yaw_deg) - kin.yaw_servo(0.0)),
+                                       wy * (kin.yaw_servo(math.copysign(kin.yaw_range, u)) - kin.yaw_servo(0.0)))
+    pitch = cp["center"] + _to_hw_limits(cp, v, wp * (kin.pitch_servo(pitch_deg) - kin.pitch_servo(0.0)),
+                                         wp * (kin.pitch_servo(math.copysign(kin.pitch_range, v)) - kin.pitch_servo(0.0)))
     return clamp(yaw, cy["min"], cy["max"]), clamp(pitch, cp["min"], cp["max"])
+
+
+def _to_hw_limits(c: dict, x: float, off: float, off_full: float) -> float:
+    """Tablo egrisinin SEKLI korunur, ama +-1 = kalibre edilmis donanim siniri (min/max).
+    Kalibrasyonda bulunan gercek aralik (orn. yaw 45-111) CAD tablosunun +-25 derecesinden
+    genis olabilir; olcek her yon icin ayri (merkez ortada olmayabilir)."""
+    if abs(off_full) < 1e-9:
+        return off
+    limit = c["max"] if off_full > 0 else c["min"]
+    return off * abs(limit - c["center"]) / abs(off_full)
 
 
 def lid_follow(openness: float, pitch_v: float, k: float, max_open: float = 1.0) -> float:

@@ -13,9 +13,13 @@ Kaynaklar (parametrelerin geldigi yer; dagilim BICIMLERI bizim modelleme secimim
 * Kirpma suresi - insan tam kirpmasi ~100-400 ms; servo kapaklarin yetisebilmesi icin
   0.20-0.32 sn araliginda.
 
-Bakis noktasi gradyan (Perlin) gurultusunden gelir. Kafes gradyanlari ihtiyac
-duyuldukca rastgele uretilir (tablo yok), bu yuzden desen hicbir periyotta kendini
-tekrar etmez.
+Bakinma iki katmanli (insanlarda da boyle: buyuk sakkadla bir bolgeye gec, orada
+kucuk sakkadlarla dolas):
+* bolge: DONANIMIN mekanik araliginin tamamindan rastgele (v5 artifact'teki "Canli" ile
+  ayni: yaw +-23/25, pitch +-17/20); 0.7-2.3 sn'de bir degisir (artifact ile ayni)
+* bolge icinde: her fiksasyonda (Henderson, ort. ~330 ms) gradyan (Perlin) gurultusunden
+  kucuk sapma. Kafes gradyanlari ihtiyac duyuldukca uretilir (tablo yok) -> periyot yok.
+-1..1 birimi donanima baglidir: +-1 = eklemin mekanik siniri (kinematik tablo/kalibrasyon).
 """
 
 from __future__ import annotations
@@ -33,7 +37,9 @@ FIXATION_SIGMA = 0.4
 FIXATION_RANGE_S = (0.12, 1.5)
 
 WANDER_FREQ_HZ = 0.12            # gurultu kafesinin zaman olcegi (yavas, organik kayma)
-WANDER_U, WANDER_V = 0.5, 0.2    # bakinma genligi (-1..1 biriminde)
+WANDER_U, WANDER_V = 23 / 25, 17 / 20   # bolge genligi: donanim araliginin payi (v5 artifact)
+REGION_DWELL_S = (0.7, 2.3)      # bolge degisim araligi (v5 artifact)
+MICRO_U, MICRO_V = 0.08, 0.06    # bolge icindeki kucuk sakkadlarin genligi
 
 
 def _lognormal_with_mean(rng: random.Random, mean: float, sigma: float) -> float:
@@ -78,25 +84,26 @@ class Noise1D:
 
 
 class GazeWander:
-    """Insan benzeri bakinma: fiksasyon (bekle) -> sakkad (yeni noktaya sicra).
-    Yeni nokta iki oktavli gurultuden; fiksasyon suresi insan dagilimindan."""
+    """Insan benzeri bakinma: bolge (tam donanim araligi) + bolge icinde fiksasyon -> kucuk sakkad."""
 
     def __init__(self, rng: random.Random):
         self.rng = rng
-        self._nu = [Noise1D(rng), Noise1D(rng)]
-        self._nv = [Noise1D(rng), Noise1D(rng)]
+        self._nu, self._nv = Noise1D(rng), Noise1D(rng)
         self._phase = rng.uniform(0, 1000)
-        self._next = -1.0
+        self._next_fix = -1.0
+        self._next_region = -1.0
+        self.region = (0.0, 0.0)
         self.target = (0.0, 0.0)
 
-    def _sample(self, t: float):
-        x = self._phase + t * WANDER_FREQ_HZ
-        u = 0.75 * self._nu[0](x) + 0.25 * self._nu[1](x * 3.1)
-        v = 0.75 * self._nv[0](x + 57.3) + 0.25 * self._nv[1](x * 2.7 + 11.0)
-        return (max(-1.0, min(1.0, u)) * WANDER_U, max(-1.0, min(1.0, v)) * WANDER_V)
-
     def step(self, now: float):
-        if now >= self._next:
-            self.target = self._sample(now)
-            self._next = now + fixation_duration(self.rng)
+        if now >= self._next_region:
+            self.region = (self.rng.uniform(-WANDER_U, WANDER_U), self.rng.uniform(-WANDER_V, WANDER_V))
+            self._next_region = now + self.rng.uniform(*REGION_DWELL_S)
+            self._next_fix = now
+        if now >= self._next_fix:
+            x = self._phase + now * WANDER_FREQ_HZ * 8
+            u = self.region[0] + MICRO_U * self._nu(x)
+            v = self.region[1] + MICRO_V * self._nv(x + 57.3)
+            self.target = (max(-1.0, min(1.0, u)), max(-1.0, min(1.0, v)))
+            self._next_fix = now + fixation_duration(self.rng)
         return self.target
