@@ -297,7 +297,13 @@ def schematic_rect(w: int, h: int):
     return w - sw - 12, 12, sw, sh
 
 
-MANUAL_HINT = "SÜRÜKLE: BAKIŞ · TEKERLEK / [ ]: KAPAK · OKLAR: İNCE AYAR"
+
+
+def wheel_delta(flags: int) -> int:
+    """Fare tekerlegi: flags'in ust 16 biti isaretli delta (+120 yukari). cv2.getMouseWheelDelta
+    OpenCV 5'te (Lunar venv) YOK - cagri hata verip olayi sessizce yutuyordu."""
+    d = (flags >> 16) & 0xFFFF
+    return d - 0x10000 if d >= 0x8000 else d
 
 
 def screen_to_gaze(x, y, w, h, mirror):
@@ -367,7 +373,9 @@ def run(args) -> int:
             u, v = screen_to_gaze(x, y, w_, h_, mirror)
             brain.manual_set(u=u, v=v)
         elif event == cv2.EVENT_MOUSEWHEEL:
-            brain.manual_set(dlid=MANUAL_LID_STEP if cv2.getMouseWheelDelta(flags) > 0 else -MANUAL_LID_STEP)
+            d = wheel_delta(flags)
+            if d:
+                brain.manual_set(dlid=MANUAL_LID_STEP if d > 0 else -MANUAL_LID_STEP)
 
     cv2.setMouseCallback(WINDOW_NAME, on_mouse)
     seen_presses = eye.link.button_presses
@@ -434,12 +442,11 @@ def run(args) -> int:
 
             fps = 0.9 * fps + 0.1 / dt
             # pitch_dead iken servo merkezde; ekranda hesaplanan pitch gosterilir
-            sub = "YAW {:5.1f}°  PITCH {:5.1f}°  KAPAK %{:d}".format(
+            sub = "YAW {:5.1f}°  PITCH {:5.1f}°  LID %{:d}".format(
                 angles[0], eye.pitch_wanted, int(round(eye.effective_open * 100)))
             hud.draw_header(view, brain.status, sub)
             draw_eye_schematic(cv2, view, *schematic_rect(w, h), eye)
-            hud.draw_pills(view, labels, MODES.index(brain.mode),
-                           MANUAL_HINT if brain.mode == "MANUEL" else None)
+            hud.draw_pills(view, labels, MODES.index(brain.mode))
             if show_debug:
                 dbg = (f"{eye.mode} {eye.mapping}{' fw-idle' if released else ''}  S {eye.sent_count}  "
                        f"ERR {eye.link.err_count}  BTN {eye.link.button_presses}  FPS {fps:4.1f}"

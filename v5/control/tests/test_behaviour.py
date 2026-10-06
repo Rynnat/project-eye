@@ -247,6 +247,12 @@ class ModeBrainTests(unittest.TestCase):
                 self.assertAlmostEqual(ru, u, places=6)
                 self.assertAlmostEqual(rv, v, places=6)
 
+    def test_wheel_delta_decoding(self):
+        # Windows'ta olculen bayraklar (WM_MOUSEWHEEL, OpenCV 5)
+        self.assertEqual(self.ff.wheel_delta(7864320), 120)
+        self.assertEqual(self.ff.wheel_delta(-7864320), -120)
+        self.assertEqual(self.ff.wheel_delta(0), 0)
+
     def test_buttons_hit(self):
         import hud
         labels = [self.ff.MODE_LABELS[m] for m in self.ff.MODES]
