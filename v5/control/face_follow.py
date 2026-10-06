@@ -172,6 +172,8 @@ class ModeBrain:
         self.aim = None
 
     def step(self, now: float, dt: float, target) -> None:
+        # karsisinda biri varken insanlar daha sik kirpar (Bentivoglio 1997: ~26/dk vs ~17/dk)
+        self.eye.blink_context = "conversation" if target is not None and self.mode != "IDLE" else "rest"
         if self.mode == "CANLI":
             self.live.step(now, dt, target)
             self.lid, self.status = self.live.lid, self.live.status

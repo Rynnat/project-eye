@@ -30,6 +30,7 @@ import sys
 import time
 from typing import Callable, Iterable
 
+import human_motion
 import sim
 
 # --------------------------------------------------------------------------
@@ -68,7 +69,8 @@ DEFAULT_SETTINGS = {
         "lid_follow_pitch": 0.0,
         "saccade_speed_deg_s": 500,
         "idle_after_s": 1.5,
-        "pitch_dead": False,   # True: pitch servosu merkezde sabit; istenen aci yalniz hesaplanir (pitch_wanted)
+        "pitch_dead": False,
+        "human_motion": False,  # True: kirpma/bakinma insan istatistiklerinden (human_motion.py)   # True: pitch servosu merkezde sabit; istenen aci yalniz hesaplanir (pitch_wanted)
     },
 }
 
@@ -133,6 +135,8 @@ def validate_settings(s: dict) -> None:
     for k in ("lid_follow_pitch", "saccade_speed_deg_s", "idle_after_s"):
         if not isinstance(b.get(k), (int, float)) or b[k] < 0:
             problems.append(f"behaviour.{k}: >= 0 sayi olmali")
+    if not isinstance(b.get("human_motion"), bool):
+        problems.append("behaviour.human_motion: true/false olmali")
     if not isinstance(b.get("pitch_dead"), bool):
         problems.append("behaviour.pitch_dead: true/false olmali")
     if not isinstance(s.get("serial_port"), str):
@@ -663,6 +667,8 @@ class EyeController:
         self.enabled = True        # False: S gonderme (firmware idle'a birakir)
         self._last_look = now
         self._last_update = now
+        self.blink_context = "rest"   # human_motion: "rest" | "conversation" (yuz varken)
+        self._wander = human_motion.GazeWander(self.rng)
         self._blink_start: float | None = None
         self._blink_len = BLINK_S
         self._next_blink = now + self._blink_interval()
@@ -698,7 +704,13 @@ class EyeController:
         """look() idle_after_s'den uzun suredir cagrilmadi mi."""
         return self.clock() - self._last_look > self.settings["behaviour"]["idle_after_s"]
 
+    @property
+    def human_motion(self) -> bool:
+        return self.settings["behaviour"]["human_motion"]
+
     def _blink_interval(self) -> float:
+        if self.human_motion:
+            return human_motion.blink_interval(self.rng, self.blink_context)
         lo, hi = self.settings["behaviour"]["blink_interval_s"]
         return self.rng.uniform(lo, hi)
 
@@ -777,12 +789,16 @@ class EyeController:
         tu, tv = self.target_u, self.target_v
         if self.idle_wander and self.idle:
             # ultimatum EyeRig'den: yavas, organik etrafi kolacan etme
-            tu = 0.45 * math.sin(now * 0.37) + 0.12 * math.sin(now * 1.3)
-            tv = 0.18 * math.sin(now * 0.51 + 1.0)
+            if self.human_motion:
+                # fiksasyon -> sakkad, nokta periyotsuz gurultuden (human_motion.py)
+                tu, tv = self._wander.step(now)
+            else:
+                tu = 0.45 * math.sin(now * 0.37) + 0.12 * math.sin(now * 1.3)
+                tv = 0.18 * math.sin(now * 0.51 + 1.0)
         self._step_gaze(dt, tu, tv)
 
         if self.auto_blink and self._blink_start is None and now >= self._next_blink:
-            self.blink()
+            self.blink(human_motion.blink_duration(self.rng) if self.human_motion else BLINK_S)
         self.effective_open = self.openness * self._envelope(now)
         wanted = compute_angles(self.settings, self.gaze_u, self.gaze_v, self.effective_open,
                                 follow_pitch=self.follow_pitch, kin=self.kin)

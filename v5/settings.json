@@ -10,6 +10,7 @@
     "lid_follow_pitch": 0.0,
     "saccade_speed_deg_s": 500,
     "idle_after_s": 1.5,
-    "pitch_dead": true
+    "pitch_dead": true,
+    "human_motion": true
   }
 }
