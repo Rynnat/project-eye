@@ -1,7 +1,7 @@
 """
 Project Eye v5 - stant ekrani (HUD). "Bakin bilgisayar ne goruyor da bizi takip ediyor."
 
-Kamera goruntusunun ustune: baslik + durum, yuz kutulari (HUD koseleri + guven yuzdesi),
+Ekrandaki tum yazilar INGILIZCE (kullanici 2026-10-06). Kamera goruntusunun ustune: baslik + durum, yuz kutulari (HUD koseleri + guven yuzdesi),
 gozun baktigi nokta, sag ustte iki goz semasi, altta mod butonlari, kucuk telemetri.
 Yazilar PIL ile (Turkce harf + Bahnschrift); sabit yazilar onbellekte.
 Panel paleti Edgerunners (Epic paneli ile ayni).
@@ -29,16 +29,16 @@ FONT_FILES = {
 
 # ---------------------------------------------------------------- durum metni
 STATUS_TEXT = {
-    "LOCK!": ("KİLİTLENDİ", MAGENTA),
-    "FOCUS": ("ODAKLANDI", MAGENTA),
-    "TRACKING": ("TAKİP EDİYOR", CYAN),
-    "SEARCHING": ("YÜZ ARANIYOR", INK),
-    "DORMANT": ("DİNLENİYOR", INK_DIM),
-    "CANLI": ("SERBEST BAKIŞ", INK),
-    "CANLI - yuz araniyor": ("YÜZ ARANIYOR", INK),
-    "TRACKING - yuz yok": ("YÜZ YOK · BEKLİYOR", INK_DIM),
-    "NOTR": ("NÖTR", INK_DIM),
-    "MANUEL": ("MANUEL KONTROL", MAGENTA),
+    "LOCK!": ("LOCKED ON", MAGENTA),
+    "FOCUS": ("FOCUSED", MAGENTA),
+    "TRACKING": ("TRACKING", CYAN),
+    "SEARCHING": ("SEARCHING", INK),
+    "DORMANT": ("RESTING", INK_DIM),
+    "CANLI": ("LOOKING AROUND", INK),
+    "CANLI - yuz araniyor": ("SEARCHING", INK),
+    "TRACKING - yuz yok": ("NO FACE · HOLDING", INK_DIM),
+    "NOTR": ("NEUTRAL", INK_DIM),
+    "MANUEL": ("MANUAL CONTROL", MAGENTA),
 }
 
 
@@ -218,7 +218,7 @@ def draw_face(img, box, primary: bool, score: float | None, status: str):
     cx, cy = (x1 + x2) // 2, (y1 + y2) // 2
     cv2.line(img, (cx - 6, cy), (cx + 6, cy), color, 1, cv2.LINE_AA)
     cv2.line(img, (cx, cy - 6), (cx, cy + 6), color, 1, cv2.LINE_AA)
-    label = "İNSAN" + (f" · %{int(round(score * 100))}" if score is not None else "")
+    label = "HUMAN" + (f" · {int(round(score * 100))}%" if score is not None else "")
     tw, th = text_size(label, 13, spacing=1.0)
     ly = y1 - th - 10 if y1 - th - 10 > 4 else y2 + 6
     panel(img, x1, ly - 3, tw + 14, th + 6, color, 0.9, radius=4)

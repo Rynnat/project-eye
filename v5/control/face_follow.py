@@ -442,7 +442,7 @@ def run(args) -> int:
 
             fps = 0.9 * fps + 0.1 / dt
             # pitch_dead iken servo merkezde; ekranda hesaplanan pitch gosterilir
-            sub = "YAW {:5.1f}°  PITCH {:5.1f}°  LID %{:d}".format(
+            sub = "YAW {:5.1f}°  PITCH {:5.1f}°  LID {:d}%".format(
                 angles[0], eye.pitch_wanted, int(round(eye.effective_open * 100)))
             hud.draw_header(view, brain.status, sub)
             draw_eye_schematic(cv2, view, *schematic_rect(w, h), eye)
@@ -450,7 +450,7 @@ def run(args) -> int:
             if show_debug:
                 dbg = (f"{eye.mode} {eye.mapping}{' fw-idle' if released else ''}  S {eye.sent_count}  "
                        f"ERR {eye.link.err_count}  BTN {eye.link.button_presses}  FPS {fps:4.1f}"
-                       f"{'  MIRROR' if mirror else ''}  |  q cik  1-5 mod  b kirp  m ayna  h fw-idle  d detach  i gizle")
+                       f"{'  MIRROR' if mirror else ''}  |  q quit  1-5 mode  b blink  m mirror  h fw-idle  d detach  i hide")
                 hud.draw_text(view, dbg, 14, h - 70, 12, hud.INK_DIM, kind="mono")
 
             cv2.imshow(WINDOW_NAME, view)
