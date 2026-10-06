@@ -44,7 +44,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 if HERE not in sys.path:
     sys.path.insert(0, HERE)
 
-from eye_control import EyeController, clamp  # noqa: E402
+from eye_control import EyeController, clamp, lid_follow  # noqa: E402
 
 WINDOW_NAME = "Project Eye v5 - Face Follow"
 DEFAULT_MODEL = r"C:\Users\LENOVO\lunar-tracker\assets\blaze_face_short_range.tflite"
@@ -212,6 +212,41 @@ def acquire_single_instance_lock(path: str = LOCK_PATH):
 # ---------------------------------------------------------------------------
 # Cizim
 # ---------------------------------------------------------------------------
+def draw_eye_schematic(cv2, img, x, y, w, h, eye: EyeController) -> None:
+    """Izleyicinin gordugu gibi iki goz: robotun SAG gozu solda, bebek -u yonunde."""
+    cv2.rectangle(img, (x, y), (x + w, y + h), (20, 18, 16), -1)
+    cv2.rectangle(img, (x, y), (x + w, y + h), (0, 140, 255), 1)
+    r = int(min(w * 0.2, h * 0.38))
+    cy = y + h // 2
+    k = eye.settings["behaviour"]["lid_follow_pitch"] if eye.follow_pitch else 0.0
+    # (ekran x merkezi, taraf) - izleyiciye gore sol = robotun sagi
+    for cx, side in ((x + int(w * 0.28), "right"), (x + int(w * 0.72), "left")):
+        upper = lid_follow(eye.effective_open, eye.gaze_v, k)
+        lower = upper  # v4: alt kapaklar ayni servoda, ayni aciklik
+        cv2.circle(img, (cx, cy), r, (235, 235, 235), -1, cv2.LINE_AA)
+        px = int(cx - eye.gaze_u * r * 0.55)
+        py = int(cy - eye.gaze_v * r * 0.5)
+        cv2.circle(img, (px, py), int(r * 0.45), (160, 110, 20), -1, cv2.LINE_AA)
+        cv2.circle(img, (px, py), int(r * 0.18), (10, 10, 10), -1, cv2.LINE_AA)
+        # kapaklar: ust kapak kenari yukaridan, alt kapak asagidan; kapaliyken
+        # ortanin biraz altinda bulusurlar (SPEC §3)
+        meet = cy + int(r * 0.1)
+        top_edge = int(meet - upper * (meet - (cy - r)))
+        bot_edge = int(meet + lower * ((cy + r) - meet))
+        # kapaklari yalnizca goz dairesinin icine boya
+        x0, y0 = cx - r, cy - r
+        roi = img[y0:y0 + 2 * r + 1, x0:x0 + 2 * r + 1]
+        mask = roi.copy()
+        mask[:] = 0
+        cv2.circle(mask, (r, r), r, (255, 255, 255), -1)
+        lids = roi.copy()
+        cv2.rectangle(lids, (0, 0), (2 * r, max(0, top_edge - y0)), (70, 66, 62), -1)
+        cv2.rectangle(lids, (0, min(2 * r, bot_edge - y0)), (2 * r, 2 * r), (70, 66, 62), -1)
+        inside = mask[:, :, 0] > 0
+        roi[inside] = lids[inside]
+        cv2.circle(img, (cx, cy), r, (0, 140, 255), 2, cv2.LINE_AA)
+
+
 BTN_W, BTN_H, BTN_GAP, BTN_X0, BTN_Y0 = 190, 34, 8, 12, 12
 
 
@@ -385,6 +420,11 @@ def run(args) -> int:
                            f"S {eye.sent_count}  ERR {eye.link.err_count}  FPS {fps:4.1f}"
                            f"{'  MIRROR' if mirror else ''}   q:cik 1-3:mod b:kirp m:ayna h:fw-idle d:detach",
                 (12, h - 14), 0.45, (180, 180, 180))
+            # sag ust; dar kamerada (640) mod butonlariyla cakisirsa durum yazisinin altina
+            sw, sh = int(w * 0.34), int(h * 0.24)
+            buttons_right = mode_button_rects()[-1][1] + BTN_W
+            sy = 12 if w - sw - 12 > buttons_right + 8 else BTN_Y0 + BTN_H + 48
+            draw_eye_schematic(cv2, view, w - sw - 12, sy, sw, sh, eye)
 
             cv2.imshow(WINDOW_NAME, view)
             key = cv2.waitKey(1) & 0xFF
