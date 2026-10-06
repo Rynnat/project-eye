@@ -230,6 +230,39 @@ class ModeBrain:
         self.eye.lids(self.lid)
 
 
+HANG_LOG = os.path.join(HERE, "face_follow_hang.log")
+
+
+class HangWatchdog:
+    """Ana dongu STALL_S'den uzun ilerlemezse tum thread'lerin yiginini HANG_LOG'a yazar
+    (donmanin nerede oldugunu gormek icin; py-spy gerektirmez). Her donmada bir kez."""
+
+    STALL_S = 3.0
+
+    def __init__(self, path: str = HANG_LOG):
+        import threading
+        self.path = path
+        self.beat = time.monotonic()
+        self._dumped = False
+        threading.Thread(target=self._run, daemon=True).start()
+
+    def tick(self) -> None:
+        self.beat = time.monotonic()
+        self._dumped = False
+
+    def _run(self) -> None:
+        import faulthandler
+        while True:
+            time.sleep(0.5)
+            stalled = time.monotonic() - self.beat
+            if stalled > self.STALL_S and not self._dumped:
+                self._dumped = True
+                with open(self.path, "a", encoding="utf-8") as f:
+                    f.write(f"\n=== {time.strftime('%Y-%m-%d %H:%M:%S')} ana dongu {stalled:.1f} sn ilerlemedi ===\n")
+                    f.flush()
+                    faulthandler.dump_traceback(file=f, all_threads=True)
+
+
 class Reconnector:
     """Arka planda Project Eye kartini arar (el sikisma ~2-3 sn surer; ekran donmasin).
 
@@ -497,6 +530,7 @@ def run(args) -> int:
     monitor = LinkMonitor(eye)
     frozen = None
 
+    watchdog = HangWatchdog()
     start = time.monotonic()
     prev = start
     last_ts_ms = -1
@@ -504,6 +538,7 @@ def run(args) -> int:
     released = False
     try:
         while True:
+            watchdog.tick()
             ok, frame = cap.read()
             if not ok:
                 print("Kare okunamadi - cikiliyor.")
