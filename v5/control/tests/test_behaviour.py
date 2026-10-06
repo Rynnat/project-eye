@@ -179,6 +179,23 @@ class ModeBrainTests(unittest.TestCase):
         self.frames(30, (0.5, 0.2))
         self.assertAlmostEqual(self.eye.gaze_u, 0.5, places=2)
 
+    def test_tracking_live_wanders_without_face(self):
+        self.brain.set_mode("TAKIP")
+        us = []
+        for _ in range(10):                       # hic yuz yok: hemen canli bakinma
+            self.frames(30, None)
+            us.append(round(self.eye.gaze_u, 3))
+        self.assertGreater(len(set(us)), 1)
+        self.assertTrue(self.brain.status.startswith("CANLI"))
+        self.assertAlmostEqual(self.eye.openness, self.ff.LID_OPEN_TRACK, places=2)  # uykulu degil
+        self.frames(self.ff.TARGET_DEBOUNCE_FRAMES + 3, (0.5, 0.2))                   # yuz geldi
+        self.assertEqual(self.brain.status, "LOCK!")
+        self.frames(30, (0.5, 0.2))
+        self.assertAlmostEqual(self.eye.gaze_u, 0.5, places=2)
+        self.frames(self.ff.TARGET_DEBOUNCE_FRAMES + 1, None)                         # yuz gitti
+        self.assertTrue(self.brain.status.startswith("CANLI"))
+        self.assertTrue(self.eye.idle)
+
     def test_buttons_hit(self):
         for m, x, y in self.ff.mode_button_rects():
             self.assertEqual(self.ff.hit_mode_button(x + 5, y + 5), m)

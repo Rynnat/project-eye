@@ -20,7 +20,8 @@ Calistirma (mediapipe + opencv Lunar venv'inde var):
 
 Modlar (penceredeki butonlar ya da 1-3 tuslari; kamera her modda acik):
     NO TRACKING CANLI  yuzu yok sayar; insan istatistikli bakinma + kirpma, kapak acik
-    TRACKING CANLI     yukaridaki tam davranis (takip + irkilme + odak + kirpma + idle)
+    TRACKING CANLI     yuz varken tam takip (irkilme + odak + kirpma); yuz yokken
+                       NO TRACKING CANLI gibi bakinir, yuz gorunce kilitlenir
     NOTR               gozler ortada, kapak acik, kirpma yok
 
 Tuslar: q / ESC cikis, 1-3 mod, b kirp, m ayna (u yonunu cevir),
@@ -171,7 +172,14 @@ class ModeBrain:
         self.eye.blink_context = "conversation" if target is not None and self.mode == "TAKIP" else "rest"
         if self.mode == "TAKIP":
             self.live.step(now, dt, target)
-            self.lid, self.status = self.live.lid, self.live.status
+            if target is not None or self.live.had_target:
+                self.lid, self.status = self.live.lid, self.live.status
+                return
+            # yuz yok (kayip kesinlesti ya da hic gorulmedi): yuz gorene kadar takipsiz canli hareket
+            self.eye._last_look = -1e9
+            self.lid = self.live.lid = _ema(self.lid, LID_OPEN_TRACK, dt, LID_TAU_S)
+            self.eye.lids(self.lid)
+            self.status = "CANLI - yuz araniyor"
             return
         if self.mode == "SERBEST":
             self.status = "CANLI"
