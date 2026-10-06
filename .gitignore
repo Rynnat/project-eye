@@ -4,3 +4,4 @@ node_modules/
 *.log
 _test_model.html
 .venv*/
+.face_follow.lock

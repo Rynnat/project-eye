@@ -301,8 +301,6 @@ def run(args) -> int:
                            f"S {eye.sent_count}  ERR {eye.link.err_count}  FPS {fps:4.1f}"
                            f"{'  MIRROR' if mirror else ''}   q:cik b:kirp m:ayna h:idle d:detach",
                 (12, h - 14), 0.45, (180, 180, 180))
-            sw, sh = int(w * 0.34), int(h * 0.24)
-            draw_eye_schematic(cv2, view, w - sw - 12, 12, sw, sh, eye)
 
             cv2.imshow(WINDOW_NAME, view)
             key = cv2.waitKey(1) & 0xFF
