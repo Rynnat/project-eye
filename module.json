@@ -3,5 +3,14 @@
   "icon": "👁",
   "section": "construction",
   "entry": "model.html",
-  "settings": "settings.json"
+  "settings": "settings.json",
+  "tools": [
+    {
+      "id": "tracker",
+      "icon": "🎮",
+      "label": "Simülasyon",
+      "script": "control/face_follow.py",
+      "python": "C:/Users/LENOVO/lunar-tracker/.venv/Scripts/python.exe"
+    }
+  ]
 }

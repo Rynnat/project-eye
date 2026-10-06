@@ -122,5 +122,55 @@ class FollowBrainTests(unittest.TestCase):
         self.assertAlmostEqual(eye.openness, ff.LID_OPEN_IDLE, places=2)
 
 
+class ModeBrainTests(unittest.TestCase):
+    def setUp(self):
+        import face_follow as ff
+        self.ff = ff
+        self.eye, self.clock = make()
+        self.brain = ff.ModeBrain(self.eye)
+
+    def frames(self, n, target, dt=1 / 30):
+        for _ in range(n):
+            self.clock.advance(dt)
+            self.brain.step(self.clock(), dt, target)
+            self.eye.update(dt)
+
+    def test_neutral_ignores_face(self):
+        self.brain.set_mode("NOTR")
+        self.frames(60, (0.8, 0.5))
+        self.assertAlmostEqual(self.eye.gaze_u, 0.0, places=3)
+        self.assertAlmostEqual(self.eye.gaze_v, 0.0, places=3)
+        self.assertFalse(self.eye.auto_blink)
+        self.assertAlmostEqual(self.eye.openness, self.ff.LID_OPEN_TRACK, places=2)
+
+    def test_tracking_follows_then_holds(self):
+        self.brain.set_mode("TRACKING")
+        self.frames(60, (0.6, -0.3))
+        self.assertAlmostEqual(self.eye.gaze_u, 0.6, places=2)
+        self.assertEqual(self.brain.status, "TRACKING")
+        self.frames(120, None)           # yuz kayboldu: son noktada bekler, kolacan etmez
+        self.assertAlmostEqual(self.eye.gaze_u, 0.6, places=2)
+        self.assertAlmostEqual(self.eye.openness, self.ff.LID_OPEN_TRACK, places=2)
+
+    def test_idle_wanders_with_face_present(self):
+        self.brain.set_mode("IDLE")
+        self.assertTrue(self.eye.idle)
+        self.frames(90, (0.9, 0.0))
+        self.assertAlmostEqual(self.eye.openness, self.ff.LID_OPEN_IDLE, places=2)
+        self.assertNotAlmostEqual(self.eye.gaze_u, 0.9, places=1)
+
+    def test_switch_back_to_live(self):
+        self.brain.set_mode("NOTR")
+        self.brain.set_mode("CANLI")
+        self.assertTrue(self.eye.auto_blink and self.eye.idle_wander)
+        self.frames(self.ff.TARGET_DEBOUNCE_FRAMES + 3, (0.5, 0.2))
+        self.assertEqual(self.brain.status, "LOCK!")
+
+    def test_buttons_hit(self):
+        for m, x, y in self.ff.mode_button_rects():
+            self.assertEqual(self.ff.hit_mode_button(x + 5, y + 5), m)
+        self.assertIsNone(self.ff.hit_mode_button(2, 2))
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -18,7 +18,14 @@ Calistirma (mediapipe + opencv Lunar venv'inde var):
     ... face_follow.py --sim          # donanimi arama
     ... face_follow.py --port COM5 --camera 1
 
-Tuslar: q / ESC cikis, b kirp, m ayna (u yonunu cevir),
+Modlar (penceredeki butonlar ya da 1-4 tuslari; kamera her modda acik):
+    IDLE      yuzu yok sayar, uykulu kapakla yavasca etrafi kolacan eder
+    CANLI     yukaridaki tam davranis (takip + irkilme + odak + kirpma + idle)
+    NOTR      gozler ortada, kapak acik, kirpma yok
+    TRACKING  yalniz takip: yuze bakar, kapak sabit acik, irkilme/kirpma yok;
+              yuz kaybolunca son noktada bekler
+
+Tuslar: q / ESC cikis, 1-4 mod, b kirp, m ayna (u yonunu cevir),
         h kontrolu firmware idle'ina birak / geri al, d servolari birak (detach).
 
 Kamera koordinati: kamera robotun uzerinde/yaninda ILERI (izleyiciye) bakiyor
@@ -38,7 +45,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 if HERE not in sys.path:
     sys.path.insert(0, HERE)
 
-from eye_control import EyeController, clamp, lid_follow  # noqa: E402
+from eye_control import EyeController, clamp  # noqa: E402
 
 WINDOW_NAME = "Project Eye v5 - Face Follow"
 DEFAULT_MODEL = r"C:\Users\LENOVO\lunar-tracker\assets\blaze_face_short_range.tflite"
@@ -57,6 +64,10 @@ FOCUS_SPEED_MIN = 0.4       # birim/sn: bundan yavas hareket "odak" saymaz
 FOCUS_SPEED_RAMP = 1.2
 TARGET_DEBOUNCE_FRAMES = 5
 GAIN = 1.0                  # kare kenari -> u = +-GAIN
+
+MODES = ("IDLE", "CANLI", "NOTR", "TRACKING")
+MODE_LABELS = {"IDLE": "IDLE", "CANLI": "CANLI", "NOTR": "NÖTR", "TRACKING": "TRACKING"}
+DEFAULT_MODE = "CANLI"
 
 
 def _ema(current: float, target: float, dt: float, tau: float) -> float:
@@ -134,6 +145,55 @@ class FollowBrain:
         self.eye.lids(self.lid)
 
 
+class ModeBrain:
+    """Mod secici: CANLI = FollowBrain, digerleri sade davranislar. cv2 gerektirmez."""
+
+    def __init__(self, eye: EyeController, mode: str = DEFAULT_MODE):
+        self.eye = eye
+        self.live = FollowBrain(eye)
+        self.mode = None
+        self.aim = None
+        self.lid = eye.openness
+        self.status = ""
+        self.set_mode(mode)
+
+    def set_mode(self, mode: str) -> None:
+        if mode not in MODES or mode == self.mode:
+            return
+        self.mode = mode
+        eye = self.eye
+        eye.auto_blink = mode in ("IDLE", "CANLI")
+        eye.idle_wander = mode in ("IDLE", "CANLI")
+        if mode == "IDLE":
+            eye._last_look = -1e9       # look() gelmiyor sayilsin: hemen kolacan etmeye basla
+        elif mode == "CANLI":
+            self.live = FollowBrain(eye)
+            self.live.lid = self.lid
+        self.aim = None
+
+    def step(self, now: float, dt: float, target) -> None:
+        if self.mode == "CANLI":
+            self.live.step(now, dt, target)
+            self.lid, self.status = self.live.lid, self.live.status
+            return
+        if self.mode == "IDLE":
+            lid_target, self.status = LID_OPEN_IDLE, "IDLE"
+        elif self.mode == "NOTR":
+            self.eye.look(0.0, 0.0)
+            lid_target, self.status = LID_OPEN_TRACK, "NOTR"
+        else:  # TRACKING
+            if target is not None:
+                self.aim = target if self.aim is None else (
+                    _ema(self.aim[0], target[0], dt, AIM_TAU_S), _ema(self.aim[1], target[1], dt, AIM_TAU_S))
+                self.status = "TRACKING"
+            else:
+                self.status = "TRACKING - yuz yok"
+            self.eye.look(*(self.aim or (0.0, 0.0)))
+            lid_target = LID_OPEN_TRACK
+        self.lid = _ema(self.lid, lid_target, dt, LID_TAU_S)
+        self.eye.lids(self.lid)
+
+
 # ---------------------------------------------------------------------------
 # Tekil ornek kilidi (ayni kamera + ayni COM portunu iki kopya istemesin)
 # ---------------------------------------------------------------------------
@@ -156,39 +216,52 @@ def acquire_single_instance_lock(path: str = LOCK_PATH):
 # ---------------------------------------------------------------------------
 # Cizim
 # ---------------------------------------------------------------------------
-def draw_eye_schematic(cv2, img, x, y, w, h, eye: EyeController) -> None:
-    """Izleyicinin gordugu gibi iki goz: robotun SAG gozu solda, bebek -u yonunde."""
-    cv2.rectangle(img, (x, y), (x + w, y + h), (20, 18, 16), -1)
-    cv2.rectangle(img, (x, y), (x + w, y + h), (0, 140, 255), 1)
-    r = int(min(w * 0.2, h * 0.38))
-    cy = y + h // 2
-    k = eye.settings["behaviour"]["lid_follow_pitch"] if eye.follow_pitch else 0.0
-    # (ekran x merkezi, taraf) - izleyiciye gore sol = robotun sagi
-    for cx, side in ((x + int(w * 0.28), "right"), (x + int(w * 0.72), "left")):
-        upper = lid_follow(eye.effective_open, eye.gaze_v, k)
-        lower = upper  # v4: alt kapaklar ayni servoda, ayni aciklik
-        cv2.circle(img, (cx, cy), r, (235, 235, 235), -1, cv2.LINE_AA)
-        px = int(cx - eye.gaze_u * r * 0.55)
-        py = int(cy - eye.gaze_v * r * 0.5)
-        cv2.circle(img, (px, py), int(r * 0.45), (160, 110, 20), -1, cv2.LINE_AA)
-        cv2.circle(img, (px, py), int(r * 0.18), (10, 10, 10), -1, cv2.LINE_AA)
-        # kapaklar: ust kapak kenari yukaridan, alt kapak asagidan; kapaliyken
-        # ortanin biraz altinda bulusurlar (SPEC §3)
-        meet = cy + int(r * 0.1)
-        top_edge = int(meet - upper * (meet - (cy - r)))
-        bot_edge = int(meet + lower * ((cy + r) - meet))
-        # kapaklari yalnizca goz dairesinin icine boya
-        x0, y0 = cx - r, cy - r
-        roi = img[y0:y0 + 2 * r + 1, x0:x0 + 2 * r + 1]
-        mask = roi.copy()
-        mask[:] = 0
-        cv2.circle(mask, (r, r), r, (255, 255, 255), -1)
-        lids = roi.copy()
-        cv2.rectangle(lids, (0, 0), (2 * r, max(0, top_edge - y0)), (70, 66, 62), -1)
-        cv2.rectangle(lids, (0, min(2 * r, bot_edge - y0)), (2 * r, 2 * r), (70, 66, 62), -1)
-        inside = mask[:, :, 0] > 0
-        roi[inside] = lids[inside]
-        cv2.circle(img, (cx, cy), r, (0, 140, 255), 2, cv2.LINE_AA)
+BTN_W, BTN_H, BTN_GAP, BTN_X0, BTN_Y0 = 120, 34, 8, 12, 12
+
+
+def mode_button_rects():
+    return [(m, BTN_X0 + i * (BTN_W + BTN_GAP), BTN_Y0) for i, m in enumerate(MODES)]
+
+
+def make_button_images():
+    """Mod butonlari (pasif/aktif) bir kez cizilir; Turkce harf icin PIL (cv2 yazisi 'O' basamaz)."""
+    import numpy as np
+    from PIL import Image, ImageDraw, ImageFont
+    font = None
+    for name in ("seguisb.ttf", "segoeuib.ttf", "arialbd.ttf"):
+        try:
+            font = ImageFont.truetype(name, 17)
+            break
+        except OSError:
+            pass
+    font = font or ImageFont.load_default()
+    imgs = {}
+    for m in MODES:
+        for active in (False, True):
+            # Edgerunners paleti (panel ile ayni): koyu mor zemin, cyan vurgu
+            bg, fg, edge = ((0, 240, 255), (26, 10, 46), (0, 240, 255)) if active else ((36, 18, 61), (244, 213, 253), (110, 70, 150))
+            im = Image.new("RGB", (BTN_W, BTN_H), bg)
+            d = ImageDraw.Draw(im)
+            d.rectangle([0, 0, BTN_W - 1, BTN_H - 1], outline=edge, width=2)
+            text = MODE_LABELS[m]
+            x0, y0, x1, y1 = d.textbbox((0, 0), text, font=font)
+            d.text(((BTN_W - (x1 - x0)) / 2 - x0, (BTN_H - (y1 - y0)) / 2 - y0), text, fill=fg, font=font)
+            imgs[m, active] = np.ascontiguousarray(np.asarray(im)[:, :, ::-1])
+    return imgs
+
+
+def draw_mode_buttons(img, imgs, current: str) -> None:
+    h, w = img.shape[:2]
+    for m, x, y in mode_button_rects():
+        if x + BTN_W <= w and y + BTN_H <= h:
+            img[y:y + BTN_H, x:x + BTN_W] = imgs[m, m == current]
+
+
+def hit_mode_button(px: int, py: int):
+    for m, x, y in mode_button_rects():
+        if x <= px < x + BTN_W and y <= py < y + BTN_H:
+            return m
+    return None
 
 
 def put(cv2, img, text, org, scale=0.5, color=(230, 230, 230), thick=1):
@@ -230,11 +303,21 @@ def run(args) -> int:
     import mediapipe as mp
 
     eye = EyeController(port="sim" if args.sim else args.port)
-    brain = FollowBrain(eye)
+    brain = ModeBrain(eye, args.mode)
     mirror = args.mirror
     detector = create_detector(args.model, args.min_conf)
     cap = open_camera(cv2, args.camera)
     cv2.namedWindow(WINDOW_NAME, cv2.WINDOW_NORMAL)
+    btn_imgs = make_button_images()
+    clicked = []
+
+    def on_mouse(event, x, y, flags, param):
+        if event == cv2.EVENT_LBUTTONDOWN:
+            m = hit_mode_button(x, y)
+            if m:
+                clicked.append(m)
+
+    cv2.setMouseCallback(WINDOW_NAME, on_mouse)
 
     start = time.monotonic()
     prev = start
@@ -276,6 +359,8 @@ def run(args) -> int:
                 v = clamp(-(cy - h / 2) / (h / 2) * GAIN, -1, 1)
                 target = (-u if mirror else u, v)
 
+            while clicked:
+                brain.set_mode(clicked.pop(0))
             brain.step(now, dt, target)
             angles = eye.update(dt)
 
@@ -293,13 +378,14 @@ def run(args) -> int:
 
             fps = 0.9 * fps + 0.1 / dt
             mode = f"{eye.mode} {eye.mapping}" + (" (firmware idle)" if released else "")
-            put(cv2, view, f"{brain.status}   {mode}", (12, 28), 0.7,
+            draw_mode_buttons(view, btn_imgs, brain.mode)
+            put(cv2, view, f"{brain.status}   {mode}", (12, BTN_Y0 + BTN_H + 30), 0.7,
                 (0, 0, 255) if brain.status in ("LOCK!", "FOCUS") else (0, 220, 255), 2)
             put(cv2, view, "YAW {:6.2f}  PITCH {:6.2f}  LIDS {:6.2f}".format(*angles),
                 (12, h - 40), 0.5)
             put(cv2, view, f"lid {eye.effective_open:.2f}  "
                            f"S {eye.sent_count}  ERR {eye.link.err_count}  FPS {fps:4.1f}"
-                           f"{'  MIRROR' if mirror else ''}   q:cik b:kirp m:ayna h:idle d:detach",
+                           f"{'  MIRROR' if mirror else ''}   q:cik 1-4:mod b:kirp m:ayna h:fw-idle d:detach",
                 (12, h - 14), 0.45, (180, 180, 180))
 
             cv2.imshow(WINDOW_NAME, view)
@@ -311,7 +397,9 @@ def run(args) -> int:
             # X ile kapatildiysa: waitKey pencereyi yeniden yaratmadan once cik
             if cv2.getWindowProperty(WINDOW_NAME, cv2.WND_PROP_VISIBLE) < 1:
                 break
-            if key == ord("b"):
+            if ord("1") <= key <= ord("4"):
+                brain.set_mode(MODES[key - ord("1")])
+            elif key == ord("b"):
                 eye.blink()
             elif key == ord("m"):
                 mirror = not mirror
@@ -342,6 +430,7 @@ def main(argv=None) -> int:
     ap.add_argument("--camera", type=int, default=0)
     ap.add_argument("--model", default=DEFAULT_MODEL)
     ap.add_argument("--min-conf", type=float, default=0.5)
+    ap.add_argument("--mode", choices=MODES, default=DEFAULT_MODE, help="baslangic modu")
     ap.add_argument("--mirror", action="store_true", help="u yonunu cevir")
     ap.add_argument("--seconds", type=float, default=0.0, help="N sn sonra kendiliginden cik (0 = sinirsiz)")
     args = ap.parse_args(argv)
