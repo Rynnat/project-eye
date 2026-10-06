@@ -263,5 +263,46 @@ class ModeBrainTests(unittest.TestCase):
             self.assertLessEqual(x + bw, 960)
         self.assertIsNone(hud.hit_pill(labels, 960, 540, 2, 2))
 
+
+class LinkMonitorTests(unittest.TestCase):
+    def setUp(self):
+        import face_follow as ff
+        self.ff = ff
+        self.eye, self.clock = make()
+        self.eye.link.simulated = False          # sim karti "donanim" gibi izle
+        self.mon = ff.LinkMonitor(self.eye)
+
+    def tick(self, seconds, dt=0.05):
+        st = None
+        for _ in range(int(round(seconds / dt))):
+            self.clock.advance(dt)
+            self.eye.update(dt)
+            st = self.mon.update(self.clock())
+            self.eye.link.poll()
+        return st
+
+    def test_ok_while_board_answers(self):
+        self.assertEqual(self.tick(3.0), "ok")
+
+    def test_silent_when_board_stops_answering(self):
+        self.tick(1.0)
+        self.eye.link.ser.write = lambda data: len(data)    # kart artik cevap vermiyor
+        self.assertEqual(self.tick(2.0), "silent")
+
+    def test_lost_when_port_dies(self):
+        self.eye.link.alive = False
+        self.assertEqual(self.tick(0.1), "lost")
+
+    def test_reset_banner_shown(self):
+        self.tick(1.0)
+        self.eye.link.ser._rx += b"EYE v5 READY\r\n"
+        self.assertEqual(self.tick(0.2), "reset")
+        self.assertEqual(self.tick(self.ff.LinkMonitor.RESET_SHOW_S + 0.5), "ok")
+
+    def test_sim_reported(self):
+        self.eye.link.simulated = True
+        self.assertEqual(self.tick(0.1), "sim")
+
+
 if __name__ == "__main__":
     unittest.main()

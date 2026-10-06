@@ -230,6 +230,45 @@ class ModeBrain:
         self.eye.lids(self.lid)
 
 
+class LinkMonitor:
+    """Sag ustteki gozler gercegi gostersin: kart cevap veriyor mu?
+
+    Her HEARTBEAT_S'de '?' gonderir; karttan SILENT_S boyunca satir gelmezse "silent",
+    port koptuysa "lost", acilis banner'i yeniden geldiyse (kart resetlendi - cogu zaman
+    servo akimiyla brown-out) RESET_SHOW_S boyunca "reset", donanim yoksa "sim".
+    NOT: servo besleme hatti tek basina kesilirse kart USB'den calismaya devam eder ve
+    bunu seri hattan ANLAYAMAYIZ; onun icin besleme olcumu gerekir.
+    """
+
+    HEARTBEAT_S = 0.5
+    SILENT_S = 1.5
+    RESET_SHOW_S = 5.0
+
+    def __init__(self, eye: EyeController):
+        self.eye = eye
+        self._next_ping = 0.0
+        self._resets = eye.link.resets
+        self._reset_until = -1.0
+
+    def update(self, now: float) -> str:
+        link = self.eye.link
+        if self.eye.simulated:
+            return "sim"
+        if not link.alive:
+            return "lost"
+        if now >= self._next_ping:
+            link.send("?")
+            self._next_ping = now + self.HEARTBEAT_S
+        if link.resets != self._resets:
+            self._resets = link.resets
+            self._reset_until = now + self.RESET_SHOW_S
+        if now - link.last_rx_t > self.SILENT_S:
+            return "silent"
+        if now < self._reset_until:
+            return "reset"
+        return "ok"
+
+
 # ---------------------------------------------------------------------------
 # Tekil ornek kilidi (ayni kamera + ayni COM portunu iki kopya istemesin)
 # ---------------------------------------------------------------------------
@@ -379,6 +418,7 @@ def run(args) -> int:
 
     cv2.setMouseCallback(WINDOW_NAME, on_mouse)
     seen_presses = eye.link.button_presses
+    monitor = LinkMonitor(eye)
 
     start = time.monotonic()
     prev = start
@@ -445,7 +485,9 @@ def run(args) -> int:
             sub = "YAW {:5.1f}°  PITCH {:5.1f}°  LID {:d}%".format(
                 angles[0], eye.pitch_wanted, int(round(eye.effective_open * 100)))
             hud.draw_header(view, brain.status, sub)
-            draw_eye_schematic(cv2, view, *schematic_rect(w, h), eye)
+            srect = schematic_rect(w, h)
+            draw_eye_schematic(cv2, view, *srect, eye)
+            hud.draw_health(view, *srect, monitor.update(now))
             hud.draw_pills(view, labels, MODES.index(brain.mode))
             if show_debug:
                 dbg = (f"{eye.mode} {eye.mapping}{' fw-idle' if released else ''}  S {eye.sent_count}  "

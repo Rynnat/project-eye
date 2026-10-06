@@ -517,10 +517,13 @@ def find_eye_port(port: str = "auto", exclude: Iterable[str] = (),
 class EyeLink:
     """Satir tabanli protokol ucu. Gercek pyserial portu ya da SimSerial sarar."""
 
-    def __init__(self, ser, name: str, simulated: bool):
+    def __init__(self, ser, name: str, simulated: bool, clock: Callable[[], float] = time.monotonic):
         self.ser = ser
         self.name = name
         self.simulated = simulated
+        self.clock = clock
+        self.last_rx_t = clock()    # karttan son satir (saglik: cevap kesildi mi)
+        self.resets = 0             # acilistan sonra gelen banner = kart yeniden basladi (brown-out?)
         self.ok_count = 0
         self.err_count = 0
         self.button_presses = 0     # firmware "BTN" (PC surerken D2 butonuna basildi)
@@ -549,8 +552,9 @@ class EyeLink:
     @classmethod
     def simulator(cls, clock=time.monotonic, seed=None) -> "EyeLink":
         s = sim.SimSerial(clock=clock, seed=seed)
-        link = cls(s, "SIM", simulated=True)
+        link = cls(s, "SIM", simulated=True, clock=clock)
         link.poll()  # banner'i tuket
+        link.resets = 0
         return link
 
     def send(self, line: str) -> bool:
@@ -586,6 +590,9 @@ class EyeLink:
             if not line:
                 continue
             lines.append(line)
+            self.last_rx_t = self.clock()
+            if line.startswith("EYE v") and line.endswith("READY"):
+                self.resets += 1
             if line == "OK":
                 self.ok_count += 1
             elif line == "BTN":

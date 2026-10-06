@@ -21,6 +21,8 @@ INK = (253, 213, 244)
 INK_DIM = (190, 160, 185)
 PANEL = (46, 18, 26)
 PANEL_EDGE = (150, 70, 110)
+RED = (70, 60, 255)
+AMBER = (0, 190, 255)
 
 FONT_FILES = {
     "disp": ("bahnschrift.ttf", "seguisb.ttf", "arialbd.ttf"),
@@ -223,3 +225,30 @@ def draw_face(img, box, primary: bool, score: float | None, status: str):
     ly = y1 - th - 10 if y1 - th - 10 > 4 else y2 + 6
     panel(img, x1, ly - 3, tw + 14, th + 6, color, 0.9, radius=4)
     draw_text(img, label, x1 + 7, ly, 13, (46, 10, 26), spacing=1.0)
+
+
+# ---------------------------------------------------------------- donanim sagligi
+HEALTH_TEXT = {
+    "ok": None,
+    "sim": ("SIMULATION · NO HARDWARE", AMBER),
+    "lost": ("CONNECTION LOST", RED),
+    "silent": ("NO RESPONSE FROM BOARD", RED),
+    "reset": ("BOARD RESET · CHECK POWER", RED),
+}
+
+
+def draw_health(img, x, y, w, h, health: str):
+    """Goz semasinin ustune: donanim calismiyorsa semayi soldur + uyari."""
+    info = HEALTH_TEXT.get(health)
+    if info is None:
+        return
+    text, color = info
+    if health != "sim":
+        roi = img[y:y + h, x:x + w]
+        gray = cv2.cvtColor(cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY), cv2.COLOR_GRAY2BGR)
+        img[y:y + h, x:x + w] = (gray * 0.45).astype(np.uint8)
+        _round_outline(img, x, y, w, h, 8, color, 2)
+    tw, th = text_size(text, 14, spacing=1.0)
+    bx, by = x + (w - tw) // 2 - 10, y + h - th - 14
+    panel(img, bx, by, tw + 20, th + 8, color, 0.92, radius=4)
+    draw_text(img, text, bx + 10, by + 2, 14, (20, 10, 20), spacing=1.0)
