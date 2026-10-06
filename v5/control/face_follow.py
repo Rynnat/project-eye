@@ -329,8 +329,11 @@ class LinkMonitor:
     RECONNECT_SILENT_S = 5.0
     RESET_SHOW_S = 5.0
 
-    def __init__(self, eye: EyeController, reconnector: Reconnector | None = None):
+    def __init__(self, eye: EyeController, reconnector: Reconnector | None = None, io_thread: bool = True):
         self.eye = eye
+        self.io_thread = io_thread
+        if io_thread:
+            eye.link.start_io_thread()
         self.reconnector = reconnector or Reconnector(eye.settings["serial_port"])
         self._next_ping = 0.0
         self._resets = eye.link.resets
@@ -341,6 +344,8 @@ class LinkMonitor:
         old = self.eye.link
         old.close()
         new = EyeLink(ser, dev, simulated=False, clock=old.clock)
+        if self.io_thread:
+            new.start_io_thread()
         self.eye.link = new
         self.eye._last_sent = None          # yeni karta hemen tam poz gitsin
         self.eye._lost_reported = False

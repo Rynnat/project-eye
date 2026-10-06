@@ -524,6 +524,7 @@ class EyeLink:
         self.clock = clock
         self.last_rx_t = clock()    # karttan son satir (saglik: cevap kesildi mi)
         self.resets = 0             # acilistan sonra gelen banner = kart yeniden basladi (brown-out?)
+        self._io = None             # start_io_thread() sonrasi: (yazma kuyrugu, okuma tamponu, kilit)
         self.ok_count = 0
         self.err_count = 0
         self.button_presses = 0     # firmware "BTN" (PC surerken D2 butonuna basildi)
@@ -557,9 +558,49 @@ class EyeLink:
         link.resets = 0
         return link
 
+    def start_io_thread(self) -> None:
+        """Seri G/C'yi ayri thread'e tasi: USB-seri surucu (FTDI) kablo/guc gidip gelince bazen
+        write/read/close icinde geri DONMUYOR (2026-10-06: surec oldurulemez hale geldi, ekran dondu).
+        Thread'de takilirsa ana dongu etkilenmez; cevap gelmeyince LinkMonitor "silent" -> "lost" der."""
+        import queue
+        import threading
+        if self._io is not None or self.simulated:
+            return
+        q, buf, lock = queue.Queue(), bytearray(), threading.Lock()
+        self._io = (q, buf, lock)
+
+        def worker():
+            while self.alive:
+                try:
+                    while True:
+                        self.ser.write(q.get_nowait())
+                except queue.Empty:
+                    pass
+                except Exception as e:
+                    self.alive = False
+                    self.last_error = f"yazma hatasi: {e}"
+                    break
+                try:
+                    n = self.ser.in_waiting
+                    data = self.ser.read(n) if n else b""
+                except Exception as e:
+                    self.alive = False
+                    self.last_error = f"okuma hatasi: {e}"
+                    break
+                if data:
+                    with lock:
+                        buf.extend(data)
+                else:
+                    time.sleep(0.005)
+
+        threading.Thread(target=worker, name=f"eye-io-{self.name}", daemon=True).start()
+
     def send(self, line: str) -> bool:
         if not self.alive:
             return False
+        if self._io is not None:
+            self._io[0].put((line + "\n").encode("ascii"))
+            return True
         try:
             self.ser.write((line + "\n").encode("ascii"))
             return True
@@ -571,16 +612,22 @@ class EyeLink:
     def poll(self) -> list[str]:
         """Bekleyen cevaplari bloklamadan okur, sayaclari gunceller."""
         lines: list[str] = []
-        if not self.alive:
+        if self._io is not None:
+            _, buf, lock = self._io
+            with lock:
+                self._rx += buf
+                buf.clear()
+        elif not self.alive:
             return lines
-        try:
-            n = self.ser.in_waiting
-            if n:
-                self._rx += self.ser.read(n)
-        except Exception as e:
-            self.alive = False
-            self.last_error = f"okuma hatasi: {e}"
-            return lines
+        else:
+            try:
+                n = self.ser.in_waiting
+                if n:
+                    self._rx += self.ser.read(n)
+            except Exception as e:
+                self.alive = False
+                self.last_error = f"okuma hatasi: {e}"
+                return lines
         while True:
             idx = self._rx.find(b"\n")
             if idx < 0:
@@ -624,11 +671,31 @@ class EyeLink:
                 time.sleep(0.005)
 
     def close(self) -> None:
-        try:
-            self.ser.close()
-        except Exception:
-            pass
+        """Bir kez kapatir. G/C thread'li baglantida kapatma da ayri thread'de (surucu takilabilir)."""
+        was_closing = getattr(self, "_closing", False)
+        self._closing = True
         self.alive = False
+        if was_closing:
+            return
+
+        def _close():
+            if self._io is not None:            # kuyrukta kalanlar (orn. cikista "A 1") gitsin
+                q = self._io[0]
+                try:
+                    while not q.empty():
+                        self.ser.write(q.get_nowait())
+                except Exception:
+                    pass
+            try:
+                self.ser.close()
+            except Exception:
+                pass
+
+        if self._io is not None:
+            import threading
+            threading.Thread(target=_close, daemon=True).start()
+        else:
+            _close()
 
 
 # --------------------------------------------------------------------------

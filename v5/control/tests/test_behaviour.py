@@ -279,7 +279,7 @@ class LinkMonitorTests(unittest.TestCase):
 
         self.ports = ["COM3"]
         rc = ff.Reconnector("auto", finder=finder, lister=lambda: list(self.ports))
-        self.mon = ff.LinkMonitor(self.eye, rc)
+        self.mon = ff.LinkMonitor(self.eye, rc, io_thread=False)   # sahte saatle esli kalsin
 
     def tick(self, seconds, dt=0.05):
         st = None
@@ -364,6 +364,35 @@ class LinkMonitorTests(unittest.TestCase):
     def test_sim_reported(self):
         self.eye.link.simulated = True
         self.assertEqual(self.tick(0.1), "sim")
+
+
+
+class IoThreadTests(unittest.TestCase):
+    """Gercek saatle: G/C thread'i komutlari iletir, cevaplari toplar, kapanista kuyrugu bosaltir."""
+
+    def test_threaded_link_round_trip_and_close_flush(self):
+        import time as _t
+        import sim
+        ser = sim.SimSerial(seed=2)
+        ser.reset_input_buffer()
+        link = EyeLink(ser, "COM9", simulated=False)
+        link.start_io_thread()
+        self.assertTrue(link.send("S 78 90 87"))
+        self.assertTrue(link.send("?"))
+        deadline = _t.monotonic() + 2.0
+        while link.last_state is None and _t.monotonic() < deadline:
+            link.poll()
+            _t.sleep(0.01)
+        self.assertIsNotNone(link.last_state)
+        self.assertEqual(link.last_state[0], [78.0, 90.0, 87.0])
+        link.send("A 1")
+        link.close()
+        deadline = _t.monotonic() + 2.0
+        while ser.is_open and _t.monotonic() < deadline:
+            _t.sleep(0.01)
+        self.assertFalse(ser.is_open)
+        self.assertIn("A 1", ser.written)
+        self.assertFalse(link.send("?"))
 
 
 if __name__ == "__main__":
