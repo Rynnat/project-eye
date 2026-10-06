@@ -489,11 +489,11 @@ def run(args) -> int:
             srect = schematic_rect(w, h)
             health = monitor.update(now)
             sx, sy, sw, sh = srect
-            if health in ("ok", "sim") or frozen is None or frozen.shape[:2] != (sh, sw):
+            if health == "ok" or frozen is None or frozen.shape[:2] != (sh, sw):
                 draw_eye_schematic(cv2, view, *srect, eye)
                 frozen = view[sy:sy + sh, sx:sx + sw].copy()   # son saglikli kare
             else:
-                # kart cevap vermiyor: gozler son bilinen halde DONAR (gercek motorlar da hareket etmiyor)
+                # donanim yok / cevap yok: gozler son bilinen halde DONAR (gercek motorlar da hareket etmiyor)
                 view[sy:sy + sh, sx:sx + sw] = frozen
             hud.draw_health(view, *srect, health)
             hud.draw_pills(view, labels, MODES.index(brain.mode))

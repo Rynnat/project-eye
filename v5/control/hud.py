@@ -22,7 +22,6 @@ INK_DIM = (190, 160, 185)
 PANEL = (46, 18, 26)
 PANEL_EDGE = (150, 70, 110)
 RED = (70, 60, 255)
-AMBER = (0, 190, 255)
 
 FONT_FILES = {
     "disp": ("bahnschrift.ttf", "seguisb.ttf", "arialbd.ttf"),
@@ -230,7 +229,7 @@ def draw_face(img, box, primary: bool, score: float | None, status: str):
 # ---------------------------------------------------------------- donanim sagligi
 HEALTH_TEXT = {
     "ok": None,
-    "sim": ("SIMULATION · NO HARDWARE", AMBER),
+    "sim": ("NO HARDWARE", RED),
     "lost": ("CONNECTION LOST", RED),
     "silent": ("NO RESPONSE FROM BOARD", RED),
     "reset": ("BOARD RESET · CHECK POWER", RED),
@@ -243,11 +242,11 @@ def draw_health(img, x, y, w, h, health: str):
     if info is None:
         return
     text, color = info
-    if health != "sim":
-        roi = img[y:y + h, x:x + w]
-        gray = cv2.cvtColor(cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY), cv2.COLOR_GRAY2BGR)
-        img[y:y + h, x:x + w] = (gray * 0.45).astype(np.uint8)
-        _round_outline(img, x, y, w, h, 8, color, 2)
+    # tum hatalar ayni: soluk + kirmizi cerceve (gozler face_follow'da donuk)
+    roi = img[y:y + h, x:x + w]
+    gray = cv2.cvtColor(cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY), cv2.COLOR_GRAY2BGR)
+    img[y:y + h, x:x + w] = (gray * 0.45).astype(np.uint8)
+    _round_outline(img, x, y, w, h, 8, color, 2)
     tw, th = text_size(text, 14, spacing=1.0)
     bx, by = x + (w - tw) // 2 - 10, y + h - th - 14
     panel(img, bx, by, tw + 20, th + 8, color, 0.92, radius=4)
