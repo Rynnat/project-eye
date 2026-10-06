@@ -196,6 +196,17 @@ class ModeBrainTests(unittest.TestCase):
         self.assertTrue(self.brain.status.startswith("CANLI"))
         self.assertTrue(self.eye.idle)
 
+    def test_lifeless_tracking_follows_then_holds(self):
+        self.brain.set_mode("CANSIZ")
+        self.assertFalse(self.eye.auto_blink or self.eye.idle_wander)
+        self.frames(60, (0.6, -0.3))
+        self.assertAlmostEqual(self.eye.gaze_u, 0.6, places=2)
+        self.assertEqual(self.brain.status, "TRACKING")
+        self.frames(120, None)            # yuz gitti: son noktada bekler, bakinmaz
+        self.assertAlmostEqual(self.eye.gaze_u, 0.6, places=2)
+        self.assertIsNone(self.eye._blink_start)
+        self.assertAlmostEqual(self.eye.openness, self.ff.LID_OPEN_TRACK, places=2)
+
     def test_buttons_hit(self):
         for m, x, y in self.ff.mode_button_rects():
             self.assertEqual(self.ff.hit_mode_button(x + 5, y + 5), m)

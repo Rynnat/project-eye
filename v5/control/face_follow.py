@@ -18,13 +18,15 @@ Calistirma (mediapipe + opencv Lunar venv'inde var):
     ... face_follow.py --sim          # donanimi arama
     ... face_follow.py --port COM5 --camera 1
 
-Modlar (penceredeki butonlar ya da 1-3 tuslari; kamera her modda acik):
+Modlar (penceredeki butonlar ya da 1-4 tuslari; kamera her modda acik):
     NO TRACKING CANLI  yuzu yok sayar; insan istatistikli bakinma + kirpma, kapak acik
     TRACKING CANLI     yuz varken tam takip (irkilme + odak + kirpma); yuz yokken
                        NO TRACKING CANLI gibi bakinir, yuz gorunce kilitlenir
+    TRACKING CANSIZ    yalniz takip: kirpma/irkilme/bakinma yok, kapak sabit acik;
+                       yuz gidince son noktada bekler
     NOTR               gozler ortada, kapak acik, kirpma yok
 
-Tuslar: q / ESC cikis, 1-3 mod, b kirp, m ayna (u yonunu cevir),
+Tuslar: q / ESC cikis, 1-4 mod, b kirp, m ayna (u yonunu cevir),
         h kontrolu firmware idle'ina birak / geri al, d servolari birak (detach).
 
 Kamera koordinati: kamera robotun uzerinde/yaninda ILERI (izleyiciye) bakiyor
@@ -64,8 +66,9 @@ FOCUS_SPEED_RAMP = 1.2
 TARGET_DEBOUNCE_FRAMES = 5
 GAIN = 1.0                  # kare kenari -> u = +-GAIN
 
-MODES = ("SERBEST", "TAKIP", "NOTR")
-MODE_LABELS = {"SERBEST": "NO TRACKING CANLI", "TAKIP": "TRACKING CANLI", "NOTR": "NÖTR"}
+MODES = ("SERBEST", "TAKIP", "CANSIZ", "NOTR")
+MODE_LABELS = {"SERBEST": "NO TRACKING CANLI", "TAKIP": "TRACKING CANLI",
+               "CANSIZ": "TRACKING CANSIZ", "NOTR": "NÖTR"}
 DEFAULT_MODE = "TAKIP"
 
 
@@ -145,12 +148,14 @@ class FollowBrain:
 
 
 class ModeBrain:
-    """Mod secici: TAKIP = FollowBrain, SERBEST = takipsiz canli, NOTR = sabit. cv2 gerektirmez."""
+    """Mod secici: TAKIP = FollowBrain, SERBEST = takipsiz canli, CANSIZ = sade takip,
+    NOTR = sabit. cv2 gerektirmez."""
 
     def __init__(self, eye: EyeController, mode: str = DEFAULT_MODE):
         self.eye = eye
         self.live = FollowBrain(eye)
         self.mode = None
+        self.aim = None
         self.lid = eye.openness
         self.status = ""
         self.set_mode(mode)
@@ -160,7 +165,8 @@ class ModeBrain:
             return
         self.mode = mode
         eye = self.eye
-        eye.auto_blink = eye.idle_wander = mode != "NOTR"
+        eye.auto_blink = eye.idle_wander = mode in ("SERBEST", "TAKIP")
+        self.aim = None
         if mode == "SERBEST":
             eye._last_look = -1e9       # look() gelmiyor sayilsin: hemen bakinmaya basla
         elif mode == "TAKIP":
@@ -183,6 +189,14 @@ class ModeBrain:
             return
         if self.mode == "SERBEST":
             self.status = "CANLI"
+        elif self.mode == "CANSIZ":
+            if target is not None:
+                self.aim = target if self.aim is None else (
+                    _ema(self.aim[0], target[0], dt, AIM_TAU_S), _ema(self.aim[1], target[1], dt, AIM_TAU_S))
+                self.status = "TRACKING"
+            else:
+                self.status = "TRACKING - yuz yok"
+            self.eye.look(*(self.aim or (0.0, 0.0)))
         else:
             self.eye.look(0.0, 0.0)
             self.status = "NOTR"
@@ -247,7 +261,7 @@ def draw_eye_schematic(cv2, img, x, y, w, h, eye: EyeController) -> None:
         cv2.circle(img, (cx, cy), r, (0, 140, 255), 2, cv2.LINE_AA)
 
 
-BTN_W, BTN_H, BTN_GAP, BTN_X0, BTN_Y0 = 190, 34, 8, 12, 12
+BTN_W, BTN_H, BTN_GAP, BTN_X0, BTN_Y0 = 160, 32, 6, 12, 12
 
 
 def mode_button_rects():
@@ -261,7 +275,7 @@ def make_button_images():
     font = None
     for name in ("seguisb.ttf", "segoeuib.ttf", "arialbd.ttf"):
         try:
-            font = ImageFont.truetype(name, 17)
+            font = ImageFont.truetype(name, 15)
             break
         except OSError:
             pass
@@ -279,6 +293,15 @@ def make_button_images():
             d.text(((BTN_W - (x1 - x0)) / 2 - x0, (BTN_H - (y1 - y0)) / 2 - y0), text, fill=fg, font=font)
             imgs[m, active] = np.ascontiguousarray(np.asarray(im)[:, :, ::-1])
     return imgs
+
+
+def schematic_rect(w: int, h: int):
+    """Goz semasi sag ustte, butonlarin sagindaki bosluga sigar; cok darsa butonlarin altina."""
+    sw, sh = int(w * 0.34), int(h * 0.24)
+    free = w - 12 - (mode_button_rects()[-1][1] + BTN_W + 10)
+    if free >= int(w * 0.24):
+        return w - min(sw, free) - 12, 12, min(sw, free), sh
+    return w - sw - 12, BTN_Y0 + BTN_H + 48, sw, sh
 
 
 def draw_mode_buttons(img, imgs, current: str) -> None:
@@ -418,13 +441,9 @@ def run(args) -> int:
                 (12, h - 40), 0.5)
             put(cv2, view, f"lid {eye.effective_open:.2f}  "
                            f"S {eye.sent_count}  ERR {eye.link.err_count}  FPS {fps:4.1f}"
-                           f"{'  MIRROR' if mirror else ''}   q:cik 1-3:mod b:kirp m:ayna h:fw-idle d:detach",
+                           f"{'  MIRROR' if mirror else ''}   q:cik 1-4:mod b:kirp m:ayna h:fw-idle d:detach",
                 (12, h - 14), 0.45, (180, 180, 180))
-            # sag ust; dar kamerada (640) mod butonlariyla cakisirsa durum yazisinin altina
-            sw, sh = int(w * 0.34), int(h * 0.24)
-            buttons_right = mode_button_rects()[-1][1] + BTN_W
-            sy = 12 if w - sw - 12 > buttons_right + 8 else BTN_Y0 + BTN_H + 48
-            draw_eye_schematic(cv2, view, w - sw - 12, sy, sw, sh, eye)
+            draw_eye_schematic(cv2, view, *schematic_rect(w, h), eye)
 
             cv2.imshow(WINDOW_NAME, view)
             key = cv2.waitKey(1) & 0xFF
