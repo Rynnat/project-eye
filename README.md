@@ -42,7 +42,8 @@ Every version is kept; a revision never edits an older folder.
 v5 was built as a showcase stand, not as a measured experiment.
 
 - **Yaw (left/right) and eyelids:** work.
-- **Pitch (up/down):** the servo moves, but cannot hold the pitch frame under load (the frame also carries the eyelid servo and all four lids). A rubber-band counterbalance on the front of the frame restored free motion, confirming a torque shortfall. A torque check was never part of the design loop; the design notes already flagged it as unverified.
+- **Pitch (up/down):** the servo moves, but cannot hold the pitch frame under load (the frame also carries the eyelid servo and all four lids). A rubber-band counterbalance on the front of the frame restored free motion, confirming a torque shortfall. A torque check was never part of the design loop; the design notes already flagged it as unverified. Pitch is therefore disabled: the firmware holds it at center in idle mode (`IDLE_GAZE_V_MAX = 0`), and face tracking runs with pitch fixed.
+- **Face tracking:** `control/face_follow.py` (webcam, MediaPipe) has run on the v5 hardware, steering yaw only because pitch is disabled. Tested by eye; tracking accuracy and latency were not measured.
 - **Accuracy vs. simulation:** not measured. Since the eyes and lids ride on the pitch frame, their real angles may also differ from the model; hand calibration already found a different yaw range (45–111°) than the model (65–115°).
 
 ## v5 at a glance
@@ -92,7 +93,6 @@ python kalibrasyon_paneli.py --port COM3
 
 ## Next
 
-- Face tracking on v5 hardware (`control/face_follow.py`)
-- v6: move the center of mass onto the pitch axis
+- v6: move the center of mass onto the pitch axis, so pitch can be re-enabled
 
 Docs and code comments are partly in Turkish.
