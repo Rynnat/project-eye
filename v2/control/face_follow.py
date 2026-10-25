@@ -14,7 +14,7 @@ Donanim yoksa EyeController sim'e duser: pencerede kamera onizlemesi,
 iki gozun sematik hali ve telemetri gorunur.
 
 Calistirma (mediapipe + opencv Lunar venv'inde var):
-    C:\\Users\\LENOVO\\lunar-tracker\\.venv\\Scripts\\python.exe face_follow.py
+    C:\\Users\\LENOVO\\Projeler\\_arsiv\\lunar-tracker\\.venv\\Scripts\\python.exe face_follow.py
     ... face_follow.py --sim          # donanimi arama
     ... face_follow.py --port COM5 --camera 1
 
@@ -41,7 +41,7 @@ if HERE not in sys.path:
 from eye_control import EyeController, clamp, lid_follow  # noqa: E402
 
 WINDOW_NAME = "Project Eye v2 - Face Follow"
-DEFAULT_MODEL = r"C:\Users\LENOVO\lunar-tracker\assets\blaze_face_short_range.tflite"
+DEFAULT_MODEL = r"C:\Users\LENOVO\Projeler\_arsiv\lunar-tracker\assets\blaze_face_short_range.tflite"
 LOCK_PATH = os.path.join(HERE, ".face_follow.lock")
 
 # --- davranis (ultimatum.py EyeRig ile ayni aile) ---------------------------

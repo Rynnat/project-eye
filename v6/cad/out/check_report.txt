@@ -1,0 +1,420 @@
+SONUC: TEMIZ
+KAPSAM:
+  OLCULDU:   [R16_v5_stl_md5] 19 dondurulmus dosya: md5 ayni (C:\Users\LENOVO\Projeler\epic-project\modules\project-eye\v5\cad\out\stl)
+  OLCULDU:   [R16_v5_parca_geometri] 18 parca: hacim (bagil <= 0.001) + sinir kutusu boyutu (<= 0.01 mm) dondurulmus referansla ayni
+  OLCULDU:   [tek_govde] 3 parca: ayri govde sayisi (manifold decompose)
+  OLCULDU:   [havada_ada] 3 parca: 0.2 mm katmanlarla havada baslayan bilesen (>= 0.05 mm2)
+  OLCULDU:   [et_kalinligi] 3 parca: kaba et kalinligi (3000 nokta isin ornekleme, esik %1 alan < 1.6 mm)
+  OLCULDU:   [tabla] 3 parca: baski yonunde sinir kutusu <= 200 x 200 x 240
+  OLCULDU:   [sarkma] 3 parca (baski yonu): 0.2 mm katmanda bir alttaki kesitten > 5.0 mm uzak yeni malzeme, iki yandan <= 25.0 mm kopru degilse (alan > 1.0 mm2) = konsol
+  OLCULDU:   [R3_cakisma_rijit_notr] 1 poz, 6045 parca cifti: kesisim > 0.05 mm3 ve bosluk < 0.395 mm
+  OLCULDU:   [R3_cakisma_pozlar] 54 poz, 4822 parca cifti: kesisim > 0.05 mm3 ve bosluk < 0.395 mm
+  OLCULDU:   [R3_cakisma_pozlar] pozlar: yaw (-25.0, 0.0, 25.0) x pitch (-13.0, -10.0, 0.0, 10.0, 18.0, 21.0) x kapak (0.0, 0.5, 1.0); masa egik 30.0 deg; min bosluk 0.4 (olcum 0.395: 0.4 AXIAL_GAP duz yuzeyde ucgenleme payi 0.005)
+  OLCULDU:   [R3_cakisma_eklem_kesisim] 54 poz, 48 parca cifti: kesisim > 0.05 mm3 ve bosluk < 0.0 mm
+  OLCULDU:   [R3_pitch_mekanik_durma] pitch ust mekanik durma acisi (ikiye bolme, 0.05 deg; sabit x hareketli kesisim > 0.01 mm3)
+  OLCULDU:   [R4_zemin_masa] 54 zemin pozu: temas disi parcalar zeminden >= 0.4 mm, ayak uclari batmiyor
+  OLCULDU:   [R8_havada_donanim_yeni] 12 vida/somun: en yakin basili parcaya mesafe <= 0.6 mm
+  OLCULDU:   [R6_montaj_cerceve_alt] 11 adim, 92 parca: dogrusal sokme yolu (1.0 mm adim, esik 0.5 mm3 / takili kesisim ustu)
+  OLCULDU:   [R6_montaj_ana] 8 adim, 111 parca: dogrusal sokme yolu (1.0 mm adim, esik 0.5 mm3 / takili kesisim ustu)
+  OLCULDU:   [R6_giris_yolu] 13 vida icin alet koridoru (silindir) x o adimda takili parcalar: 959 cift
+  OLCULDU:   [tolerans] zincir 'Z1-B sol mil kavrama (eksenel; braket yarigi ayar payi tum sapmalari karsilamali)' (9 halka, en_kotu)
+  OLCULDU:   [tolerans] zincir 'Z2 krank vida kafasi <-> yaw servo govdesi (y)' (4 halka, en_kotu)
+  OLCULDU:   [tolerans] zincir 'Z3a arka en alcak <-> kama dudagi (pitch asim pozu)' (4 halka, en_kotu)
+  OLCULDU:   [tolerans] zincir 'Z3b arka en alcak <-> masa (pitch asim pozu)' (5 halka, en_kotu)
+  OLCULDU:   [tolerans] zincir 'Z5 alt emniyet somunu <-> coupler (eksenel, sikistirmamali)' (2 halka, en_kotu)
+  OLCULDU:   [tolerans] zincir 'Z6 ray dudagi alti <-> taban ustu (taban kayarak girmeli)' (4 halka, en_kotu)
+  OLCULDU:   [tolerans] zincir 'Z7 adaptor D-deligi <-> frame_L gobegi (radyal)' (3 halka, en_kotu)
+  OLCULDU:   [tolerans] zincir 'Z8 iki pitch servosu es eksenlilik (radyal kaciklik <= izin) [RSS]' (7 halka, rss)
+  OLCULDU:   [R7_vida_boyu_envanter] 6 vida: boy >= sikisan + somun + 1 dis ve boy envanter/satin listesinde
+  OLCULDU:   [R7_vida_adet] 6 vida: (tip x boy) adet <= elde, modelde somundan tasma >= 1 dis
+  OLCULDU:   [R2_pitch_tork_B_dolgu0.6] 83 parca kutle/AM, 29 aci (-10..+18): yercekimi torku + ek terimler, pay >= 1.5
+  OLCULDU:   [R2_pitch_tork_B_dolgu0.75] 83 parca kutle/AM, 29 aci (-10..+18): yercekimi torku + ek terimler, pay >= 1.5
+  OLCULDU:   [R2_pitch_tork_B_dolgu1.0] 83 parca kutle/AM, 29 aci (-10..+18): yercekimi torku + ek terimler, pay >= 1.5
+  OLCULDU:   [R2_bilgi_alfa20] 83 parca kutle/AM, 29 aci (-10..+18): yercekimi torku + ek terimler, pay >= 1.5
+  OLCULDU:   [R2_bilgi_alfa40] 83 parca kutle/AM, 29 aci (-10..+18): yercekimi torku + ek terimler, pay >= 1.5
+  OLCULDU:   [R11_tutma_testi_esik] 2 tutma testi: test momenti >= kapasite, test/gereken >= 1.5, test ve kapasite gerilimi <= ray minimumu
+  OLCULDU:   [R5_devrilme_alfa20] alfa20 10 poz: toplam AM izdusumu destek cokgeninde (>= 15.0 mm, devrilme acisi >= 15.0 deg)
+  OLCULDU:   [R5_devrilme_alfa30] alfa30 10 poz: toplam AM izdusumu destek cokgeninde (>= 15.0 mm, devrilme acisi >= 15.0 deg)
+  OLCULDU:   [R5_devrilme_alfa40] alfa40 10 poz: toplam AM izdusumu destek cokgeninde (>= 15.0 mm, devrilme acisi >= 15.0 deg)
+  OLCULDU:   [R17_kablo] 4 kablo x 18 poz: dogru parcali yol + servis halkasi <= kablo boyu
+  OLCULDU:   [R9_kama_hafiflik] 1 parca: hacim / ayni geometrinin tum etleri MIN_ET olan varyanti <= 1.15
+  OLCULDU:   [MONTAJ_kalibrasyon_sirasi] 4 adim: tablo satirinda var ve sira sag pitch kalibrasyonu (D5, D9 fisi cikik) -> D9 ofseti -> daraltilmis ilk tarama -> tam tarama (R14)
+  OLCULDU:   [MONTAJ_sikma_talimati] belirsiz sikma ifadesi gecen 0 satirin hepsinde sayisal sinir (tur / Nm / derece)
+  OLCULDU:   [R6_frame_L_matkap] 1 el matkabi deligi: kor ise kalan et >= el hassasiyeti, delip gec ise arka kesisim 0
+  OLCULDU:   [R6_frame_L_matkap] serit arkasi 0..10 mm O1.6 silindir x 54 poz x tum parcalar (frame_L matkapsiz): en buyuk kesisim 0.0000 mm3
+  OLCULDU:   [BOM_envanter_belge] 3 kalem: BOM satirinin adet/kaynak iddiasi envanter tablosuyla ayni ya da acikca isaretli
+  OLCULDU:   [plan_sapmasi] 12 izlenen PLAN kalemi (12 farkli): her fark DECISIONS'ta 'PLAN SAPMASI' etiketli bolumde
+  OLCULMEDI: [R16_v5_stl_md5] basilan fiziksel parcanin STL'e uygunlugu (baski hatasi, sonradan zimpara/matkap) olculmedi
+  OLCULMEDI: [R16_v5_parca_geometri] ayni hacim/kutu ile farkli ic geometri (delik yer degistirmesi) bu kontrolde ayirt edilmez; md5 kontrolu dosya duzeyinde
+  OLCULMEDI: [havada_ada] duz sarkma / kopru alani ve 45 deg ustu egimler (ada degil, bagli sarkma) olculmedi
+  OLCULMEDI: [et_kalinligi] et kontrolu KABA: kenar/pah/kose yakininda yanlis 'ince' cikar; tek tek ince duvar garantisi degil
+  OLCULMEDI: [tabla] parcanin tablaya gercekten oturdugu yon (STL yonu dogru varsayildi); capraz yerlesim olculmedi
+  OLCULMEDI: [sarkma] kopru yolunun parcanin icinden gectigi ve kopru sarkma miktari olculmedi; <= konsol_maks egimli sarkma (45 deg alti) ayrica olculmedi
+  OLCULMEDI: [R3_cakisma_rijit_notr] muaf cift cable_lid x servo_lid: ayni (v5)
+  OLCULMEDI: [R3_cakisma_rijit_notr] muaf cift cable_pitch x servo_pitch: ayni (v5; MG90S govdesi SG90 modeli)
+  OLCULMEDI: [R3_cakisma_rijit_notr] muaf cift cable_pitch_L x servo_pitch_L: ayni (yeni sol SG90)
+  OLCULMEDI: [R3_cakisma_rijit_notr] muaf cift cable_yaw x servo_yaw: satin alinan servo + kendi kablo cikis modeli (ayni parca; v5 §2 2.34 mm3)
+  OLCULMEDI: [R3_cakisma_rijit_notr] muaf cift coupler x eye_lever_L: v5 eklemi (eye_v5.JOINTS: pim-delik / AXIAL_GAP / kol-servo mili); v5 check §4b + donanimda calisiyor
+  OLCULMEDI: [R3_cakisma_rijit_notr] muaf cift coupler x eye_lever_R: v5 eklemi (eye_v5.JOINTS: pim-delik / AXIAL_GAP / kol-servo mili); v5 check §4b + donanimda calisiyor
+  OLCULMEDI: [R3_cakisma_rijit_notr] muaf cift coupler x nut_ctip_alt: alt emniyet somunu coupler'a 0.2 (PLAN §3/T3, 1/4 tur geri) - Z5 zinciri olcer
+  OLCULMEDI: [R3_cakisma_rijit_notr] muaf cift coupler x scr_ctip6: krank vidasi govdesi coupler deliginde doner (pim-delik, 4.3 / 3.4 model)
+  OLCULMEDI: [R3_cakisma_rijit_notr] muaf cift coupler x scr_ltip_L: v5 eklemi (eye_v5.JOINTS: pim-delik / AXIAL_GAP / kol-servo mili); v5 check §4b + donanimda calisiyor
+  OLCULMEDI: [R3_cakisma_rijit_notr] muaf cift coupler x scr_ltip_R: v5 eklemi (eye_v5.JOINTS: pim-delik / AXIAL_GAP / kol-servo mili); v5 check §4b + donanimda calisiyor
+  OLCULMEDI: [R3_cakisma_rijit_notr] muaf cift coupler x yaw_crank: v5 eklemi (eye_v5.JOINTS: pim-delik / AXIAL_GAP / kol-servo mili); v5 check §4b + donanimda calisiyor
+  OLCULMEDI: [R3_cakisma_rijit_notr] muaf cift eye_L x frame_L: v5 eklemi (eye_v5.JOINTS: pim-delik / AXIAL_GAP / kol-servo mili); v5 check §4b + donanimda calisiyor
+  OLCULMEDI: [R3_cakisma_rijit_notr] muaf cift eye_L x scr_pbot_L: v5 eklemi (eye_v5.JOINTS: pim-delik / AXIAL_GAP / kol-servo mili); v5 check §4b + donanimda calisiyor
+  OLCULMEDI: [R3_cakisma_rijit_notr] muaf cift eye_L x scr_ptop_L: v5 eklemi (eye_v5.JOINTS: pim-delik / AXIAL_GAP / kol-servo mili); v5 check §4b + donanimda calisiyor
+  OLCULMEDI: [R3_cakisma_rijit_notr] muaf cift eye_R x frame_R: v5 eklemi (eye_v5.JOINTS: pim-delik / AXIAL_GAP / kol-servo mili); v5 check §4b + donanimda calisiyor
+  OLCULMEDI: [R3_cakisma_rijit_notr] muaf cift eye_R x scr_pbot_R: v5 eklemi (eye_v5.JOINTS: pim-delik / AXIAL_GAP / kol-servo mili); v5 check §4b + donanimda calisiyor
+  OLCULMEDI: [R3_cakisma_rijit_notr] muaf cift eye_R x scr_ptop_R: v5 eklemi (eye_v5.JOINTS: pim-delik / AXIAL_GAP / kol-servo mili); v5 check §4b + donanimda calisiyor
+  OLCULMEDI: [R3_cakisma_rijit_notr] muaf cift eye_lever_L x frame_L: v5 eklemi (eye_v5.JOINTS: pim-delik / AXIAL_GAP / kol-servo mili); v5 check §4b + donanimda calisiyor
+  OLCULMEDI: [R3_cakisma_rijit_notr] muaf cift eye_lever_L x scr_pbot_L: v5 eklemi (eye_v5.JOINTS: pim-delik / AXIAL_GAP / kol-servo mili); v5 check §4b + donanimda calisiyor
+  OLCULMEDI: [R3_cakisma_rijit_notr] muaf cift eye_lever_R x frame_R: v5 eklemi (eye_v5.JOINTS: pim-delik / AXIAL_GAP / kol-servo mili); v5 check §4b + donanimda calisiyor
+  OLCULMEDI: [R3_cakisma_rijit_notr] muaf cift eye_lever_R x scr_pbot_R: v5 eklemi (eye_v5.JOINTS: pim-delik / AXIAL_GAP / kol-servo mili); v5 check §4b + donanimda calisiyor
+  OLCULMEDI: [R3_cakisma_rijit_notr] muaf cift frame_L x lid_lo_L: v5 eklemi (eye_v5.JOINTS: pim-delik / AXIAL_GAP / kol-servo mili); v5 check §4b + donanimda calisiyor
+  OLCULMEDI: [R3_cakisma_rijit_notr] muaf cift frame_R x lid_lo_R: v5 eklemi (eye_v5.JOINTS: pim-delik / AXIAL_GAP / kol-servo mili); v5 check §4b + donanimda calisiyor
+  OLCULMEDI: [R3_cakisma_rijit_notr] muaf cift horn_lid x servo_lid: v5 eklemi (eye_v5.JOINTS: pim-delik / AXIAL_GAP / kol-servo mili); v5 check §4b + donanimda calisiyor
+  OLCULMEDI: [R3_cakisma_rijit_notr] muaf cift horn_pitch x servo_pitch: v5 eklemi (eye_v5.JOINTS: pim-delik / AXIAL_GAP / kol-servo mili); v5 check §4b + donanimda calisiyor
+  OLCULMEDI: [R3_cakisma_rijit_notr] muaf cift horn_pitch_L x servo_pitch_L: sol SG90 mili - kol kavramasi (tasarim geregi temas, satin alinan)
+  OLCULMEDI: [R3_cakisma_rijit_notr] muaf cift horn_yaw x servo_yaw: v5 eklemi (eye_v5.JOINTS: pim-delik / AXIAL_GAP / kol-servo mili); v5 check §4b + donanimda calisiyor
+  OLCULMEDI: [R3_cakisma_rijit_notr] muaf cift lid_lo_L x lid_lo_R: v5 BILINEN: alt kapak orta bindirmesi (v5 §2 2.17 mm3, basildi, donanimda calisiyor)
+  OLCULMEDI: [R3_cakisma_rijit_notr] muaf cift lid_lo_L x lid_up_L: v5 eklemi (eye_v5.JOINTS: pim-delik / AXIAL_GAP / kol-servo mili); v5 check §4b + donanimda calisiyor
+  OLCULMEDI: [R3_cakisma_rijit_notr] muaf cift lid_lo_L x link_lo: v5 eklemi (eye_v5.JOINTS: pim-delik / AXIAL_GAP / kol-servo mili); v5 check §4b + donanimda calisiyor
+  OLCULMEDI: [R3_cakisma_rijit_notr] muaf cift lid_lo_L x scr_lpin_Li: v5 eklemi (eye_v5.JOINTS: pim-delik / AXIAL_GAP / kol-servo mili); v5 check §4b + donanimda calisiyor
+  OLCULMEDI: [R3_cakisma_rijit_notr] muaf cift lid_lo_L x scr_lpin_Lo: v5 eklemi (eye_v5.JOINTS: pim-delik / AXIAL_GAP / kol-servo mili); v5 check §4b + donanimda calisiyor
+  OLCULMEDI: [R3_cakisma_rijit_notr] muaf cift lid_lo_R x lid_up_R: v5 eklemi (eye_v5.JOINTS: pim-delik / AXIAL_GAP / kol-servo mili); v5 check §4b + donanimda calisiyor
+  OLCULMEDI: [R3_cakisma_rijit_notr] muaf cift lid_lo_R x scr_lpin_Ri: v5 eklemi (eye_v5.JOINTS: pim-delik / AXIAL_GAP / kol-servo mili); v5 check §4b + donanimda calisiyor
+  OLCULMEDI: [R3_cakisma_rijit_notr] muaf cift lid_lo_R x scr_lpin_Ro: v5 eklemi (eye_v5.JOINTS: pim-delik / AXIAL_GAP / kol-servo mili); v5 check §4b + donanimda calisiyor
+  OLCULMEDI: [R3_cakisma_rijit_notr] muaf cift lid_up_L x link_up: v5 eklemi (eye_v5.JOINTS: pim-delik / AXIAL_GAP / kol-servo mili); v5 check §4b + donanimda calisiyor
+  OLCULMEDI: [R3_cakisma_rijit_notr] muaf cift lid_up_L x scr_U: v5 BILINEN: U pimi M4 plastige kilavuzsuz (pilot 3.5) - dis modeli
+  OLCULMEDI: [R3_cakisma_rijit_notr] muaf cift lid_up_L x scr_lpin_Li: v5 eklemi (eye_v5.JOINTS: pim-delik / AXIAL_GAP / kol-servo mili); v5 check §4b + donanimda calisiyor
+  OLCULMEDI: [R3_cakisma_rijit_notr] muaf cift lid_up_L x scr_lpin_Lo: v5 eklemi (eye_v5.JOINTS: pim-delik / AXIAL_GAP / kol-servo mili); v5 check §4b + donanimda calisiyor
+  OLCULMEDI: [R3_cakisma_rijit_notr] muaf cift lid_up_R x scr_lpin_Ri: v5 eklemi (eye_v5.JOINTS: pim-delik / AXIAL_GAP / kol-servo mili); v5 check §4b + donanimda calisiyor
+  OLCULMEDI: [R3_cakisma_rijit_notr] muaf cift lid_up_R x scr_lpin_Ro: v5 eklemi (eye_v5.JOINTS: pim-delik / AXIAL_GAP / kol-servo mili); v5 check §4b + donanimda calisiyor
+  OLCULMEDI: [R3_cakisma_rijit_notr] muaf cift link_lo x scr_A: v5 eklemi (eye_v5.JOINTS: pim-delik / AXIAL_GAP / kol-servo mili); v5 check §4b + donanimda calisiyor
+  OLCULMEDI: [R3_cakisma_rijit_notr] muaf cift link_lo x scr_L: v5 eklemi (eye_v5.JOINTS: pim-delik / AXIAL_GAP / kol-servo mili); v5 check §4b + donanimda calisiyor
+  OLCULMEDI: [R3_cakisma_rijit_notr] muaf cift link_up x scr_A: v5 eklemi (eye_v5.JOINTS: pim-delik / AXIAL_GAP / kol-servo mili); v5 check §4b + donanimda calisiyor
+  OLCULMEDI: [R3_cakisma_rijit_notr] muaf cift link_up x scr_U: v5 eklemi (eye_v5.JOINTS: pim-delik / AXIAL_GAP / kol-servo mili); v5 check §4b + donanimda calisiyor
+  OLCULMEDI: [R3_cakisma_rijit_notr] muaf cift nut_m3_lid0 x servo_lid: v5 BILINEN (ayni)
+  OLCULMEDI: [R3_cakisma_rijit_notr] muaf cift nut_m3_pitch0 x servo_pitch: v5 BILINEN (ayni)
+  OLCULMEDI: [R3_cakisma_rijit_notr] muaf cift nut_m3_yaw0 x servo_yaw: v5 BILINEN (ayni)
+  OLCULMEDI: [R3_cakisma_rijit_notr] muaf cift scr_horn_lid0 x servo_lid: v5 eklemi (eye_v5.JOINTS: pim-delik / AXIAL_GAP / kol-servo mili); v5 check §4b + donanimda calisiyor
+  OLCULMEDI: [R3_cakisma_rijit_notr] muaf cift scr_horn_lid1 x servo_lid: v5 eklemi (eye_v5.JOINTS: pim-delik / AXIAL_GAP / kol-servo mili); v5 check §4b + donanimda calisiyor
+  OLCULMEDI: [R3_cakisma_rijit_notr] muaf cift scr_horn_pitch0 x servo_pitch: v5 eklemi (eye_v5.JOINTS: pim-delik / AXIAL_GAP / kol-servo mili); v5 check §4b + donanimda calisiyor
+  OLCULMEDI: [R3_cakisma_rijit_notr] muaf cift scr_horn_pitch1 x servo_pitch: v5 eklemi (eye_v5.JOINTS: pim-delik / AXIAL_GAP / kol-servo mili); v5 check §4b + donanimda calisiyor
+  OLCULMEDI: [R3_cakisma_rijit_notr] muaf cift scr_horn_yaw0 x servo_yaw: v5 eklemi (eye_v5.JOINTS: pim-delik / AXIAL_GAP / kol-servo mili); v5 check §4b + donanimda calisiyor
+  OLCULMEDI: [R3_cakisma_rijit_notr] muaf cift scr_horn_yaw1 x servo_yaw: v5 eklemi (eye_v5.JOINTS: pim-delik / AXIAL_GAP / kol-servo mili); v5 check §4b + donanimda calisiyor
+  OLCULMEDI: [R3_cakisma_rijit_notr] muaf cift scr_m3_lid0 x servo_lid: v5 BILINEN (ayni)
+  OLCULMEDI: [R3_cakisma_rijit_notr] muaf cift scr_m3_pitch0 x servo_pitch: v5 BILINEN (ayni; MG90S'te kulak olcusu PLAN R12 kumpas)
+  OLCULMEDI: [R3_cakisma_rijit_notr] muaf cift scr_m3_yaw0 x servo_yaw: v5 BILINEN: SG90 uzak kulak deligi govdeye 2.65 mm, M3 kafa govdeye ~0.15 mm biner (v5 DECISIONS, donanimda calisti)
+  OLCULMEDI: [R3_cakisma_rijit_notr] ayni hareket grubundaki 202 yakin cift-pozda min bosluk olculmedi (yalniz kesisim)
+  OLCULMEDI: [R3_cakisma_rijit_notr] pozlar arasi ara acilar olculmedi (yalniz verilen 1 poz)
+  OLCULMEDI: [R3_cakisma_pozlar] muaf cift coupler x eye_lever_L: v5 eklemi (eye_v5.JOINTS: pim-delik / AXIAL_GAP / kol-servo mili); v5 check §4b + donanimda calisiyor
+  OLCULMEDI: [R3_cakisma_pozlar] muaf cift coupler x eye_lever_R: v5 eklemi (eye_v5.JOINTS: pim-delik / AXIAL_GAP / kol-servo mili); v5 check §4b + donanimda calisiyor
+  OLCULMEDI: [R3_cakisma_pozlar] muaf cift coupler x nut_ctip_alt: alt emniyet somunu coupler'a 0.2 (PLAN §3/T3, 1/4 tur geri) - Z5 zinciri olcer
+  OLCULMEDI: [R3_cakisma_pozlar] muaf cift coupler x scr_ctip6: krank vidasi govdesi coupler deliginde doner (pim-delik, 4.3 / 3.4 model)
+  OLCULMEDI: [R3_cakisma_pozlar] muaf cift coupler x scr_ltip_L: v5 eklemi (eye_v5.JOINTS: pim-delik / AXIAL_GAP / kol-servo mili); v5 check §4b + donanimda calisiyor
+  OLCULMEDI: [R3_cakisma_pozlar] muaf cift coupler x scr_ltip_R: v5 eklemi (eye_v5.JOINTS: pim-delik / AXIAL_GAP / kol-servo mili); v5 check §4b + donanimda calisiyor
+  OLCULMEDI: [R3_cakisma_pozlar] muaf cift coupler x yaw_crank: v5 eklemi (eye_v5.JOINTS: pim-delik / AXIAL_GAP / kol-servo mili); v5 check §4b + donanimda calisiyor
+  OLCULMEDI: [R3_cakisma_pozlar] muaf cift eye_L x frame_L: v5 eklemi (eye_v5.JOINTS: pim-delik / AXIAL_GAP / kol-servo mili); v5 check §4b + donanimda calisiyor
+  OLCULMEDI: [R3_cakisma_pozlar] muaf cift eye_L x scr_pbot_L: v5 eklemi (eye_v5.JOINTS: pim-delik / AXIAL_GAP / kol-servo mili); v5 check §4b + donanimda calisiyor
+  OLCULMEDI: [R3_cakisma_pozlar] muaf cift eye_L x scr_ptop_L: v5 eklemi (eye_v5.JOINTS: pim-delik / AXIAL_GAP / kol-servo mili); v5 check §4b + donanimda calisiyor
+  OLCULMEDI: [R3_cakisma_pozlar] muaf cift eye_R x frame_R: v5 eklemi (eye_v5.JOINTS: pim-delik / AXIAL_GAP / kol-servo mili); v5 check §4b + donanimda calisiyor
+  OLCULMEDI: [R3_cakisma_pozlar] muaf cift eye_R x scr_pbot_R: v5 eklemi (eye_v5.JOINTS: pim-delik / AXIAL_GAP / kol-servo mili); v5 check §4b + donanimda calisiyor
+  OLCULMEDI: [R3_cakisma_pozlar] muaf cift eye_R x scr_ptop_R: v5 eklemi (eye_v5.JOINTS: pim-delik / AXIAL_GAP / kol-servo mili); v5 check §4b + donanimda calisiyor
+  OLCULMEDI: [R3_cakisma_pozlar] muaf cift eye_lever_L x frame_L: v5 eklemi (eye_v5.JOINTS: pim-delik / AXIAL_GAP / kol-servo mili); v5 check §4b + donanimda calisiyor
+  OLCULMEDI: [R3_cakisma_pozlar] muaf cift eye_lever_L x scr_pbot_L: v5 eklemi (eye_v5.JOINTS: pim-delik / AXIAL_GAP / kol-servo mili); v5 check §4b + donanimda calisiyor
+  OLCULMEDI: [R3_cakisma_pozlar] muaf cift eye_lever_R x frame_R: v5 eklemi (eye_v5.JOINTS: pim-delik / AXIAL_GAP / kol-servo mili); v5 check §4b + donanimda calisiyor
+  OLCULMEDI: [R3_cakisma_pozlar] muaf cift eye_lever_R x scr_pbot_R: v5 eklemi (eye_v5.JOINTS: pim-delik / AXIAL_GAP / kol-servo mili); v5 check §4b + donanimda calisiyor
+  OLCULMEDI: [R3_cakisma_pozlar] muaf cift frame_L x lid_lo_L: v5 eklemi (eye_v5.JOINTS: pim-delik / AXIAL_GAP / kol-servo mili); v5 check §4b + donanimda calisiyor
+  OLCULMEDI: [R3_cakisma_pozlar] muaf cift frame_R x lid_lo_R: v5 eklemi (eye_v5.JOINTS: pim-delik / AXIAL_GAP / kol-servo mili); v5 check §4b + donanimda calisiyor
+  OLCULMEDI: [R3_cakisma_pozlar] muaf cift horn_lid x servo_lid: v5 eklemi (eye_v5.JOINTS: pim-delik / AXIAL_GAP / kol-servo mili); v5 check §4b + donanimda calisiyor
+  OLCULMEDI: [R3_cakisma_pozlar] muaf cift horn_pitch x servo_pitch: v5 eklemi (eye_v5.JOINTS: pim-delik / AXIAL_GAP / kol-servo mili); v5 check §4b + donanimda calisiyor
+  OLCULMEDI: [R3_cakisma_pozlar] muaf cift horn_pitch_L x servo_pitch_L: sol SG90 mili - kol kavramasi (tasarim geregi temas, satin alinan)
+  OLCULMEDI: [R3_cakisma_pozlar] muaf cift horn_yaw x servo_yaw: v5 eklemi (eye_v5.JOINTS: pim-delik / AXIAL_GAP / kol-servo mili); v5 check §4b + donanimda calisiyor
+  OLCULMEDI: [R3_cakisma_pozlar] muaf cift lid_lo_L x lid_up_L: v5 eklemi (eye_v5.JOINTS: pim-delik / AXIAL_GAP / kol-servo mili); v5 check §4b + donanimda calisiyor
+  OLCULMEDI: [R3_cakisma_pozlar] muaf cift lid_lo_L x link_lo: v5 eklemi (eye_v5.JOINTS: pim-delik / AXIAL_GAP / kol-servo mili); v5 check §4b + donanimda calisiyor
+  OLCULMEDI: [R3_cakisma_pozlar] muaf cift lid_lo_L x scr_lpin_Li: v5 eklemi (eye_v5.JOINTS: pim-delik / AXIAL_GAP / kol-servo mili); v5 check §4b + donanimda calisiyor
+  OLCULMEDI: [R3_cakisma_pozlar] muaf cift lid_lo_L x scr_lpin_Lo: v5 eklemi (eye_v5.JOINTS: pim-delik / AXIAL_GAP / kol-servo mili); v5 check §4b + donanimda calisiyor
+  OLCULMEDI: [R3_cakisma_pozlar] muaf cift lid_lo_R x lid_up_R: v5 eklemi (eye_v5.JOINTS: pim-delik / AXIAL_GAP / kol-servo mili); v5 check §4b + donanimda calisiyor
+  OLCULMEDI: [R3_cakisma_pozlar] muaf cift lid_lo_R x scr_lpin_Ri: v5 eklemi (eye_v5.JOINTS: pim-delik / AXIAL_GAP / kol-servo mili); v5 check §4b + donanimda calisiyor
+  OLCULMEDI: [R3_cakisma_pozlar] muaf cift lid_lo_R x scr_lpin_Ro: v5 eklemi (eye_v5.JOINTS: pim-delik / AXIAL_GAP / kol-servo mili); v5 check §4b + donanimda calisiyor
+  OLCULMEDI: [R3_cakisma_pozlar] muaf cift lid_up_L x link_up: v5 eklemi (eye_v5.JOINTS: pim-delik / AXIAL_GAP / kol-servo mili); v5 check §4b + donanimda calisiyor
+  OLCULMEDI: [R3_cakisma_pozlar] muaf cift lid_up_L x scr_lpin_Li: v5 eklemi (eye_v5.JOINTS: pim-delik / AXIAL_GAP / kol-servo mili); v5 check §4b + donanimda calisiyor
+  OLCULMEDI: [R3_cakisma_pozlar] muaf cift lid_up_L x scr_lpin_Lo: v5 eklemi (eye_v5.JOINTS: pim-delik / AXIAL_GAP / kol-servo mili); v5 check §4b + donanimda calisiyor
+  OLCULMEDI: [R3_cakisma_pozlar] muaf cift lid_up_R x scr_lpin_Ri: v5 eklemi (eye_v5.JOINTS: pim-delik / AXIAL_GAP / kol-servo mili); v5 check §4b + donanimda calisiyor
+  OLCULMEDI: [R3_cakisma_pozlar] muaf cift lid_up_R x scr_lpin_Ro: v5 eklemi (eye_v5.JOINTS: pim-delik / AXIAL_GAP / kol-servo mili); v5 check §4b + donanimda calisiyor
+  OLCULMEDI: [R3_cakisma_pozlar] muaf cift link_lo x scr_A: v5 eklemi (eye_v5.JOINTS: pim-delik / AXIAL_GAP / kol-servo mili); v5 check §4b + donanimda calisiyor
+  OLCULMEDI: [R3_cakisma_pozlar] muaf cift link_lo x scr_L: v5 eklemi (eye_v5.JOINTS: pim-delik / AXIAL_GAP / kol-servo mili); v5 check §4b + donanimda calisiyor
+  OLCULMEDI: [R3_cakisma_pozlar] muaf cift link_up x scr_A: v5 eklemi (eye_v5.JOINTS: pim-delik / AXIAL_GAP / kol-servo mili); v5 check §4b + donanimda calisiyor
+  OLCULMEDI: [R3_cakisma_pozlar] muaf cift link_up x scr_U: v5 eklemi (eye_v5.JOINTS: pim-delik / AXIAL_GAP / kol-servo mili); v5 check §4b + donanimda calisiyor
+  OLCULMEDI: [R3_cakisma_pozlar] muaf cift scr_horn_lid0 x servo_lid: v5 eklemi (eye_v5.JOINTS: pim-delik / AXIAL_GAP / kol-servo mili); v5 check §4b + donanimda calisiyor
+  OLCULMEDI: [R3_cakisma_pozlar] muaf cift scr_horn_lid1 x servo_lid: v5 eklemi (eye_v5.JOINTS: pim-delik / AXIAL_GAP / kol-servo mili); v5 check §4b + donanimda calisiyor
+  OLCULMEDI: [R3_cakisma_pozlar] muaf cift scr_horn_pitch0 x servo_pitch: v5 eklemi (eye_v5.JOINTS: pim-delik / AXIAL_GAP / kol-servo mili); v5 check §4b + donanimda calisiyor
+  OLCULMEDI: [R3_cakisma_pozlar] muaf cift scr_horn_pitch1 x servo_pitch: v5 eklemi (eye_v5.JOINTS: pim-delik / AXIAL_GAP / kol-servo mili); v5 check §4b + donanimda calisiyor
+  OLCULMEDI: [R3_cakisma_pozlar] muaf cift scr_horn_yaw0 x servo_yaw: v5 eklemi (eye_v5.JOINTS: pim-delik / AXIAL_GAP / kol-servo mili); v5 check §4b + donanimda calisiyor
+  OLCULMEDI: [R3_cakisma_pozlar] muaf cift scr_horn_yaw1 x servo_yaw: v5 eklemi (eye_v5.JOINTS: pim-delik / AXIAL_GAP / kol-servo mili); v5 check §4b + donanimda calisiyor
+  OLCULMEDI: [R3_cakisma_pozlar] ayni hareket grubundaki 0 yakin cift-pozda min bosluk olculmedi (yalniz kesisim)
+  OLCULMEDI: [R3_cakisma_pozlar] ayni hareket grubundaki 66690 cift-poz bu poz setinde olculmedi (rijit; ayri tek poz kontrolunde)
+  OLCULMEDI: [R3_cakisma_pozlar] pozlar arasi ara acilar olculmedi (yalniz verilen 54 poz)
+  OLCULMEDI: [R3_cakisma_eklem_kesisim] 'yalniz' filtresi disinda kalan 327078 cift-poz olculmedi
+  OLCULMEDI: [R3_cakisma_eklem_kesisim] pozlar arasi ara acilar olculmedi (yalniz verilen 54 poz)
+  OLCULMEDI: [R3_cakisma_eklem_kesisim] eklem ciftlerinde (temas / 0.4 eksenel / pim-delik) min bosluk ESIGI uygulanmadi (tasarim geregi); kesisim olculdu
+  OLCULMEDI: [R4_zemin_masa] engebeli zemin / hali (ayak batmasi) olculmedi; duz zemin z = 0
+  OLCULMEDI: [R8_havada_donanim_yeni] donanimin gercekten SIKISTIRDIGI (yuk yolu) olculmedi; yalniz temas yakinligi
+  OLCULMEDI: [R8_havada_donanim_yeni] v5 donanimi (degismeyen 80+ vida/somun) bu kontrolde yok: v5 check_havada.py ile olculdu, yeri degismedi
+  OLCULMEDI: [R6_montaj_cerceve_alt] siraya alinmayan 19 parca olculmedi: ['ayak_Larka', 'ayak_Lon', 'ayak_Rarka', 'ayak_Ron', 'base_L', 'base_R', 'cable_pitch', 'kama_L', 'kama_R', 'mask', 'nut_m3_pitch0', 'nut_mask_160'] ...
+  OLCULMEDI: [R6_montaj_cerceve_alt] yalniz dogrusal (tek yonlu) yol; donerek/egilerek takma, esnek parca, el/tornavida erisimi olculmedi
+  OLCULMEDI: [R6_montaj_cerceve_alt] 1.0 mm'den ince engeller adim arasinda kacabilir
+  OLCULMEDI: [R6_montaj_ana] yalniz dogrusal (tek yonlu) yol; donerek/egilerek takma, esnek parca, el/tornavida erisimi olculmedi
+  OLCULMEDI: [R6_montaj_ana] 1.0 mm'den ince engeller adim arasinda kacabilir
+  OLCULMEDI: [R6_giris_yolu] muaf cift T3 alt emniyet somunu (alttan lokma 7) x scr_ctip6: lokma ici bos: vida ucu (somundan 1.4 mm tasar) lokmanin icine girer; silindir dolu modellendi
+  OLCULMEDI: [R6_giris_yolu] alet sapi disindaki el/kulp hacmi ve egik giris olculmedi; koridor duz silindir
+  OLCULMEDI: [R6_giris_yolu] somunlarin cebe konma yolu, elle tutma, kablo yonlendirme olculmedi (kullanici)
+  OLCULMEDI: [tolerans] Z1-B/Z2/Z8 [TAHMIN] halkalari kumpasla (PLAN R12): MG90S ve sol SG90 kulak alti -> mil ucu, kol kalinligi
+  OLCULMEDI: [tolerans] Z8 izin verilen es eksen kacikligi (0.5) TAHMIN: ilk calistirmada titreme/akim gozlemi (R14)
+  OLCULMEDI: [tolerans] halka sapmalari girdidir (olcum/tahmin); zincirde olmayan halka olculmedi
+  OLCULMEDI: [R7_vida_boyu_envanter] 2 somunsuz vida (servo merkez vidasi vb.): sikma boyu servo dis derinligine bagli, olculmedi
+  OLCULMEDI: [R7_vida_boyu_envanter] vida sikma torku / gevseme (donen eklemde somun) olculmedi
+  OLCULMEDI: [R7_vida_boyu_envanter] M4x16 HAVSA: envanterde M4 havsa yalniz 2x M4x10 -> 2 adet v5 pivot_bracket'tan sokulen + 1 SATIN ALINACAK (BOM_FARK)
+  OLCULMEDI: [R7_vida_boyu_envanter] degismeyen v5 vidalari bu listede yok (v5 check §8b ile olculdu)
+  OLCULMEDI: [R7_vida_adet] kayip/yedek payi adet kuralina dahil degil (elde = gerekli ise 'YEDEK YOK' notu)
+  OLCULMEDI: [R2_pitch_tork_B_dolgu0.6] GIRDI (olculmedi): dolgu orani / satin alinan parca kutleleri, servo kapasitesi (stall x kural), ek terimler (dinamik, surtunme); SECENEK B kapasite = (MG90S 0.604 + SG90 0.604) x verim 0.8 @ 4.6 V
+  OLCULMEDI: [R2_pitch_tork_B_dolgu0.6] kablo cekmesi / yay etkisi, eksen kaciklik surtunmesi, servo ic disli boslugu olculmedi
+  OLCULMEDI: [R2_pitch_tork_B_dolgu0.75] GIRDI (olculmedi): dolgu orani / satin alinan parca kutleleri, servo kapasitesi (stall x kural), ek terimler (dinamik, surtunme); SECENEK B kapasite = (MG90S 0.604 + SG90 0.604) x verim 0.8 @ 4.6 V
+  OLCULMEDI: [R2_pitch_tork_B_dolgu0.75] kablo cekmesi / yay etkisi, eksen kaciklik surtunmesi, servo ic disli boslugu olculmedi
+  OLCULMEDI: [R2_pitch_tork_B_dolgu1.0] GIRDI (olculmedi): dolgu orani / satin alinan parca kutleleri, servo kapasitesi (stall x kural), ek terimler (dinamik, surtunme); SECENEK B kapasite = (MG90S 0.604 + SG90 0.604) x verim 0.8 @ 4.6 V
+  OLCULMEDI: [R2_pitch_tork_B_dolgu1.0] kablo cekmesi / yay etkisi, eksen kaciklik surtunmesi, servo ic disli boslugu olculmedi
+  OLCULMEDI: [R2_bilgi_alfa20] GIRDI (olculmedi): dolgu orani / satin alinan parca kutleleri, servo kapasitesi (stall x kural), ek terimler (dinamik, surtunme)
+  OLCULMEDI: [R2_bilgi_alfa20] kablo cekmesi / yay etkisi, eksen kaciklik surtunmesi, servo ic disli boslugu olculmedi
+  OLCULMEDI: [R2_bilgi_alfa20] alfa 20 yalniz bilgi (TILT_DEG = 30.0)
+  OLCULMEDI: [R2_bilgi_alfa40] GIRDI (olculmedi): dolgu orani / satin alinan parca kutleleri, servo kapasitesi (stall x kural), ek terimler (dinamik, surtunme)
+  OLCULMEDI: [R2_bilgi_alfa40] kablo cekmesi / yay etkisi, eksen kaciklik surtunmesi, servo ic disli boslugu olculmedi
+  OLCULMEDI: [R2_bilgi_alfa40] alfa 40 yalniz bilgi (TILT_DEG = 30.0)
+  OLCULMEDI: [R2_diger_eksenler] yaw/kapak yerçekimi torku bu raporda yeniden olculmedi (PLAN §5.4 hesabi + v5 donanim)
+  OLCULMEDI: [R11_tutma_testi_esik] testin kendisi (servonun yuku gercekten tutmasi, sicaklik) donanimda; bu kontrol yalniz esiklerin tutarliligini olcer
+  OLCULMEDI: [R5_devrilme_alfa20] alfa20 dinamik kuvvetler (servo ivmesi, kablo cekmesi, carpma), masa surtunmesi / kayma, ayak esnemesi olculmedi; statik
+  OLCULMEDI: [R5_devrilme_alfa30] alfa30 dinamik kuvvetler (servo ivmesi, kablo cekmesi, carpma), masa surtunmesi / kayma, ayak esnemesi olculmedi; statik
+  OLCULMEDI: [R5_devrilme_alfa40] alfa40 dinamik kuvvetler (servo ivmesi, kablo cekmesi, carpma), masa surtunmesi / kayma, ayak esnemesi olculmedi; statik
+  OLCULMEDI: [R17_kablo] kablonun gercek guzergahi, bukulme yaricapi, surtunme/asinma ve konnektor boyu olculmedi (dogru parcali model)
+  OLCULMEDI: [R17_kablo] Uno konumu [TAHMIN]: kertikten 60 mm geride masada; kablo boyu SG90 250 [KAYNAK, olc]; yetmezse 15 cm servo uzatma (kullanici)
+  OLCULMEDI: [R9_kama_hafiflik] hafiflik: MIN_ET'in yuke dayanimi bu kontrolde olculmedi (yalniz gereksiz malzeme)
+  OLCULMEDI: [MONTAJ_kalibrasyon_sirasi] adim sirasi: adimin icerigi (dogru yapilip yapilmadigi) olculmedi, yalniz varligi ve sirasi
+  OLCULMEDI: [MONTAJ_sikma_talimati] sikma torkunun basili cebe/parcaya etkisi (catlama) olculmedi - yalniz talimatin sayisal olmasi
+  OLCULMEDI: [R6_frame_L_matkap] el matkabi konum hatasi / eksen kacikligi olculmedi (kilavuz kullanimina birakildi)
+  OLCULMEDI: [BOM_envanter_belge] MG90S: envanterde yok, BOM acikca isaretli (kullanici dogrulayacak)
+  OLCULMEDI: [BOM_envanter_belge] envanter kopyasi dogrulama/envanter_plan-v2.md (2026-10-06 sayimi); cekmece sayimi kullanicida
+  OLCULMEDI: [plan_sapmasi] izleme tablosuna yazilmamis PLAN satirlari (tablo projede elle tutulur; PLAN'in tamamini otomatik okumaz)
+  OLCULMEDI: [kapsam_kullanici] R11 MG90S ve sol SG90'in Uno 5 V'taki gercek torku -> tutma testi (MONTAJ 'Testler' T-R11)
+  OLCULMEDI: [kapsam_kullanici] R12 MG90S olculeri (govde boy/en, kulak delik araligi, kulak alti->mil ucu, kol delik r, donus yonu) -> kumpas, T7 oncesi
+  OLCULMEDI: [kapsam_kullanici] R13 krank ucu vidasi / A pimi gevsemesi -> boya kalemi cizgisi, 30 dk + stant sonrasi
+  OLCULMEDI: [kapsam_kullanici] R14 Uno 5 V dusmesi (iki pitch servosu ayni anda) -> multimetre >= 4.6 V, reset yok
+  OLCULMEDI: [kapsam_kullanici] R15 basili kamanin gercek acisi -> telefon egim olcer, 30 +-1 deg
+  OLCULMEDI: [kapsam_kullanici] R18 yazilim (bakis eslemesi, hiz siniri, limitler 80..108 / sol 72..100, D9 kanali) -> AYRI IS (firmware/settings)
+  OLCULMEDI: [kapsam_kullanici] R1 donen kutle ve AM -> tartı + kalem ustunde denge (PLAN R1); dolgu 0.6..1.0 taramasi raporda
+  OLCULMEDI: [kapsam_kullanici] MG90S govdesi SG90 modeliyle temsil edildi (22.8x12.2 vs 22.5x12.5 [TAHMIN]); cep 22.9x12.7 -> R12
+  OLCULMEDI: [kapsam_kullanici] Kaymaz ayak kalinligi 1.5 [TAHMIN]: masa boslugu (Z3b) ve pitch ekseni yuksekligi buna bagli
+  OLCULMEDI: [kapsam_kullanici] SG90 kol vidasi boyu (kol 1.5 + pilot 3.9 = 5.4 mm'ye kadar) [OLCUM]
+  OLCULMEDI: [kapsam_kullanici] frame_L'ye acilan 2x O1.6 pilot: konum adaptor deliklerinin kilavuzluguna bagli (MONTAJ A0); eksen kacikligi olculmedi
+  OLCULMEDI: [kapsam_kullanici] D1 iki pitch servosunun yuk paylasimi (akim) -> MONTAJ 'Kullanici testleri' D1 (pay hesabi IKI_SERVO_VERIM 0.8 [TAHMIN])
+  OLCULMEDI: [kapsam_kullanici] D3 Uno Vcc anlik cokmesi (bandgap + MCUSR) ve 1000 uF etkisi -> MONTAJ 'Kullanici testleri' D3
+  OLCULMEDI: [kapsam_kullanici] D5 iki pitch milinin es eksenliligi (y/z) -> MONTAJ 'Kullanici testleri' D5 (kumpas, T9 oncesi)
+  OLCULMEDI: [kapsam_kullanici] MG90S envanterde YOK (kullaniciya soruldu): yoksa sagda v5 SG90 kalir; tork hesabi zaten SG90 kapasitesiyle
+
+PROJECT EYE v6 (Agent Flow v2) | masa egimi 30.0 deg | pitch -10..+18 | SECENEK B (sol SG90 D9) | 111 parca | sure 261 s
+
+AYRINTI:
+== R16_v5_stl_md5: GECTI (0 bulgu)
+== R16_v5_parca_geometri: GECTI (0 bulgu)
+   . eye: hacim 21114.8 / ref 21114.8 mm3 (fark %0.000), boyut farki 0.0000 mm
+   . iris: hacim 540.4 / ref 540.4 mm3 (fark %0.000), boyut farki 0.0000 mm
+   . pupil: hacim 50.0 / ref 50.0 mm3 (fark %0.000), boyut farki 0.0000 mm
+   . eye_lever: hacim 1024.3 / ref 1024.3 mm3 (fark %0.000), boyut farki 0.0000 mm
+   . frame_L: hacim 39607.0 / ref 39607.0 mm3 (fark %0.000), boyut farki 0.0000 mm
+   . frame_R: hacim 43258.6 / ref 43258.6 mm3 (fark %0.000), boyut farki 0.0000 mm
+   . yaw_mount: hacim 17470.0 / ref 17470.0 mm3 (fark %0.000), boyut farki 0.0000 mm
+   . yaw_crank: hacim 1364.7 / ref 1364.7 mm3 (fark %0.000), boyut farki 0.0000 mm
+   . coupler: hacim 5029.3 / ref 5029.3 mm3 (fark %0.000), boyut farki 0.0000 mm
+   . link_up: hacim 666.2 / ref 666.2 mm3 (fark %0.000), boyut farki 0.0000 mm
+   . link_lo: hacim 1263.3 / ref 1263.3 mm3 (fark %0.000), boyut farki 0.0000 mm
+   . lid_up_L: hacim 4496.3 / ref 4496.3 mm3 (fark %0.000), boyut farki 0.0000 mm
+   . lid_lo_L: hacim 3407.1 / ref 3407.1 mm3 (fark %0.000), boyut farki 0.0000 mm
+   . lid_up_R: hacim 4414.0 / ref 4414.0 mm3 (fark %0.000), boyut farki 0.0000 mm
+   . lid_lo_R: hacim 2658.6 / ref 2658.6 mm3 (fark %0.000), boyut farki 0.0000 mm
+   . base_L: hacim 56667.7 / ref 56667.7 mm3 (fark %0.000), boyut farki 0.0000 mm
+   . base_R: hacim 60608.6 / ref 60608.6 mm3 (fark %0.000), boyut farki 0.0000 mm
+   . mask: hacim 76887.7 / ref 76887.7 mm3 (fark %0.000), boyut farki 0.0000 mm
+   . frame_L: montaj modelinde 2x O1.6 x 5.5 MATKAP deligi var (MONTAJ A0); karsilastirma matkapsiz v5 sekliyle
+   . v6 montajindan CIKAN v5 parcalari: ['pivot_bracket', 'scr_fpivot', 'nut_fpivot', 'scr_ctip'] (pivot_bracket STL'i kullanilmaz, saklanir)
+== tek_govde: GECTI (0 bulgu)
+== havada_ada: GECTI (0 bulgu)
+== et_kalinligi: GECTI (0 bulgu)
+   . kama: et < 1.6 alan orani %0.4; en ince: 0.32 @ (-46.4,16.6,78.1), 0.51 @ (-46.2,16.8,38.9), 1.04 @ (-45.9,16.8,2.8)
+   . sol_kol_adaptoru: et < 1.6 alan orani %0.0; en ince: 1.60 @ (0.2,6.0,8.5), 1.60 @ (0.6,-6.2,8.5), 1.60 @ (-0.4,6.2,8.5)
+   . sol_servo_braketi: et < 1.6 alan orani %0.1; en ince: 1.20 @ (-12.8,0.1,37.1), 1.25 @ (-12.5,-0.3,35.9), 1.31 @ (-15.5,-0.5,37.1)
+== tabla: GECTI (0 bulgu)
+   . kama: 93.0 x 51.5 x 109.6
+   . sol_kol_adaptoru: 20.0 x 40.0 x 14.0
+   . sol_servo_braketi: 31.9 x 40.0 x 67.5
+== sarkma: GECTI (0 bulgu)
+== R3_cakisma_rijit_notr: GECTI (0 bulgu)
+   . en dar: 0.498 mm  frame_L x lid_up_L @ notr_egik
+   . en dar: 0.500 mm  frame_L x scr_ltip_L @ notr_egik
+   . en dar: 0.500 mm  frame_R x scr_ltip_R @ notr_egik
+   . en dar: 0.539 mm  horn_lid x lid_up_L @ notr_egik
+   . en dar: 0.581 mm  eye_R x lid_lo_R @ notr_egik
+== R3_cakisma_pozlar: GECTI (0 bulgu)
+   . en dar: 0.400 mm  coupler x scr_horn_yaw0 @ y+25_p+0_k0.0
+   . en dar: 0.400 mm  coupler x scr_horn_yaw0 @ y+25_p+0_k0.5
+   . en dar: 0.400 mm  coupler x scr_horn_yaw0 @ y+25_p+0_k1.0
+   . en dar: 0.400 mm  coupler x scr_horn_yaw1 @ y-25_p+0_k0.0
+   . en dar: 0.400 mm  coupler x scr_horn_yaw1 @ y-25_p+0_k0.5
+== R3_cakisma_eklem_kesisim: GECTI (0 bulgu)
+   . en dar: 0.000 mm  coupler x scr_ltip_L @ y+0_p+0_k0.0
+   . en dar: 0.000 mm  coupler x scr_ltip_R @ y+0_p+0_k0.0
+   . en dar: 0.000 mm  horn_lid x servo_lid @ y+0_p+0_k0.0
+   . en dar: 0.000 mm  horn_pitch x servo_pitch @ y+0_p+0_k0.0
+   . en dar: 0.000 mm  horn_pitch_L x servo_pitch_L @ y+0_p+0_k0.0
+== R3_pitch_mekanik_durma: GECTI (0 bulgu)
+   . pitch YUKARI mekanik durma ~21.7 deg (frame_L x base_L; v5 geometrisi) -> ust sinir +18 + asim 3 = +21 < durma: pay 0.7 deg
+== R4_zemin_masa: GECTI (0 bulgu)
+   . en alcak (temas disi): kama_L @ y-25_p-13_k0.0 1.00 mm
+== R8_havada_donanim_yeni: GECTI (0 bulgu)
+== R6_montaj_cerceve_alt: GECTI (0 bulgu)
+   . adim 11: 'sol_servo_braketi+servo_pitch_L+cable_pitch_L+scr_m2_pitchL+nut_m2_pitchL+nut_brk_-4+nut_brk_24' takma yonu (1.0, 0.0, 0.0) - 45 mm yol serbest
+   . adim 10: 'horn_pitch_L+scr_horn_pitchL0+scr_horn_pitchL1' takma yonu (1.0, 0.0, 0.0) - 7 mm yol serbest
+   . adim 9: 'scr_adp1' takma yonu (1.0, 0.0, 0.0) - 20 mm yol serbest
+   . adim 8: 'scr_adp0' takma yonu (1.0, 0.0, 0.0) - 20 mm yol serbest
+   . adim 7: 'sol_kol_adaptoru' takma yonu (1.0, 0.0, 0.0) - 15 mm yol serbest
+   . adim 6: 'scr_ym_R63' takma yonu (0.0, 1.0, 0.0) - 17 mm yol serbest
+   . adim 5: 'scr_ym_L63' takma yonu (0.0, 1.0, 0.0) - 17 mm yol serbest
+   . adim 4: 'yaw_mount+servo_yaw+cable_yaw+scr_m3_yaw0+nut_m3_yaw0+nut_ym_L63+nut_ym_R63' takma yonu (0.0, -1.0, 0.0) - 58 mm yol serbest
+   . adim 3: 'nut_ctip_alt' takma yonu (0.0, 1.0, 0.0) - 9 mm yol serbest
+   . adim 2: 'yaw_crank+horn_yaw+scr_horn_yaw0+scr_horn_yaw1+nut_ctip+scr_ctip6' takma yonu (0.0, -1.0, 0.0) - 59 mm yol serbest
+== R6_montaj_ana: GECTI (0 bulgu)
+   . adim 8: 'kama_L+kama_R+ayak_Larka+ayak_Lon+ayak_Rarka+ayak_Ron' takma yonu (0.0, 0.0, 1.0) - 114 mm yol serbest
+   . adim 7: 'scr_mask_160' takma yonu (0.0, 1.0, 0.0) - 17 mm yol serbest
+   . adim 6: 'scr_mask_40' takma yonu (0.0, 1.0, 0.0) - 17 mm yol serbest
+   . adim 5: 'mask+nut_mask_40+nut_mask_160' takma yonu (0.0, -1.0, 0.0) -> (0.0, 0.0, -1.0) 30 mm - 123 mm yol serbest
+   . adim 4: 'scr_brk_24' takma yonu (0.0, 1.0, 0.0) - 17 mm yol serbest
+   . adim 3: 'scr_brk_-4' takma yonu (0.0, 1.0, 0.0) - 17 mm yol serbest
+   . adim 2: 'eye_L+iris_L+pupil_L+eye_lever_L+scr_lock_L+nut_lock_L+scr_ltip_L+nut_ltip_L+eye_R+iris_R+pupil_R+eye_lever_R+scr_lock_R+nut_lock_R+scr_ltip_R+nut_ltip_R+frame_L+scr_ptop_L+scr_pbot_L+nut_ptop_L+nut_pbot_L+scr_lpin_Lo+nut_lpin_Lo+scr_lpin_Li+nut_lpin_Li+scr_ym_L63+frame_R+scr_ptop_R+scr_pbot_R+nut_ptop_R+nut_pbot_R+scr_lpin_Ro+nut_lpin_Ro+scr_lpin_Ri+nut_lpin_Ri+scr_ym_R63+horn_pitch+servo_yaw+cable_yaw+yaw_mount+scr_m3_yaw0+nut_m3_yaw0+nut_ym_L63+nut_ym_R63+horn_yaw+yaw_crank+nut_ctip+coupler+servo_lid+cable_lid+scr_m3_lid0+nut_m3_lid0+lid_crank+horn_lid+link_up+link_lo+scr_A+nut_A+scr_U+scr_L+nut_L+scr_horn_lid0+scr_horn_lid1+lid_up_L+lid_lo_L+lid_up_R+lid_lo_R+scr_lap_up0+nut_lap_up0+scr_lap_lo0+nut_lap_lo0+scr_lap_lo1+nut_lap_lo1+scr_horn_pitch0+scr_horn_pitch1+scr_horn_yaw0+scr_horn_yaw1+scr_ctip6+nut_ctip_alt+sol_kol_adaptoru+scr_adp0+scr_adp1+horn_pitch_L+scr_horn_pitchL0+scr_horn_pitchL1+sol_servo_braketi+servo_pitch_L+cable_pitch_L+scr_m2_pitchL+nut_m2_pitchL+nut_brk_-4+nut_brk_24' takma yonu (0.0, -1.0, 0.0) -> (1.0, 0.0, 0.0) 5 mm - 92 mm yol serbest
+== R6_giris_yolu: GECTI (0 bulgu)
+== tolerans: GECTI (0 bulgu)
+   . Z1-B sol mil kavrama (eksenel; braket yarigi ayar payi tum sapmalari karsilamali): nominal 3.000, en kotu 0.300, RSS 1.804 (esik 0, olcut en_kotu)  | +braket ayak yarigi ayar payi (model, +-)(3+-0) -MG90S mil ucu - SG90 (kulak altindan) [TAHMIN, PLAN Z1](0+-1) -MG90S kol kalinligi farki(0+-0.3) -MG90S cepte oturma(0+-0.2) -sol SG90 kulak->mil ucu (servo farki) [TAHMIN](0+-0.3) -sol_servo_braketi plaka konumu (baski)(0+-0.2) -sol_kol_adaptoru uc duvari + D-delik derinligi (baski)(0+-0.2) -frame_L gobek ucu (v5 baski)(0+-0.2) -taban yarilari yapistirma x kaymasi [TAHMIN](0+-0.3)
+   . Z2 krank vida kafasi <-> yaw servo govdesi (y): nominal 4.520, en kotu 3.920, RSS 4.146 (esik 0.4, olcut en_kotu)  | +model boslugu (yaw -25..25, en kucuk; kafa ISO maks 2.48)(4.52+-0) -servo govde ust yuzu [TAHMIN SG90](0+-0.3) -kol kalinligi (krank-servo arasi) [VARSAYIM 1.5](0+-0.2) -krank somun cebi tabani (baski)(0+-0.1)
+   . Z3a arka en alcak <-> kama dudagi (pitch asim pozu): nominal 4.654, en kotu 3.254, RSS 3.771 (esik 0.4, olcut en_kotu)  | +model boslugu @ pitch +21 (asim dahil)(4.65373+-0) -vida ucu / somun konumu (T3)(0+-0.5) -kama baski yuksekligi / aci (+-0.5 deg x 80 mm)(0+-0.7) -taban kalinligi(0+-0.2)
+   . Z3b arka en alcak <-> masa (pitch asim pozu): nominal 8.438, en kotu 6.538, RSS 7.423 (esik 0.4, olcut en_kotu)  | +model boslugu @ pitch +21(8.43836+-0) -vida ucu / somun konumu (T3)(0+-0.5) -kama baski yuksekligi / aci(0+-0.7) -kaymaz ayak kalinligi [TAHMIN 1.5](0+-0.5) -taban kalinligi(0+-0.2)
+   . Z5 alt emniyet somunu <-> coupler (eksenel, sikistirmamali): nominal 0.175, en kotu 0.075, RSS 0.075 (esik 0, olcut en_kotu)  | +1/4 tur geri (0.7/4)(0.175+-0) -kullanici ayari(0+-0.1)
+   . Z6 ray dudagi alti <-> taban ustu (taban kayarak girmeli): nominal 0.300, en kotu 0.050, RSS 0.150 (esik 0, olcut en_kotu)  | +tasarim payi(0.3+-0) -taban kalinligi (baski Z) [TAHMIN](0+-0.1) -kama ray dudak konumu (baski XY) [TAHMIN](0+-0.1) -taban sehimi / yapistirma [TAHMIN](0+-0.05)
+   . Z7 adaptor D-deligi <-> frame_L gobegi (radyal): nominal 0.250, en kotu 0.000, RSS 0.070 (esik 0, olcut en_kotu)  | +tasarim payi (radyal)(0.25+-0) -adaptor dikey delik baskida kuculur (cap -0.3) [TOL](0+-0.15) -gobek (v5, yatay basildi) [TAHMIN](0+-0.1)
+   . Z8 iki pitch servosu es eksenlilik (radyal kaciklik <= izin) [RSS]: nominal 0.500, en kotu -0.270, RSS 0.154 (esik 0, olcut rss)  | +izin verilen kaciklik [TAHMIN: cerceve + plastik kol esner](0.5+-0) -braket ayak z (4.3 delik / M4)(0+-0.15) -sol servo cep boslugu (12.7 / 12.5)(0+-0.1) -MG90S cep boslugu(0+-0.1) -adaptor merkezlenmesi (Z7 payi)(0+-0.25) -frame_L gobek / frame_R kol plakasi es eksenliligi (v5 baski)(0+-0.1) -kol gobegi - mil boslugu x2(0+-0.07)
+   . Z2 PLAN kotumser varyanti (SG90 ustu HER YERDE gobek seviyesinde, y -9.1 varsayimi): nominal 0.52, en kotu -0.08 -> modelde gobek yalniz mil cevresinde (r 5.9), kafa milden >= 16 mm'de govde seviyesinin (4.52 mm) ustunde
+== R7_vida_boyu_envanter: GECTI (0 bulgu)
+   . M2x8: 3 adet (envanter)
+   . M4x16: 3 adet (envanter)
+== R7_vida_adet: GECTI (0 bulgu)
+   . M2x8: 3 adet (elde 30)
+   . M4x16: 3 adet (elde 3)  <- YEDEK YOK
+   . M4x16 'elde' 3 = 2 sokulen (pivot_bracket) + 1 SATIN (BOM_FARK, ~10 TL); satin alinmadan T1 yapilamaz
+== R2_pitch_tork_B_dolgu0.6: GECTI (0 bulgu)
+   . donen kutle 200 g, AM (notr) [0.0, -6.6, -22.1] mm, eksenden 23.1 mm
+   . T(aci) kg*cm: -10:+0.370  -8:+0.360  -6:+0.350  -4:+0.339  -2:+0.328  +0:+0.317  +2:+0.305  +4:+0.293  +6:+0.280  +8:+0.267  +10:+0.254  +12:+0.240  +14:+0.226  +16:+0.212  +18:+0.198
+   . yercekimi en kotu 0.370 kg*cm @ -10 deg; ek: dinamik (10 deg / 0.25 s, I 3.10e-04) 0.035, surtunme+kablo [TAHMIN] 0.020 -> gereken 0.425; kapasite 0.966 -> PAY 2.27 (hedef 1.5)
+   . bilgi (ikinci kural): kapasite 1.849 -> pay 4.35
+   . karsilastirma: tek MG90S (B olmasaydi, agirliksiz) pay 1.42
+== R2_pitch_tork_B_dolgu0.75: GECTI (0 bulgu)
+   . donen kutle 232 g, AM (notr) [-0.1, -7.0, -21.8] mm, eksenden 22.9 mm
+   . T(aci) kg*cm: -10:+0.421  -8:+0.409  -6:+0.397  -4:+0.385  -2:+0.371  +0:+0.358  +2:+0.344  +4:+0.330  +6:+0.315  +8:+0.300  +10:+0.284  +12:+0.268  +14:+0.252  +16:+0.236  +18:+0.219
+   . yercekimi en kotu 0.421 kg*cm @ -10 deg; ek: dinamik (10 deg / 0.25 s, I 3.58e-04) 0.041, surtunme+kablo [TAHMIN] 0.020 -> gereken 0.482; kapasite 0.966 -> PAY 2.01 (hedef 1.5)
+   . bilgi (ikinci kural): kapasite 1.849 -> pay 3.84
+   . karsilastirma: tek MG90S (B olmasaydi, agirliksiz) pay 1.25
+== R2_pitch_tork_B_dolgu1.0: GECTI (0 bulgu)
+   . donen kutle 286 g, AM (notr) [-0.3, -7.4, -21.5] mm, eksenden 22.7 mm
+   . T(aci) kg*cm: -10:+0.505  -8:+0.491  -6:+0.476  -4:+0.460  -2:+0.443  +0:+0.427  +2:+0.409  +4:+0.391  +6:+0.373  +8:+0.354  +10:+0.335  +12:+0.315  +14:+0.295  +16:+0.275  +18:+0.254
+   . yercekimi en kotu 0.505 kg*cm @ -10 deg; ek: dinamik (10 deg / 0.25 s, I 4.37e-04) 0.050, surtunme+kablo [TAHMIN] 0.020 -> gereken 0.575; kapasite 0.966 -> PAY 1.68 (hedef 1.5)
+   . bilgi (ikinci kural): kapasite 1.849 -> pay 3.22
+   . karsilastirma: tek MG90S (B olmasaydi, agirliksiz) pay 1.05
+== R2_bilgi_alfa20: GECTI (0 bulgu)
+   . donen kutle 232 g, AM (notr) [-0.1, -7.0, -21.8] mm, eksenden 22.9 mm
+   . T(aci) kg*cm: -10:+0.471  -8:+0.462  -6:+0.452  -4:+0.442  -2:+0.432  +0:+0.421  +2:+0.409  +4:+0.397  +6:+0.385  +8:+0.371  +10:+0.358  +12:+0.344  +14:+0.330  +16:+0.315  +18:+0.300
+   . yercekimi en kotu 0.471 kg*cm @ -10 deg; ek: dinamik 0.041, surtunme+kablo 0.020 -> gereken 0.532; kapasite 0.966 -> PAY 1.82 (hedef 1.5)
+== R2_bilgi_alfa40: GECTI (0 bulgu)
+   . donen kutle 232 g, AM (notr) [-0.1, -7.0, -21.8] mm, eksenden 22.9 mm
+   . T(aci) kg*cm: -10:+0.358  -8:+0.344  -6:+0.330  -4:+0.315  -2:+0.300  +0:+0.284  +2:+0.268  +4:+0.252  +6:+0.236  +8:+0.219  +10:+0.202  +12:+0.185  +14:+0.167  +16:+0.149  +18:+0.132
+   . yercekimi en kotu 0.358 kg*cm @ -10 deg; ek: dinamik 0.041, surtunme+kablo 0.020 -> gereken 0.419; kapasite 0.966 -> PAY 2.31 (hedef 1.5)
+== R2_diger_eksenler: GECTI (0 bulgu)
+   . yaw ve kapak eksenleri v5 ile ayni (PLAN §5.4: yerçekimi <= 0.01 kg*cm, pay > 5; v5 donanimda calisiyor); egim bunlari degistirmez
+== R11_tutma_testi_esik: GECTI (0 bulgu)
+   . T-R11 MG90S (MG90S: 330 g x 20 mm = 0.66 kg*cm @ 4.8 V) [esdeger @ 4.6 V: 0.63 kg*cm]: kanitlanan pay 2.10 (gereken 0.30 kg*cm)
+   . T-R11 SG90 sol (SG90 sol: 330 g x 20 mm = 0.66 kg*cm @ 4.8 V) [esdeger @ 4.6 V: 0.63 kg*cm]: kanitlanan pay 2.10 (gereken 0.30 kg*cm)
+   . servo basina pay: gereken 0.482 / (2 x 0.8) = 0.301 kg*cm
+== R5_devrilme_alfa20: GECTI (0 bulgu)
+   . alfa20 EN KOTU: p-13_k1 -> arka kenarina 37.0 mm, 36.6 deg
+   . alfa20 p-13_k0: kutle 576 g, AM (2.6, 2.3, 49.9); en yakin destek kenari (arka, normal [0.0, 1.0]) 37.2 mm, devrilme acisi 36.6 deg
+   . alfa20 p-13_k1: kutle 576 g, AM (2.6, 2.5, 49.8); en yakin destek kenari (arka, normal [0.0, 1.0]) 37.0 mm, devrilme acisi 36.6 deg
+   . alfa20 p-10_k0: kutle 576 g, AM (2.6, 2.1, 49.5); en yakin destek kenari (arka, normal [0.0, 1.0]) 37.4 mm, devrilme acisi 37.0 deg
+   . alfa20 p-10_k1: kutle 576 g, AM (2.6, 2.3, 49.4); en yakin destek kenari (arka, normal [0.0, 1.0]) 37.2 mm, devrilme acisi 37.0 deg
+   . alfa20 p+0_k0: kutle 576 g, AM (2.6, 1.2, 48.2); en yakin destek kenari (arka, normal [0.0, 1.0]) 38.2 mm, devrilme acisi 38.5 deg
+   . alfa20 p+0_k1: kutle 576 g, AM (2.6, 1.4, 48.0); en yakin destek kenari (arka, normal [0.0, 1.0]) 38.1 mm, devrilme acisi 38.4 deg
+   . alfa20 p+18_k0: kutle 576 g, AM (2.6, -0.9, 46.2); en yakin destek kenari (arka, normal [0.0, 1.0]) 40.3 mm, devrilme acisi 41.1 deg
+   . alfa20 p+18_k1: kutle 576 g, AM (2.6, -0.8, 46.0); en yakin destek kenari (arka, normal [0.0, 1.0]) 40.3 mm, devrilme acisi 41.2 deg
+   . alfa20 p+21_k0: kutle 576 g, AM (2.6, -1.3, 45.9); en yakin destek kenari (arka, normal [0.0, 1.0]) 40.7 mm, devrilme acisi 41.6 deg
+   . alfa20 p+21_k1: kutle 576 g, AM (2.6, -1.2, 45.7); en yakin destek kenari (arka, normal [0.0, 1.0]) 40.7 mm, devrilme acisi 41.7 deg
+== R5_devrilme_alfa30: GECTI (0 bulgu)
+   . alfa30 EN KOTU: p-13_k1 -> arka kenarina 28.6 mm, 27.8 deg
+   . alfa30 p-13_k0: kutle 589 g, AM (2.8, -4.1, 54.3); en yakin destek kenari (arka, normal [0.0, 1.0]) 28.7 mm, devrilme acisi 27.9 deg
+   . alfa30 p-13_k1: kutle 589 g, AM (2.8, -3.9, 54.1); en yakin destek kenari (arka, normal [0.0, 1.0]) 28.6 mm, devrilme acisi 27.8 deg
+   . alfa30 p-10_k0: kutle 589 g, AM (2.8, -4.3, 53.9); en yakin destek kenari (arka, normal [0.0, 1.0]) 29.0 mm, devrilme acisi 28.3 deg
+   . alfa30 p-10_k1: kutle 589 g, AM (2.8, -4.2, 53.7); en yakin destek kenari (arka, normal [0.0, 1.0]) 28.8 mm, devrilme acisi 28.2 deg
+   . alfa30 p+0_k0: kutle 589 g, AM (2.8, -5.4, 52.7); en yakin destek kenari (arka, normal [0.0, 1.0]) 30.1 mm, devrilme acisi 29.7 deg
+   . alfa30 p+0_k1: kutle 589 g, AM (2.8, -5.3, 52.6); en yakin destek kenari (arka, normal [0.0, 1.0]) 29.9 mm, devrilme acisi 29.7 deg
+   . alfa30 p+18_k0: kutle 589 g, AM (2.8, -7.8, 51.2); en yakin destek kenari (arka, normal [0.0, 1.0]) 32.4 mm, devrilme acisi 32.3 deg
+   . alfa30 p+18_k1: kutle 589 g, AM (2.8, -7.7, 51.0); en yakin destek kenari (arka, normal [0.0, 1.0]) 32.4 mm, devrilme acisi 32.4 deg
+   . alfa30 p+21_k0: kutle 589 g, AM (2.8, -8.2, 51.0); en yakin destek kenari (arka, normal [0.0, 1.0]) 32.9 mm, devrilme acisi 32.8 deg
+   . alfa30 p+21_k1: kutle 589 g, AM (2.8, -8.2, 50.8); en yakin destek kenari (arka, normal [0.0, 1.0]) 32.8 mm, devrilme acisi 32.9 deg
+== R5_devrilme_alfa40: GECTI (0 bulgu)
+   . alfa40 EN KOTU: p-13_k1 -> arka kenarina 18.8 mm, 18.0 deg
+   . alfa40 p-13_k0: kutle 592 g, AM (2.8, -9.8, 57.9); en yakin destek kenari (arka, normal [0.0, 1.0]) 18.9 mm, devrilme acisi 18.1 deg
+   . alfa40 p-13_k1: kutle 592 g, AM (2.8, -9.7, 57.7); en yakin destek kenari (arka, normal [0.0, 1.0]) 18.8 mm, devrilme acisi 18.0 deg
+   . alfa40 p-10_k0: kutle 592 g, AM (2.8, -10.2, 57.5); en yakin destek kenari (arka, normal [0.0, 1.0]) 19.2 mm, devrilme acisi 18.5 deg
+   . alfa40 p-10_k1: kutle 592 g, AM (2.8, -10.1, 57.3); en yakin destek kenari (arka, normal [0.0, 1.0]) 19.1 mm, devrilme acisi 18.4 deg
+   . alfa40 p+0_k0: kutle 592 g, AM (2.8, -11.4, 56.6); en yakin destek kenari (arka, normal [0.0, 1.0]) 20.5 mm, devrilme acisi 19.9 deg
+   . alfa40 p+0_k1: kutle 592 g, AM (2.8, -11.3, 56.4); en yakin destek kenari (arka, normal [0.0, 1.0]) 20.4 mm, devrilme acisi 19.9 deg
+   . alfa40 p+18_k0: kutle 592 g, AM (2.8, -14.0, 55.5); en yakin destek kenari (arka, normal [0.0, 1.0]) 23.1 mm, devrilme acisi 22.6 deg
+   . alfa40 p+18_k1: kutle 592 g, AM (2.8, -14.0, 55.3); en yakin destek kenari (arka, normal [0.0, 1.0]) 23.0 mm, devrilme acisi 22.6 deg
+   . alfa40 p+21_k0: kutle 592 g, AM (2.8, -14.5, 55.4); en yakin destek kenari (arka, normal [0.0, 1.0]) 23.5 mm, devrilme acisi 23.0 deg
+   . alfa40 p+21_k1: kutle 592 g, AM (2.8, -14.5, 55.2); en yakin destek kenari (arka, normal [0.0, 1.0]) 23.5 mm, devrilme acisi 23.1 deg
+== R17_kablo: GECTI (0 bulgu)
+   . yaw servo (D3): yol 138..178 mm (y-25_p+21 / y-25_p-13), degisim 40, + servis 30 = 208 / boy 250
+   . kapak servo (D6): yol 152..192 mm (y-25_p+21 / y-25_p-13), degisim 40, + servis 30 = 222 / boy 250
+   . sag pitch MG90S (D5): yol 224..224 mm (y-25_p-13 / y-25_p-13), degisim 0, + servis 10 = 234 / boy 250
+   . sol pitch SG90 (D9): yol 232..232 mm (y-25_p-13 / y-25_p-13), degisim 0, + servis 10 = 242 / boy 250
+== R9_kama_hafiflik: GECTI (0 bulgu)
+   . kama (yari): 52730 mm3 (65.4 g dolu) / MIN_ET varyanti 52730 mm3 (65.4 g) = oran 1.00 (esik 1.15)
+   . kama duvar/deri/nervur 1.6/1.6/1.6, nervur z (-35.0, -3.0)
+== MONTAJ_kalibrasyon_sirasi: GECTI (0 bulgu)
+   . 'sag pitch kalibrasyonu (D5, D9 fisi cikik)': satir 60
+   . 'D9 ofseti': satir 62
+   . 'daraltilmis ilk tarama': satir 63
+   . 'tam tarama (R14)': satir 64
+== MONTAJ_sikma_talimati: GECTI (0 bulgu)
+== R6_frame_L_matkap: GECTI (0 bulgu)
+   . frame_L serit O1.6 x2: delip gec, malzeme 5.60 mm, arkasi bos (kesisim 0)
+== BOM_envanter_belge: GECTI (0 bulgu)
+   . SG90: envanter ~6, BOM 6
+   . 1000 uF kondansator: envanter 4, BOM 4
+== plan_sapmasi: GECTI (0 bulgu)
+   . 'pitch ust siniri': +20 (servo 110) -> +18 (servo 108) | D5 — PLAN SAPMASI: pitch üst sınırı +20 → +18 (anahtar: pitch ust sini
+   . 'asim pozu': -13/+23 -> -13/+21 | D6 — PLAN SAPMASI: çarpışma aşım pozları −13/+23 → −13/+21 (anahtar: a
+   . 'M4x16 havsa': envanter (bol) -> 1 satin + 2 sokulen | D7 — PLAN SAPMASI: M4×16 havşa satın alınacak (anahtar: M4x16 havsa)
+   . 'adaptor vidasi': 2 sac vida -> 2x M2x8 (envanter) O1.6 pilota | D8 — PLAN SAPMASI: adaptör vidası sac vida yerine M2×8 (anahtar: adapt
+   . 'sol servo kulak vidasi': M3x10 kulak -> M2x8 + M2 somun | D9 — PLAN SAPMASI: sol servo kulak vidası M3 yerine M2×8 + M2 somun (a
+   . 'sag ray': x 95..116.5 z -62..-12 -> ayna: x 111.5..116.5 z -66..-24 | D10 — PLAN SAPMASI: sağ ray tek STL için ayna (anahtar: sag ray)
+   . 'kama kutlesi': ~60 g toplam -> 131 g (dolgu 1.0) | D11 — PLAN SAPMASI: kama kütlesi ~60 g → 2 × 65 g (tur 1; aşama 2'de 2
+   . 'kama kabugu': 2.4 -> 1.6 | D21 — PLAN SAPMASI: kama kabuğu 2.4 → 1.6 (MIN_ET), 3 → 2 nervür (anah
+   . 'pitch ekseni yuksekligi': 86 mm -> 88.6 mm | D12 — PLAN SAPMASI: pitch ekseni masadan 86 → 88.6 mm (anahtar: pitch 
+   . 'tork kapasitesi': 0.63 @4.8 V -> 0.604 @4.6 V | D13 — PLAN SAPMASI: tork kapasitesi 4.6 V'a ölçeklendi (anahtar: tork 
+   . 'tutma testi': 315 g -> 330 g | D14 — PLAN SAPMASI: tutma testi 315 g → 330 g (anahtar: tutma testi)
+   . 'maske takma yonu': -Y -> -Y (onde) + -Z 30 mm | D15 — PLAN SAPMASI: maske takma yolu −Y → önde indir + 30 mm geri kayd
+== kapsam_kullanici: GECTI (0 bulgu)

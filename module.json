@@ -10,7 +10,14 @@
       "icon": "🎮",
       "label": "Simülasyon",
       "script": "control/face_follow.py",
-      "python": "C:/Users/LENOVO/lunar-tracker/.venv/Scripts/python.exe"
+      "python": "C:/Users/LENOVO/Projeler/_arsiv/lunar-tracker/.venv/Scripts/python.exe"
+    },
+    {
+      "id": "tracker_v2",
+      "icon": "🎮",
+      "label": "Simülasyon v2",
+      "script": "control/face_follow_v2.py",
+      "python": "C:/Users/LENOVO/Projeler/_arsiv/lunar-tracker/.venv/Scripts/python.exe"
     }
   ]
 }

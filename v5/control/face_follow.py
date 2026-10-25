@@ -14,7 +14,7 @@ Donanim yoksa EyeController sim'e duser: pencerede kamera onizlemesi,
 iki gozun sematik hali ve telemetri gorunur.
 
 Calistirma (mediapipe + opencv Lunar venv'inde var):
-    C:\\Users\\LENOVO\\lunar-tracker\\.venv\\Scripts\\python.exe face_follow.py
+    C:\\Users\\LENOVO\\Projeler\\_arsiv\\lunar-tracker\\.venv\\Scripts\\python.exe face_follow.py
     ... face_follow.py --sim          # donanimi arama
     ... face_follow.py --port COM5 --camera 1
 
@@ -52,7 +52,7 @@ if HERE not in sys.path:
 from eye_control import EyeController, EyeLink, candidate_ports, clamp, find_eye_port, lid_follow  # noqa: E402
 
 WINDOW_NAME = "Project Eye v5 - Face Follow"
-DEFAULT_MODEL = r"C:\Users\LENOVO\lunar-tracker\assets\blaze_face_short_range.tflite"
+DEFAULT_MODEL = r"C:\Users\LENOVO\Projeler\_arsiv\lunar-tracker\assets\blaze_face_short_range.tflite"
 LOCK_PATH = os.path.join(HERE, ".face_follow.lock")
 
 # --- davranis (ultimatum.py EyeRig ile ayni aile) ---------------------------
@@ -67,6 +67,9 @@ STARTLE_S = 0.35
 FOCUS_SPEED_MIN = 0.4       # birim/sn: bundan yavas hareket "odak" saymaz
 FOCUS_SPEED_RAMP = 1.2
 TARGET_DEBOUNCE_FRAMES = 5
+TARGET_HOLD_S = 0.0         # hedef degisince en az bu kadar o yuzde kal (0 = her kare en buyuk yuz; v2 = 1.0)
+WANDER_FROM_GAZE = False    # yuz kaybolunca bakinma gozun durdugu yerden baslasin (v2 = True)
+SAME_FACE_FRAC = 0.5       # merkezler arasi < bu x kutu genisligi -> ayni yuz sayilir
 GAIN = 1.0                  # kare kenari -> u = +-GAIN
 
 MODES = ("SERBEST", "TAKIP", "CANSIZ", "NOTR", "MANUEL")
@@ -75,6 +78,44 @@ BUTTON_CYCLE = ("SERBEST", "TAKIP", "CANSIZ", "NOTR")   # D2 butonu; MANUEL fare
 MANUAL_KEY_STEP = 0.06       # ok tusu basina bakis adimi (-1..1)
 MANUAL_LID_STEP = 0.08
 DEFAULT_MODE = "TAKIP"
+
+
+def _box_center(b):
+    return (b[0] + b[2]) / 2, (b[1] + b[3]) / 2
+
+
+def _box_area(b):
+    return (b[2] - b[0]) * (b[3] - b[1])
+
+
+class TargetPicker:
+    """Kutulardan PRIMARY'yi secer. hold_s = 0: her kare en buyuk yuz (v1).
+    hold_s > 0: yeni hedefe gecince en az hold_s boyunca o yuzu (onceki konuma
+    en yakin kutu) izler; sure dolunca yine en buyuge gecebilir. Hedef kadrajdan
+    cikarsa en yakin kalan yuze hemen gecer (bekleme yok)."""
+
+    def __init__(self, hold_s: float = 0.0):
+        self.hold_s = hold_s
+        self.box = None
+        self.since = -math.inf
+
+    def _same(self, a, b) -> bool:
+        (ax, ay), (bx, by) = _box_center(a), _box_center(b)
+        return math.hypot(ax - bx, ay - by) < SAME_FACE_FRAC * (b[2] - b[0])
+
+    def pick(self, boxes, now: float):
+        if not boxes:
+            self.box = None
+            return None
+        if self.box is None or now - self.since >= self.hold_s:
+            new = max(boxes, key=_box_area)
+        else:
+            px, py = _box_center(self.box)
+            new = min(boxes, key=lambda b: math.hypot(_box_center(b)[0] - px, _box_center(b)[1] - py))
+        if self.box is None or not self._same(new, self.box):
+            self.since = now
+        self.box = new
+        return new
 
 
 def _ema(current: float, target: float, dt: float, tau: float) -> float:
@@ -164,6 +205,7 @@ class ModeBrain:
         self.lid = eye.openness
         self.status = ""
         self.manual = [0.0, 0.0, LID_OPEN_TRACK]      # u, v, kapak
+        self.wandering = False                         # TAKIP: yuz yok, bakiniyor
         self.set_mode(mode)
 
     def set_mode(self, mode: str) -> None:
@@ -200,8 +242,12 @@ class ModeBrain:
             self.live.step(now, dt, target)
             if target is not None or self.live.had_target:
                 self.lid, self.status = self.live.lid, self.live.status
+                self.wandering = False
                 return
             # yuz yok (kayip kesinlesti ya da hic gorulmedi): yuz gorene kadar takipsiz canli hareket
+            if not self.wandering and WANDER_FROM_GAZE:
+                self.eye._wander.start_at(self.eye.gaze_u, self.eye.gaze_v, self.eye.clock())
+            self.wandering = True
             self.eye._last_look = -1e9
             self.lid = self.live.lid = _ema(self.lid, LID_OPEN_TRACK, dt, LID_TAU_S)
             self.eye.lids(self.lid)
@@ -497,6 +543,7 @@ def run(args) -> int:
 
     eye = EyeController(port="sim" if args.sim else args.port)
     brain = ModeBrain(eye, args.mode)
+    picker = TargetPicker(TARGET_HOLD_S)
     mirror = args.mirror
     detector = create_detector(args.model, args.min_conf)
     cap = open_camera(cv2, args.camera)
@@ -569,7 +616,7 @@ def run(args) -> int:
                 if x2 > x1 and y2 > y1:
                     score = det.categories[0].score if det.categories else None
                     boxes.append((x1, y1, x2, y2, score))
-            primary = max(boxes, key=lambda b: (b[2] - b[0]) * (b[3] - b[1])) if boxes else None
+            primary = picker.pick(boxes, now)
 
             target = None
             if primary is not None:

@@ -7,7 +7,7 @@ ve tum parcalar yeniden uretilir.
 
 Cikti: out/*.stl (baski yonunde, duz yuz tablada) + out/onizleme.png
 Calistirma:
-  C:\\Users\\LENOVO\\epic-project\\.venv-cad\\Scripts\\python.exe tolerance_test.py
+  C:\\Users\\LENOVO\\Projeler\\epic-project\\.venv-cad\\Scripts\\python.exe tolerance_test.py
 """
 from pathlib import Path
 

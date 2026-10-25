@@ -1,0 +1,24 @@
+{
+ "_kaynak": "modules/project-eye/v5/cad/out/stl (v5 basildi 2026-09-30/10-01, donanimda calisiyor); kayit 2026-10-12 v6 tasarimi basinda",
+ "md5": {
+  "base_L.stl": "605357aca181d5442300d8448f91baea",
+  "base_R.stl": "5d93a603f8838b576c0d5996f792ef03",
+  "coupler.stl": "4dc722121ec9b8c8dda1d62e3b196487",
+  "eye.stl": "2b0234731297958519dbb1b526a411e0",
+  "eye_lever.stl": "0616f49854c418a6b0823033fc0e4513",
+  "frame_L.stl": "6e5ab625504650332089a77659d76170",
+  "frame_R.stl": "c7ebc480c7ec4b73ffe9df60619270fa",
+  "iris.stl": "73323900d5b0a563b99e7591aca2605d",
+  "lid_lo_L.stl": "2489b6c26d18ddff523327bd6cdf2175",
+  "lid_lo_R.stl": "020154e9d2b5f8bc9987553ae45178ce",
+  "lid_up_L.stl": "99f9c40c5b50f1b663159f120cc32d4e",
+  "lid_up_R.stl": "ea2fb0dbebc488e1b5db479e74ba5d6f",
+  "link_lo.stl": "89279a0c72df9f870ee6144963bf25b5",
+  "link_up.stl": "d60e3d14c11e8e381aade08ec0794306",
+  "mask.stl": "bf7c16d607bace5bc8b491ba7d7d9ab8",
+  "pivot_bracket.stl": "049179196325ba947ac4ab3a733b0fa2",
+  "pupil.stl": "e27bd2274b753ca972758a254cb69bb6",
+  "yaw_crank.stl": "531ce2e798edeaed5d2f25bf8a0f421d",
+  "yaw_mount.stl": "409b3038d25af44d6a4906b703bf3e99"
+ }
+}

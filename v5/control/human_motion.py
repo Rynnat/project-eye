@@ -95,6 +95,12 @@ class GazeWander:
         self.region = (0.0, 0.0)
         self.target = (0.0, 0.0)
 
+    def start_at(self, u: float, v: float, now: float) -> None:
+        """Bakinmaya gozun su anki noktasindan basla (ilk bolge = burasi, sicrama yok)."""
+        self.region = self.target = (u, v)
+        self._next_region = now + self.rng.uniform(*REGION_DWELL_S)
+        self._next_fix = now + fixation_duration(self.rng)
+
     def step(self, now: float):
         if now >= self._next_region:
             self.region = (self.rng.uniform(-WANDER_U, WANDER_U), self.rng.uniform(-WANDER_V, WANDER_V))

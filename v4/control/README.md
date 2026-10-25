@@ -17,13 +17,13 @@ kahverengi = GND. Servo kolunu takmadan önce servoyu nötre getirin.
 
 ## Çalıştırma
 ```powershell
-$py = "C:\Users\LENOVO\epic-project\.venv-ctl\Scripts\python.exe"   # pyserial
-cd C:\Users\LENOVO\epic-project\modules\project-eye\v4\control
+$py = "C:\Users\LENOVO\Projeler\epic-project\.venv-ctl\Scripts\python.exe"   # pyserial
+cd C:\Users\LENOVO\Projeler\epic-project\modules\project-eye\v4\control
 & $py eye_control.py --sim           # demo (--sim olmadan donanımı arar, yoksa sim)
 & $py calibrate.py                   # 1..3 kanal, ok tuşları, c/n/x göz, k/o kapak, s kaydet
 & $py -m unittest discover -s tests -v
 $env:PYTHONUTF8 = "1"
-C:\Users\LENOVO\lunar-tracker\.venv\Scripts\python.exe face_follow.py    # --sim, --port COM5
+C:\Users\LENOVO\Projeler\_arsiv\lunar-tracker\.venv\Scripts\python.exe face_follow.py    # --sim, --port COM5
 
 & "C:\Users\LENOVO\AppData\Local\Programs\Arduino IDE\resources\app\lib\backend\resources\arduino-cli.exe" `
   compile --fqbn arduino:avr:uno ..\firmware\project_eye_v4

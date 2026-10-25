@@ -1,0 +1,58 @@
+################ ONCE (asama 2 / tur0)
+SONUC: SORUN (9)
+KAPSAM:
+  OLCULDU:   [D4_kama_hafiflik] 1 parca: hacim / ayni geometrinin tum etleri MIN_ET olan varyanti <= 1.15
+  OLCULDU:   [D2_kalibrasyon_sirasi] 4 adim: tablo satirinda var ve sira sag pitch kalibrasyonu (D5, D9 fisi cikik) -> D9 ofseti -> daraltilmis ilk tarama -> tam tarama (R14)
+  OLCULDU:   [D7_sikma_talimati] belirsiz sikma ifadesi gecen 1 satirin hepsinde sayisal sinir (tur / Nm / derece)
+  OLCULDU:   [D6_frame_L_matkap] 1 el matkabi deligi: kor ise kalan et >= el hassasiyeti, delip gec ise arka kesisim 0
+  OLCULDU:   [D8_bom_envanter] 3 kalem: BOM satirinin adet/kaynak iddiasi envanter tablosuyla ayni ya da acikca isaretli
+  OLCULMEDI: [D4_kama_hafiflik] hafiflik: MIN_ET'in yuke dayanimi bu kontrolde olculmedi (yalniz gereksiz malzeme)
+  OLCULMEDI: [D2_kalibrasyon_sirasi] adim sirasi: adimin icerigi (dogru yapilip yapilmadigi) olculmedi, yalniz varligi ve sirasi
+  OLCULMEDI: [D7_sikma_talimati] sikma torkunun basili cebe/parcaya etkisi (catlama) olculmedi - yalniz talimatin sayisal olmasi
+  OLCULMEDI: [D6_frame_L_matkap] el matkabi konum hatasi / eksen kacikligi olculmedi (kilavuz kullanimina birakildi)
+
+AYRINTI:
+== D4_kama_hafiflik: SORUN (1 bulgu)
+   - kama (yari): 76106 mm3 (94.4 g dolu) / MIN_ET varyanti 55890 mm3 (69.3 g) = oran 1.36 (esik 1.15): etler MIN_ET'in gereksiz ustunde -> incelt ya da gerekce yaz
+== D2_kalibrasyon_sirasi: SORUN (3 bulgu)
+   - 'sag pitch kalibrasyonu (D5, D9 fisi cikik)' adim tablosunda yok
+   - 'D9 ofseti' adim tablosunda yok
+   - 'daraltilmis ilk tarama' adim tablosunda yok
+   . 'tam tarama (R14)': satir 70
+== D7_sikma_talimati: SORUN (1 bulgu)
+   - satir 38: sayisiz sikma talimati (| **T1** | **Krank alt montajı (servo YOKKEN):** somun krank ucundaki cepte (üstten). M4×1...) -> 'degince en fazla N tur' / Nm yaz
+== D6_frame_L_matkap: SORUN (1 bulgu)
+   - frame_L serit O1.6: hedef 5.5 mm, malzeme 5.60 -> kalan et 0.10 < el hassasiyeti 0.5: elde tutturulamaz
+== D8_bom_envanter: SORUN (3 bulgu)
+   - SG90: BOM adet 10 != envanter ~6: | SG90 | 1 | elde (10) | sol pitch, **D9** |
+   - MG90S: envanterde yok ama BOM acik isaretlemeden kaynak gosteriyor: | MG90S | 1 | elde (1) | sağ pitch, D5 (SG90 çıkar, yedeğe) |
+   - 1000 uF kondansator: BOM tablosunda satir yok
+
+################ SONRA (duzeltme turu 1)
+SONUC: TEMIZ
+KAPSAM:
+  OLCULDU:   [D4_kama_hafiflik] 1 parca: hacim / ayni geometrinin tum etleri MIN_ET olan varyanti <= 1.15
+  OLCULDU:   [D2_kalibrasyon_sirasi] 4 adim: tablo satirinda var ve sira sag pitch kalibrasyonu (D5, D9 fisi cikik) -> D9 ofseti -> daraltilmis ilk tarama -> tam tarama (R14)
+  OLCULDU:   [D7_sikma_talimati] belirsiz sikma ifadesi gecen 0 satirin hepsinde sayisal sinir (tur / Nm / derece)
+  OLCULDU:   [D6_frame_L_matkap] 1 el matkabi deligi: kor ise kalan et >= el hassasiyeti, delip gec ise arka kesisim 0
+  OLCULDU:   [D8_bom_envanter] 3 kalem: BOM satirinin adet/kaynak iddiasi envanter tablosuyla ayni ya da acikca isaretli
+  OLCULMEDI: [D4_kama_hafiflik] hafiflik: MIN_ET'in yuke dayanimi bu kontrolde olculmedi (yalniz gereksiz malzeme)
+  OLCULMEDI: [D2_kalibrasyon_sirasi] adim sirasi: adimin icerigi (dogru yapilip yapilmadigi) olculmedi, yalniz varligi ve sirasi
+  OLCULMEDI: [D7_sikma_talimati] sikma torkunun basili cebe/parcaya etkisi (catlama) olculmedi - yalniz talimatin sayisal olmasi
+  OLCULMEDI: [D6_frame_L_matkap] el matkabi konum hatasi / eksen kacikligi olculmedi (kilavuz kullanimina birakildi)
+  OLCULMEDI: [D8_bom_envanter] MG90S: envanterde yok, BOM acikca isaretli (kullanici dogrulayacak)
+
+AYRINTI:
+== D4_kama_hafiflik: GECTI (0 bulgu)
+   . kama (yari): 52730 mm3 (65.4 g dolu) / MIN_ET varyanti 52730 mm3 (65.4 g) = oran 1.00 (esik 1.15)
+== D2_kalibrasyon_sirasi: GECTI (0 bulgu)
+   . 'sag pitch kalibrasyonu (D5, D9 fisi cikik)': satir 60
+   . 'D9 ofseti': satir 62
+   . 'daraltilmis ilk tarama': satir 63
+   . 'tam tarama (R14)': satir 64
+== D7_sikma_talimati: GECTI (0 bulgu)
+== D6_frame_L_matkap: GECTI (0 bulgu)
+   . frame_L serit O1.6: delip gec, malzeme 5.60 mm, arkasi bos (kesisim 0)
+== D8_bom_envanter: GECTI (0 bulgu)
+   . SG90: envanter ~6, BOM 6
+   . 1000 uF kondansator: envanter 4, BOM 4

@@ -6,7 +6,7 @@ noktalari arasinda enterpole eder. Boylece ekranda gorulen hareket, carpisma tar
 kullandigi modelle birebir aynidir.
 
 cad/ klasorune YAZMAZ, sadece okur. Model degisince yeniden calistirin:
-  C:\\Users\\LENOVO\\epic-project\\.venv-cad\\Scripts\\python.exe build_viewer.py
+  C:\\Users\\LENOVO\\Projeler\\epic-project\\.venv-cad\\Scripts\\python.exe build_viewer.py
 """
 import base64
 import json

@@ -1,0 +1,22 @@
+SONUC: TEMIZ
+KAPSAM:
+  OLCULDU:   [tek_govde] 1 parca: ayri govde sayisi (manifold decompose)
+  OLCULDU:   [havada_ada] 1 parca: 0.2 mm katmanlarla havada baslayan bilesen (>= 0.05 mm2)
+  OLCULDU:   [et_kalinligi] 1 parca: kaba et kalinligi (3000 nokta isin ornekleme, esik %1 alan < 1.6 mm)
+  OLCULDU:   [tabla] 1 parca: baski yonunde sinir kutusu <= 200 x 200 x 240
+  OLCULDU:   [sarkma] 1 parca (baski yonu): 0.2 mm katmanda bir alttaki kesitten > 5.0 mm uzak yeni malzeme, iki yandan <= 25.0 mm kopru degilse (alan > 1.0 mm2) = konsol
+  OLCULMEDI: [havada_ada] duz sarkma / kopru alani ve 45 deg ustu egimler (ada degil, bagli sarkma) olculmedi
+  OLCULMEDI: [et_kalinligi] et kontrolu KABA: kenar/pah/kose yakininda yanlis 'ince' cikar; tek tek ince duvar garantisi degil
+  OLCULMEDI: [tabla] parcanin tablaya gercekten oturdugu yon (STL yonu dogru varsayildi); capraz yerlesim olculmedi
+  OLCULMEDI: [sarkma] kopru yolunun parcanin icinden gectigi ve kopru sarkma miktari olculmedi; <= konsol_maks egimli sarkma (45 deg alti) ayrica olculmedi
+
+PARCA KONTROLU: sol_servo_braketi (baski yonunde)
+
+AYRINTI:
+== tek_govde: GECTI (0 bulgu)
+== havada_ada: GECTI (0 bulgu)
+== et_kalinligi: GECTI (0 bulgu)
+   . sol_servo_braketi: et < 1.6 alan orani %0.2; en ince: 1.20 @ (-14.8,-0.0,35.9), 1.20 @ (-12.6,-0.1,35.9), 1.24 @ (-13.8,-0.3,37.1)
+== tabla: GECTI (0 bulgu)
+   . sol_servo_braketi: 31.9 x 40.0 x 67.5
+== sarkma: GECTI (0 bulgu)

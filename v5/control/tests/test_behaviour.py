@@ -395,5 +395,70 @@ class IoThreadTests(unittest.TestCase):
         self.assertFalse(link.send("?"))
 
 
+class WanderFromGazeTests(unittest.TestCase):
+    def _lose_face(self, from_gaze):
+        import face_follow as ff
+        old = ff.WANDER_FROM_GAZE
+        ff.WANDER_FROM_GAZE = from_gaze
+        try:
+            eye, clock = make(human_motion=True)
+            eye.auto_blink = False
+            eye._wander.start_at(-0.8, 0.0, clock())   # bakinma bolgesi uzakta (sol)
+            brain = ff.ModeBrain(eye, "TAKIP")
+            dt = 1 / 30
+            for _ in range(60):                          # yuz sagda
+                clock.advance(dt)
+                brain.step(clock(), dt, (0.8, 0.0))
+                eye.update(dt)
+            u0 = eye.gaze_u
+            for _ in range(int(0.5 / dt)):               # yuz kayboldu, ilk 0.5 sn
+                clock.advance(dt)
+                brain.step(clock(), dt, None)
+                eye.update(dt)
+            return u0, eye.gaze_u
+        finally:
+            ff.WANDER_FROM_GAZE = old
+
+    def test_v1_jumps_to_far_region(self):
+        u0, u1 = self._lose_face(False)
+        self.assertGreater(abs(u1 - u0), 1.0)
+
+    def test_v2_starts_where_eye_is(self):
+        u0, u1 = self._lose_face(True)
+        self.assertLess(abs(u1 - u0), 0.2)
+
+
+class TargetPickerTests(unittest.TestCase):
+    A = (100, 100, 200, 200, 0.9)    # sol yuz (alan 10000)
+    B = (500, 100, 601, 201, 0.9)    # sag yuz (alan 10201)
+
+    def test_hold_zero_is_largest(self):
+        import face_follow as ff
+        p = ff.TargetPicker(0.0)
+        for i in range(10):
+            a = (100, 100, 200 + (i % 2) * 5, 205, 0.9)   # boyutlar her kare yer degistirir
+            boxes = [a, self.B]
+            self.assertIs(p.pick(boxes, i / 30), max(boxes, key=ff._box_area))
+
+    def test_hold_stops_flicker_then_switches_to_larger(self):
+        import face_follow as ff
+        p = ff.TargetPicker(1.0)
+        self.assertIs(p.pick([self.A], 0.0), self.A)          # once yalniz A
+        t, picked = 0.0, []
+        while t < 0.95:                                       # B biraz buyuk ama 1 sn dolmadi
+            t += 1 / 30
+            picked.append(p.pick([self.A, self.B], t))
+        self.assertTrue(all(b is self.A for b in picked))
+        self.assertIs(p.pick([self.A, self.B], 1.01), self.B)  # sure doldu -> en buyuk
+        self.assertIs(p.pick([self.A, self.B], 1.05), self.B)  # yeni hedefte yine 1 sn kalir
+
+    def test_lost_target_switches_immediately(self):
+        import face_follow as ff
+        p = ff.TargetPicker(1.0)
+        p.pick([self.A], 0.0)
+        self.assertIs(p.pick([self.B], 0.1), self.B)
+        self.assertIsNone(p.pick([], 0.2))
+
+
 if __name__ == "__main__":
     unittest.main()

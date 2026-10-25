@@ -18,14 +18,14 @@ Turuncu = sinyal, kırmızı = +5 V, kahverengi = GND. Servo kolunu takmadan ön
 
 ## Kurulum ve çalıştırma
 ```powershell
-# pyserial venv'i (v2 ile ortak): C:\Users\LENOVO\epic-project\.venv-ctl
-$py = "C:\Users\LENOVO\epic-project\.venv-ctl\Scripts\python.exe"
-cd C:\Users\LENOVO\epic-project\modules\project-eye\v3\control
+# pyserial venv'i (v2 ile ortak): C:\Users\LENOVO\Projeler\epic-project\.venv-ctl
+$py = "C:\Users\LENOVO\Projeler\epic-project\.venv-ctl\Scripts\python.exe"
+cd C:\Users\LENOVO\Projeler\epic-project\modules\project-eye\v3\control
 & $py eye_control.py --sim           # demo (--sim olmadan donanımı arar, yoksa sim)
 & $py calibrate.py                   # 1..3 kanal, ok tuşları, c/n/x göz, k/o kapak, s kaydet
 & $py -m unittest discover -s tests -v
 $env:PYTHONUTF8 = "1"
-C:\Users\LENOVO\lunar-tracker\.venv\Scripts\python.exe face_follow.py    # --sim, --port COM5, --camera 1
+C:\Users\LENOVO\Projeler\_arsiv\lunar-tracker\.venv\Scripts\python.exe face_follow.py    # --sim, --port COM5, --camera 1
 
 # firmware derleme (yüklerken portu kontrol edin; Lunar gimbal ya da v2 kartına yüklemeyin)
 & "C:\Users\LENOVO\AppData\Local\Programs\Arduino IDE\resources\app\lib\backend\resources\arduino-cli.exe" `

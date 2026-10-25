@@ -21,10 +21,10 @@
 
 ```powershell
 # eye_control / calibrate / sim / testler için (yalnızca pyserial):
-python -m venv C:\Users\LENOVO\epic-project\.venv-ctl
-C:\Users\LENOVO\epic-project\.venv-ctl\Scripts\python.exe -m pip install pyserial
+python -m venv C:\Users\LENOVO\Projeler\epic-project\.venv-ctl
+C:\Users\LENOVO\Projeler\epic-project\.venv-ctl\Scripts\python.exe -m pip install pyserial
 # face_follow için Lunar'ın venv'i (mediapipe + opencv + pyserial hazır):
-#   C:\Users\LENOVO\lunar-tracker\.venv\Scripts\python.exe
+#   C:\Users\LENOVO\Projeler\_arsiv\lunar-tracker\.venv\Scripts\python.exe
 ```
 
 `.venv-ctl` bu makinede kuruldu (pyserial 3.5).
@@ -53,7 +53,7 @@ C:\Users\LENOVO\epic-project\.venv-ctl\Scripts\python.exe -m pip install pyseria
 
 ```powershell
 & "C:\Users\LENOVO\AppData\Local\Programs\Arduino IDE\resources\app\lib\backend\resources\arduino-cli.exe" `
-  compile --fqbn arduino:avr:uno C:\Users\LENOVO\epic-project\modules\project-eye\v2\firmware\project_eye_v2
+  compile --fqbn arduino:avr:uno C:\Users\LENOVO\Projeler\epic-project\modules\project-eye\v2\firmware\project_eye_v2
 # Yükleme (kart takılıyken, doğru portla! Lunar gimbal'inin portuna yüklemeyin):
 #   ... upload -p COMx --fqbn arduino:avr:uno <aynı klasör>
 ```
@@ -71,14 +71,14 @@ Seri monitörden elle deneme (115200, satır sonu LF): `?`, `S 90 90 100 90 80 9
 `control` klasöründen:
 
 ```powershell
-$py = "C:\Users\LENOVO\epic-project\.venv-ctl\Scripts\python.exe"
+$py = "C:\Users\LENOVO\Projeler\epic-project\.venv-ctl\Scripts\python.exe"
 & $py eye_control.py            # donanımı bul (yoksa sim) ve kısa demo hareketi
 & $py eye_control.py --sim      # donanımsız
 & $py calibrate.py              # kalibrasyon (--sim ile prova, --port COM5)
 & $py -m unittest discover -s tests -v
 
 $env:PYTHONUTF8 = "1"
-C:\Users\LENOVO\lunar-tracker\.venv\Scripts\python.exe face_follow.py          # --sim, --port COM5, --camera 1, --mirror
+C:\Users\LENOVO\Projeler\_arsiv\lunar-tracker\.venv\Scripts\python.exe face_follow.py          # --sim, --port COM5, --camera 1, --mirror
 ```
 
 - **Port:** `settings.json` → `"serial_port": "auto"` her portu `EYE v2 READY`
